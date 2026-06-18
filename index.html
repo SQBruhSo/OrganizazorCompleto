@@ -36,7 +36,7 @@
 
         .phone-container {
             width: 100%;
-            max-width: 500px; /* Se expande mejor en dispositivos móviles grandes y tablets */
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -72,6 +72,22 @@
         .btn-back:active {
             transform: scale(0.95);
             background: #d0d0d0;
+        }
+
+        /* Botón específico para regresar al mes actual */
+        .btn-today {
+            background: #1A1A1A;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-today:active {
+            transform: scale(0.95);
         }
 
         /* VISTAS Y TRANSICIONES */
@@ -263,18 +279,28 @@
         }
         .btn-add:active { transform: scale(0.95); }
 
-        /* NAVEGACIÓN CALENDARIO REALS */
+        /* NAVEGACIÓN CALENDARIO DINÁMICO */
         .calendar-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            gap: 8px;
+        }
+
+        .calendar-title-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
         }
 
         .calendar-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: bold;
             text-transform: capitalize;
+            text-align: center;
         }
 
         .weekdays-grid {
@@ -317,6 +343,11 @@
             transform: scale(1.05);
         }
 
+        /* Resalta sutilmente el día de hoy si está en el mes visible */
+        .calendar-day.current-today {
+            box-shadow: inset 0 0 0 2px #FFFFFF, 0 0 8px rgba(0,0,0,0.2);
+        }
+
         .color-picker {
             display: flex;
             gap: 10px;
@@ -332,7 +363,7 @@
         }
         .color-opt.active { border-color: #000; transform: scale(1.1); }
 
-        /* MODALES REALES PARA MÓVIL */
+        /* MODALES */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -391,9 +422,10 @@
 
     <div class="phone-container">
         
+        <!-- HOME -->
         <div id="view-home" class="view">
             <div class="card">
-                <div class="welcome-title">Hola, <span id="username-display" onclick="openModal('username-modal')">Mamá</span></div>
+                <div class="welcome-title">Hola, <span id="username-display" onclick="openModal('username-modal')">Usuario</span></div>
             </div>
 
             <div class="grid-menu">
@@ -417,6 +449,7 @@
             </div>
         </div>
 
+        <!-- CALENDARIO -->
         <div id="view-calendar" class="view hidden">
             <div class="card header-box">
                 <span>Calendario</span>
@@ -425,7 +458,10 @@
             <div class="card">
                 <div class="calendar-controls">
                     <button class="btn-back" onclick="changeMonth(-1)">◀</button>
-                    <div class="calendar-title" id="calendar-month-year"></div>
+                    <div class="calendar-title-container">
+                        <div class="calendar-title" id="calendar-month-year"></div>
+                        <button class="btn-today" onclick="goToCurrentMonth()">Volver</button>
+                    </div>
                     <button class="btn-back" onclick="changeMonth(1)">▶</button>
                 </div>
                 <div class="weekdays-grid">
@@ -443,6 +479,7 @@
             </div>
         </div>
 
+        <!-- TAREAS -->
         <div id="view-tasks" class="view hidden">
             <div class="card header-box">
                 <span>Tareas</span>
@@ -458,6 +495,7 @@
             </div>
         </div>
 
+        <!-- NOTAS -->
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
                 <span>Notas</span>
@@ -474,14 +512,17 @@
 
     </div>
 
+    <!-- CAPA DE FONDO MODAL -->
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
+    <!-- MODAL NOMBRE -->
     <div class="modal" id="username-modal">
         <h3 style="margin-bottom:12px;">Cambiar Nombre</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:16px;" maxlength="14">
         <button class="btn-add" style="width:100%; padding:15px;" onclick="saveUsername()">Guardar</button>
     </div>
 
+    <!-- MODAL NOTAS -->
     <div class="modal" id="note-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%;"></h3>
@@ -491,6 +532,7 @@
         <button class="btn-add" style="width:100%; padding:15px;" onclick="saveNoteBody()">Guardar Contenido</button>
     </div>
 
+    <!-- MODAL CALENDARIO -->
     <div class="modal" id="calendar-modal">
         <h3 style="margin-bottom:12px;">Evento para el <span id="modal-day-num"></span></h3>
         <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:16px;" maxlength="40" placeholder="¿Qué hay que hacer este día?">
@@ -508,10 +550,10 @@
 
     <script>
         let data = JSON.parse(localStorage.getItem('mama_app_data_v4')) || {
-            username: 'Mamá',
+            username: 'Username',
             tasks: [],
             notes: {},
-            calendar: {} // Guardará estructurado por llave única "Año-Mes-Día"
+            calendar: {}
         };
 
         // Estado del Calendario Real
@@ -629,9 +671,22 @@
             renderCalendar();
         }
 
+        // NUEVA FUNCIÓN: Te lleva directamente al mes y año actual
+        function goToCurrentMonth() {
+            currentCalendarDate = new Date();
+            document.getElementById('calendar-detail-box').style.display = 'none';
+            selectedDayKey = null;
+            renderCalendar();
+        }
+
         function renderCalendar() {
             const year = currentCalendarDate.getFullYear();
             const month = currentCalendarDate.getMonth();
+
+            const realToday = new Date();
+            const realDay = realToday.getDate();
+            const realMonth = realToday.getMonth();
+            const realYear = realToday.getFullYear();
 
             document.getElementById('calendar-month-year').innerText = `${monthNames[month]} ${year}`;
 
@@ -641,16 +696,14 @@
             const container = document.getElementById('calendar-grid-box');
             container.innerHTML = '';
 
-            // Espacios en blanco para cuadrar el primer día de la semana
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyDiv = document.createElement('div');
                 emptyDiv.className = 'calendar-day empty';
                 container.appendChild(emptyDiv);
             }
 
-            // Crear botones de los días reales del mes
             for (let day = 1; day <= totalDays; day++) {
-                const dayKey = `${year}-${month + 1}-${day}`; // Llave única estructurada
+                const dayKey = `${year}-${month + 1}-${day}`;
                 const btn = document.createElement('button');
                 btn.className = 'calendar-day';
                 btn.innerText = day;
@@ -662,6 +715,11 @@
                 }
 
                 if (selectedDayKey === dayKey) btn.classList.add('selected');
+                
+                // Si este casillero coincide exactamente con el día de hoy real en el mundo, agrega un borde indicador
+                if (day === realDay && month === realMonth && year === realYear) {
+                    btn.classList.add('current-today');
+                }
 
                 btn.onclick = () => selectDay(day, dayKey);
                 container.appendChild(btn);
@@ -781,7 +839,6 @@
             renderCalendar();
         }
 
-        // Ejecución Inicial
         renderEverything();
     </script>
 </body>
