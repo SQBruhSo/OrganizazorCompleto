@@ -74,7 +74,6 @@
             background: #d0d0d0;
         }
 
-        /* Botón específico para regresar al mes actual */
         .btn-today {
             background: #1A1A1A;
             color: white;
@@ -279,7 +278,7 @@
         }
         .btn-add:active { transform: scale(0.95); }
 
-        /* NAVEGACIÓN CALENDARIO DINÁMICO */
+        /* NAVEGACIÓN CALENDARIO */
         .calendar-controls {
             display: flex;
             justify-content: space-between;
@@ -343,7 +342,6 @@
             transform: scale(1.05);
         }
 
-        /* Resalta sutilmente el día de hoy si está en el mes visible */
         .calendar-day.current-today {
             box-shadow: inset 0 0 0 2px #FFFFFF, 0 0 8px rgba(0,0,0,0.2);
         }
@@ -422,10 +420,9 @@
 
     <div class="phone-container">
         
-        <!-- HOME -->
         <div id="view-home" class="view">
             <div class="card">
-                <div class="welcome-title">Hola, <span id="username-display" onclick="openModal('username-modal')">Usuario</span></div>
+                <div class="welcome-title">Hola, <span id="username-display" onclick="openModal('username-modal')">Username</span></div>
             </div>
 
             <div class="grid-menu">
@@ -449,7 +446,6 @@
             </div>
         </div>
 
-        <!-- CALENDARIO -->
         <div id="view-calendar" class="view hidden">
             <div class="card header-box">
                 <span>Calendario</span>
@@ -479,7 +475,6 @@
             </div>
         </div>
 
-        <!-- TAREAS -->
         <div id="view-tasks" class="view hidden">
             <div class="card header-box">
                 <span>Tareas</span>
@@ -489,13 +484,12 @@
                 <div id="tasks-container" style="display:flex; flex-direction:column;"></div>
                 <div class="input-group">
                     <input type="text" id="task-input" class="input-flat" maxlength="50" placeholder="Nueva tarea...">
-                    <input type="text" id="task-time" class="input-flat" style="max-width:75px; text-align:center;" maxlength="5" placeholder="15:30">
+                    <input type="text" id="task-time" class="input-flat" style="max-width:110px; text-align:center;" maxlength="5" placeholder="Hora (opc)">
                     <button class="btn-add" onclick="addTask()">+</button>
                 </div>
             </div>
         </div>
 
-        <!-- NOTAS -->
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
                 <span>Notas</span>
@@ -512,17 +506,14 @@
 
     </div>
 
-    <!-- CAPA DE FONDO MODAL -->
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
-    <!-- MODAL NOMBRE -->
     <div class="modal" id="username-modal">
         <h3 style="margin-bottom:12px;">Cambiar Nombre</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:16px;" maxlength="14">
         <button class="btn-add" style="width:100%; padding:15px;" onclick="saveUsername()">Guardar</button>
     </div>
 
-    <!-- MODAL NOTAS -->
     <div class="modal" id="note-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 65%;"></h3>
@@ -532,7 +523,6 @@
         <button class="btn-add" style="width:100%; padding:15px;" onclick="saveNoteBody()">Guardar Contenido</button>
     </div>
 
-    <!-- MODAL CALENDARIO -->
     <div class="modal" id="calendar-modal">
         <h3 style="margin-bottom:12px;">Evento para el <span id="modal-day-num"></span></h3>
         <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:16px;" maxlength="40" placeholder="¿Qué hay que hacer este día?">
@@ -556,7 +546,6 @@
             calendar: {}
         };
 
-        // Estado del Calendario Real
         let currentCalendarDate = new Date();
         let selectedDayKey = null; 
         let activeNoteTitle = '';
@@ -617,9 +606,9 @@
 
         function addTask() {
             const text = document.getElementById('task-input').value.trim();
-            const time = document.getElementById('task-time').value.trim() || '--:--';
+            const time = document.getElementById('task-time').value.trim();
             if(!text) return;
-            data.tasks.push({ text, time, completed: false });
+            data.tasks.push({ text, time: time || null, completed: false });
             document.getElementById('task-input').value = '';
             document.getElementById('task-time').value = '';
             saveData();
@@ -663,7 +652,6 @@
             saveData(); closeModals();
         }
 
-        /* LÓGICA DINÁMICA DEL CALENDARIO REAL */
         function changeMonth(direction) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
             document.getElementById('calendar-detail-box').style.display = 'none';
@@ -671,7 +659,6 @@
             renderCalendar();
         }
 
-        // NUEVA FUNCIÓN: Te lleva directamente al mes y año actual
         function goToCurrentMonth() {
             currentCalendarDate = new Date();
             document.getElementById('calendar-detail-box').style.display = 'none';
@@ -716,7 +703,6 @@
 
                 if (selectedDayKey === dayKey) btn.classList.add('selected');
                 
-                // Si este casillero coincide exactamente con el día de hoy real en el mundo, agrega un borde indicador
                 if (day === realDay && month === realMonth && year === realYear) {
                     btn.classList.add('current-today');
                 }
@@ -803,19 +789,25 @@
             data.tasks.forEach((t, idx) => {
                 const itemHome = document.createElement('li');
                 itemHome.style.animationDelay = `${idx * 0.03}s`;
+                
+                const timeTag = t.time ? `<span class="time-badge">${t.time}</span>` : '';
+                
                 itemHome.innerHTML = `
                     <span style="${t.completed ? 'text-decoration:line-through; color:gray;' : ''}">${idx+1}. ${t.text}</span>
-                    <span class="time-badge">${t.time}</span>
+                    ${timeTag}
                 `;
                 homeList.appendChild(itemHome);
 
                 const itemRow = document.createElement('div');
                 itemRow.className = 'task-row';
                 itemRow.style.animationDelay = `${idx * 0.03}s`;
+                
+                const timeText = t.time ? ` <small>(${t.time})</small>` : '';
+
                 itemRow.innerHTML = `
                     <div class="task-text ${t.completed ? 'completed' : ''}" onclick="toggleTask(${idx})">
                         <input type="checkbox" ${t.completed ? 'checked' : ''}>
-                        <span>${idx+1}. ${t.text} <small>(${t.time})</small></span>
+                        <span>${idx+1}. ${t.text}${timeText}</span>
                     </div>
                     <button class="btn-delete" onclick="deleteTask(${idx}, this.parentNode)">-</button>
                 `;
