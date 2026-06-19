@@ -1,12 +1,18 @@
 {
-  "short_name": "Organizador Personal",
-  "name": "Organizador Personal",
+  "short_name": "Espacio",
+  "name": "Control de Espacio Personal",
   "icons": [
     {
       "src": "https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "start_url": "./index.html",
