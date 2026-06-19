@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Organizador Personal</title>
     
-    <!-- Favicon tradicional para las pestañas de la PC -->
     <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
+    <link class="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
 
-    <!-- Inyección dinámica y estricta del Manifiesto según el dispositivo -->
     <script>
         (function() {
             const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -17,10 +15,8 @@
             manifestLink.rel = 'manifest';
             
             if (isMobile) {
-                // El celular carga el manifiesto con su icono redondo
                 manifestLink.href = './manifest.json';
             } else {
-                // La PC carga estrictamente el manifiesto con su icono cuadrado
                 manifestLink.href = './manifest-pc.json';
             }
             document.head.appendChild(manifestLink);
@@ -100,6 +96,9 @@
             font-weight: 500;
             font-size: 14px;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             transition: all 0.2s var(--fade-bezier);
         }
         .btn-back:hover { background: #EEEEEE; transform: translateY(-1px); }
@@ -138,6 +137,7 @@
         .brand-header {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 14px;
         }
 
@@ -153,15 +153,6 @@
             cursor: pointer;
             position: relative;
         }
-        .welcome-title span::after {
-            content: '';
-            position: absolute;
-            bottom: -2px; left: 0; width: 100%; height: 2px;
-            background: var(--accent-brand);
-            transform: scaleX(0);
-            transition: transform 0.2s var(--fade-bezier);
-        }
-        .welcome-title span:hover::after { transform: scaleX(1); }
 
         .grid-menu {
             display: grid;
@@ -183,10 +174,6 @@
             transition: all 0.25s var(--aura-bezier);
             animation: cardEntrance 0.5s var(--fade-bezier) backwards;
         }
-        .menu-item:nth-child(1) { animation-delay: 0.05s; }
-        .menu-item:nth-child(2) { animation-delay: 0.1s; }
-        .menu-item:nth-child(3) { animation-delay: 0.15s; }
-
         .menu-item:hover {
             transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.04);
@@ -254,7 +241,6 @@
 
         .task-input-container { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
         .input-row-bottom { display: flex; gap: 10px; }
-        .input-group { display: flex; gap: 10px; margin-top: 18px; }
 
         .input-flat {
             flex: 1; background: #F4F5F6; border: 1px solid transparent; padding: 14px 16px; border-radius: 14px;
@@ -267,55 +253,13 @@
             font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s var(--fade-bezier);
         }
         .btn-add:hover { background: var(--accent-brand); transform: translateY(-1px); }
-        .btn-add:active { transform: translateY(1px); }
 
-        .format-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 10px;
-            background: #F4F5F6;
-            padding: 6px;
-            border-radius: 14px;
-        }
-        .format-btn {
-            background: #FFFFFF;
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-main);
-            transition: all 0.15s ease;
-        }
+        .format-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; background: #F4F5F6; padding: 6px; border-radius: 14px; }
+        .format-btn { background: #FFFFFF; border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.15s ease; }
         .format-btn:hover { background: var(--accent-brand); color: #FFFFFF; border-color: var(--accent-brand); }
 
-        .rich-editor {
-            width: 100%;
-            height: 220px;
-            background: #F4F5F6;
-            border: 1px solid transparent;
-            padding: 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            color: var(--text-main);
-            outline: none;
-            overflow-y: auto;
-            text-align: left;
-            transition: all 0.2s;
-        }
-        .rich-editor:focus {
-            border-color: var(--accent-brand);
-            background: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(107,29,47,0.04);
-        }
-        
-        .rich-editor h1 { font-size: 22px; font-weight: 700; margin: 8px 0 4px 0; color: var(--accent-brand); }
-        .rich-editor h2 { font-size: 18px; font-weight: 600; margin: 6px 0 4px 0; color: var(--text-main); }
-        .rich-editor p { font-size: 15px; font-weight: 400; margin-bottom: 4px; color: var(--text-main); display: block; }
-        .rich-editor b, .rich-editor strong { font-weight: 700; }
-        .rich-editor i, .rich-editor em { font-style: italic; }
+        .rich-editor { width: 100%; height: 220px; background: #F4F5F6; border: 1px solid transparent; padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; }
+        .rich-editor:focus { border-color: var(--accent-brand); background: #FFFFFF; box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
         .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .calendar-title-container { display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -330,99 +274,84 @@
         }
         .calendar-day:hover:not(.empty) { background: #EEEEEE; }
         .calendar-day.empty { background: transparent; cursor: default; }
-        .calendar-day.selected { border-color: var(--accent-brand) !important; color: var(--accent-brand) !important; font-weight: 700; transform: scale(1.05); }
+        .calendar-day.selected { border-color: var(--accent-brand) !important; color: var(--accent-brand) !important; font-weight: 700; }
         .calendar-day.current-today { background: var(--accent-brand) !important; color: white !important; font-weight: 700; }
 
-        .modal-overlay {
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(17, 18, 20, 0.4); backdrop-filter: blur(4px); z-index: 99;
-            animation: fadeInOverlay 0.2s ease forwards;
-        }
-        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
-
-        .modal {
-            display: none; position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -45%) scale(0.95); background: white;
-            border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15); opacity: 0; transition: all 0.3s var(--aura-bezier);
-        }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(17, 18, 20, 0.4); backdrop-filter: blur(4px); z-index: 99; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95); background: white; border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); opacity: 0; transition: all 0.3s var(--aura-bezier); }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: #FFFFFF; border: 1px solid var(--border-color); }
-        .note-item-btn:hover { background: #F4F5F6; transform: translateX(2px); }
-
+        .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: #FFFFFF; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .note-item-btn svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
         .color-picker { display: flex; gap: 12px; margin: 14px 0; }
         .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
         .color-opt.active { border-color: var(--text-main); transform: scale(1.15); }
 
-        #calendar-detail-box { border-top: 1px solid var(--border-color); padding-top: 16px; margin-top: 14px; animation: itemFadeIn 0.3s var(--fade-bezier); }
+        .pwa-widget { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, rgba(107,29,47,0.06) 0%, rgba(107,29,47,0.01) 100%); border: 1px dashed rgba(107, 29, 47, 0.2); padding: 16px 20px; border-radius: 20px; }
+        .pwa-widget-text h4 { font-size: 14px; font-weight: 600; color: var(--accent-brand); margin-bottom: 2px; }
+        .pwa-widget-text p { font-size: 12px; color: var(--text-muted); }
+        .btn-pwa-toggle { background: var(--accent-brand); color: white; border: none; padding: 8px 16px; border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s var(--fade-bezier); }
+
         .icon svg { width: 22px; height: 22px; fill: currentColor; }
         h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
 
-        /* WIDGET APPLE DE NOTIFICACIONES */
-        .pwa-widget {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: linear-gradient(135deg, rgba(107,29,47,0.06) 0%, rgba(107,29,47,0.01) 100%);
-            border: 1px dashed rgba(107, 29, 47, 0.2);
-            padding: 16px 20px;
-            border-radius: 20px;
-        }
-        .pwa-widget-text h4 { font-size: 14px; font-weight: 600; color: var(--accent-brand); margin-bottom: 2px; }
-        .pwa-widget-text p { font-size: 12px; color: var(--text-muted); }
-        .btn-pwa-toggle {
-            background: var(--accent-brand); color: white; border: none; padding: 8px 16px; border-radius: 100px;
-            font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s var(--fade-bezier);
-        }
-        .btn-pwa-toggle:active { transform: scale(0.95); }
+        .tutorial-tabs { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .tab-btn { background: none; border: none; font-size: 14px; font-weight: 600; color: var(--text-muted); cursor: pointer; padding: 6px 12px; position: relative; }
+        .tab-btn.active { color: var(--accent-brand); }
+        .tab-btn.active::after { content: ''; position: absolute; bottom: -11px; left: 0; width: 100%; height: 2px; background: var(--accent-brand); }
+        .tutorial-content { display: none; text-align: left; max-height: 280px; overflow-y: auto; font-size: 14px; line-height: 1.5; }
+        .tutorial-content.active { display: block; }
+        .tutorial-content ol { padding-left: 20px; margin-top: 8px; }
+        .tutorial-content li { margin-bottom: 8px; }
+        .browser-tag { background: #E2E4E7; padding: 2px 6px; border-radius: 6px; font-weight: bold; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="phone-container">
         
-        <!-- HOME -->
         <div id="view-home" class="view">
             <div class="card brand-header">
-                <div class="welcome-title">Estudio de <span id="username-display" onclick="openModal('username-modal')">Usuario</span></div>
+                <div class="welcome-title">Control de <span id="username-display" onclick="openModal('username-modal')">Espacio</span></div>
+                <button class="btn-back" id="btn-install-pwa" style="padding: 6px 14px; font-size: 12px;">
+                    <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    Instalar app
+                </button>
             </div>
 
             <div class="grid-menu">
                 <div class="menu-item" onclick="changeView('view-calendar')">
                     <div class="icon" style="background-color: var(--accent-brand);"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
-                    <span>Sesiones</span>
+                    <span>Eventos</span>
                 </div>
                 <div class="menu-item" onclick="changeView('view-tasks')">
                     <div class="icon" style="background-color: var(--accent-green);"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
-                    <span>Proyectos</span>
+                    <span>Pendientes</span>
                 </div>
                 <div class="menu-item" onclick="changeView('view-notes')">
                     <div class="icon" style="background-color: var(--accent-yellow);"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></div>
-                    <span>Bocetos</span>
+                    <span>Notas fijas</span>
                 </div>
             </div>
 
-            <!-- WIDGET NOTIFICACIONES SISTEMA -->
             <div class="pwa-widget">
                 <div class="pwa-widget-text">
-                    <h4>Alertas de Entorno</h4>
-                    <p id="pwa-status-text">Permisos de sonido inactivos.</p>
+                    <h4>Alertas en vivo</h4>
+                    <p id="pwa-status-text">Alertas de sonido inactivas.</p>
                 </div>
                 <button class="btn-pwa-toggle" onclick="solicitarPermisoNotificaciones()">Vincular</button>
             </div>
 
             <div class="card">
-                <h3 style="margin-bottom: 16px;">Plan de hoy</h3>
+                <h3 style="margin-bottom: 16px;">Cronograma del Día</h3>
                 <ul id="home-tasks-list" class="list-preview"></ul>
             </div>
         </div>
 
-        <!-- CALENDARIO -->
         <div id="view-calendar" class="view hidden">
             <div class="card header-box">
-                <span>Sesiones del Mes</span>
-                <button class="btn-back" onclick="changeView('view-home')">Cerrar</button>
+                <span>Agenda Mensual</span>
+                <button class="btn-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
                 <div class="calendar-controls">
@@ -436,8 +365,8 @@
                 <div class="weekdays-grid"><div>D</div><div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div></div>
                 <div class="calendar-grid" id="calendar-grid-box"></div>
                 
-                <div id="calendar-detail-box" style="display:none;">
-                    <h3 id="cal-detail-title" style="color:var(--accent-brand); font-size:15px; margin-bottom: 4px;">Agenda de la fecha</h3>
+                <div id="calendar-detail-box" style="display:none; border-top:1px solid var(--border-color); padding-top:16px; margin-top:14px;">
+                    <h3 id="cal-detail-title" style="color:var(--accent-brand); font-size:15px; margin-bottom: 4px;">Detalles del día</h3>
                     <p id="cal-detail-text" style="margin-bottom: 14px; font-size:14px; color:var(--text-muted);"></p>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-back" id="btn-edit-cal" style="background:var(--accent-brand); color:white; border:none; flex: 1;">Asignar</button>
@@ -447,34 +376,32 @@
             </div>
         </div>
 
-        <!-- TAREAS -->
         <div id="view-tasks" class="view hidden">
             <div class="card header-box">
-                <span>Flujo de Proyectos</span>
-                <button class="btn-back" onclick="changeView('view-home')">Cerrar</button>
+                <span>Lista de Actividades</span>
+                <button class="btn-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
                 <div id="tasks-container" style="display:flex; flex-direction:column;"></div>
                 <div class="task-input-container">
                     <input type="text" id="task-input" class="input-flat" maxlength="50" placeholder="Nombre de la actividad...">
                     <div class="input-row-bottom">
-                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" placeholder="Plazo (ej. 16:00)">
+                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" placeholder="Hora (ej. 17:30)">
                         <button class="btn-add" style="flex: 1;" onclick="addTask()">Añadir</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- NOTAS -->
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
-                <span>Panel de Bocetos</span>
-                <button class="btn-back" onclick="changeView('view-home')">Cerrar</button>
+                <span>Bloque de Notas</span>
+                <button class="btn-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
                 <div id="notes-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
-                <div class="input-group">
-                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" placeholder="Nuevo título...">
+                <div class="input-group" style="display:flex; gap:10px;">
+                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" placeholder="Título de la nota...">
                     <button class="btn-add" onclick="addNote()">Crear</button>
                 </div>
             </div>
@@ -482,57 +409,77 @@
 
     </div>
 
-    <!-- OVERLAY -->
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
-    <!-- MODAL NOMBRE -->
     <div class="modal" id="username-modal">
-        <h3 style="margin-bottom:14px;">Identidad del Estudio</h3>
+        <h3 style="margin-bottom:14px;">Identidad del Espacio</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14">
-        <button class="btn-add" style="width:100%; padding:14px;" onclick="saveUsername()">Actualizar</button>
+        <button class="btn-add" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
     </div>
 
-    <!-- MODAL BOCETOS -->
+    <div class="modal" id="help-modal">
+        <h3 style="margin-bottom:12px;">Guía de Instalación PWA</h3>
+        <div class="tutorial-tabs">
+            <button class="tab-btn active" onclick="switchTab('tab-pc')">En Computadora</button>
+            <button class="tab-btn" onclick="switchTab('tab-mobile')">En Celular</button>
+        </div>
+        
+        <div id="tab-pc" class="tutorial-content active">
+            <p>Puedes instalar este panel como una app nativa en tu escritorio según tu navegador:</p>
+            <ol>
+                <li><span class="browser-tag">Chrome / Brave / Edge</span>: Mira el extremo derecho de tu barra de direcciones arriba y haz clic en el símbolo de suma (+) o la pantalla de instalación.</li>
+                <li><span class="browser-tag">Zen Browser / Firefox</span>: Abre el menú de tres líneas arriba a la derecha y presiona <b>"Instalar sitio como aplicación"</b>.</li>
+            </ol>
+        </div>
+
+        <div id="tab-mobile" class="tutorial-content">
+            <p>Fija el organizador en la pantalla de inicio de tu smartphone de forma directa:</p>
+            <ol>
+                <li><span class="browser-tag">Android</span>: Presiona los 3 puntos verticales arriba a la derecha y pulsa <b>"Instalar aplicación"</b>.</li>
+                <li><span class="browser-tag">iPhone (Safari)</span>: Pulsa el botón de <b>"Compartir"</b> abajo (cuadrado con flecha hacia arriba) y elige <b>"Añadir a pantalla de inicio"</b>.</li>
+            </ol>
+        </div>
+        
+        <button class="btn-add" style="width:100%; padding:12px; margin-top:14px;" onclick="closeModals()">Entendido</button>
+    </div>
+
     <div class="modal" id="note-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
             <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"></h3>
             <button class="btn-back" style="color:red; padding:6px 12px; border-color: rgba(255,0,0,0.1);" id="btn-delete-note-trigger">Eliminar</button>
         </div>
-
         <div class="format-bar">
-            <button class="format-btn" onclick="applyFormat('formatBlock', '<h1>')">Título</button>
-            <button class="format-btn" onclick="applyFormat('formatBlock', '<h2>')">Subtítulo</button>
+            <button class="format-btn" onclick="applyFormat('formatBlock', '<h1>')">H1</button>
+            <button class="format-btn" onclick="applyFormat('formatBlock', '<h2>')">H2</button>
             <button class="format-btn" onclick="applyFormat('formatBlock', '<p>')">Texto</button>
             <button class="format-btn" onclick="applyFormat('bold')"><b>B</b></button>
             <button class="format-btn" onclick="applyFormat('italic')"><i>I</i></button>
         </div>
-
         <div id="modal-note-body" class="rich-editor" contenteditable="true"></div>
-        <button class="btn-add" style="width:100%; padding:14px; margin-top:16px;" onclick="saveNoteBody()">Guardar Boceto</button>
+        <button class="btn-add" style="width:100%; padding:14px; margin-top:16px;" onclick="saveNoteBody()">Guardar Nota</button>
     </div>
 
-    <!-- MODAL CALENDARIO -->
     <div class="modal" id="calendar-modal">
         <h3 style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
-        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay agendado hoy?">
-        <label style="font-size:12px; font-weight:600; color:var(--text-muted)">Paleta de Categoría:</label>
+        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?">
+        <label style="font-size:12px; font-weight:600; color:var(--text-muted)">Color identificador:</label>
         <div class="color-picker">
             <div class="color-opt" style="background:var(--accent-brand);" data-color="#6B1D2F"></div>
             <div class="color-opt" style="background:var(--accent-green);" data-color="#2E7D32"></div>
             <div class="color-opt" style="background:var(--accent-yellow);" data-color="#C67B00"></div>
             <div class="color-opt" style="background:#1A73E8;" data-color="#1A73E8"></div>
         </div>
-        <button class="btn-add" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar en Agenda</button>
+        <button class="btn-add" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
     <script>
         let rawData = localStorage.getItem('aura_studio_data');
-        let data = { username: 'Usuario', tasks: [], notes: {}, calendar: {} };
+        let data = { username: 'Personal', tasks: [], notes: {}, calendar: {} };
         
         if (rawData) {
             try {
                 data = JSON.parse(rawData);
-                if (data.username === 'Mamá') data.username = 'Usuario';
+                if (data.username === 'Usuario' || data.username === 'Mamá') data.username = 'Personal';
             } catch(e) { console.error(e); }
         }
 
@@ -541,12 +488,58 @@
         let activeNoteTitle = '';
         let selectedColor = '#6B1D2F';
         let tareasNotificadas = new Set(); 
+        let deferredPrompt = null; // Guardará el evento de instalación directo
 
         const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+
+        // --- SISTEMA INTERNO DE CAPTURA PARA INSTALACIÓN DIRECTA PWA ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previene que Chrome/Android lancen su banner nativo invasivo abajo
+            e.preventDefault();
+            // Guarda el evento para ejecutarlo cuando pulsen nuestro botón
+            deferredPrompt = e;
+            
+            // Cambia el estilo del botón para denotar que está listo para instalar directo
+            const installBtn = document.getElementById('btn-install-pwa');
+            if (installBtn) {
+                installBtn.style.background = 'rgba(107, 29, 47, 0.1)';
+                installBtn.style.borderColor = 'var(--accent-brand)';
+                installBtn.style.color = 'var(--accent-brand)';
+            }
+        });
+
+        // Evento lanzado cuando se pulsa el botón de Instalar App
+        document.getElementById('btn-install-pwa').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                // Lanza directamente la ventana flotante nativa de instalación
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('El usuario aceptó la instalación nativa.');
+                }
+                deferredPrompt = null; // Limpia el prompt usado
+            } else {
+                // Si el navegador no lo soporta en ese momento (ej. iOS Safari), abrimos la guía
+                openModal('help-modal');
+            }
+        });
+
+        // Si la app ya se instaló con éxito, limpia el estado
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA instalada de forma nativa en el sistema.');
+            deferredPrompt = null;
+        });
 
         function saveData() {
             localStorage.setItem('aura_studio_data', JSON.stringify(data));
             renderEverything();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tutorial-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
         function applyFormat(command, value = null) {
@@ -618,7 +611,7 @@
         function addNote() {
             const title = document.getElementById('note-title-input').value.trim();
             if(!title) return;
-            if(!data.notes[title]) data.notes[title] = '<div>Escribe aquí tu contenido...</div>';
+            if(!data.notes[title]) data.notes[title] = '<div>Ecribe aquí tu contenido...</div>';
             document.getElementById('note-title-input').value = '';
             saveData();
             openNoteDetails(title);
@@ -701,7 +694,7 @@
             if(data.calendar[dayKey]) {
                 detailText.innerText = `Evento establecido: ${data.calendar[dayKey].title}`;
             } else {
-                detailText.innerText = 'Libre de sesiones u obligaciones virtuales.';
+                detailText.innerText = 'Libre de compromisos o eventos registrados.';
             }
             detailBox.style.display = 'block';
 
@@ -794,7 +787,10 @@
                 btnNota.className = 'input-flat note-item-btn';
                 btnNota.style.animationDelay = `${idx * 0.04}s`;
                 btnNota.onclick = () => openNoteDetails(k);
-                btnNota.innerText = `📝 ${k}`;
+                btnNota.innerHTML = `
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <span>${k}</span>
+                `;
                 notesContainer.appendChild(btnNota);
             });
 
@@ -808,8 +804,6 @@
             renderCalendar();
         }
 
-        // ================= SISTEMA NATIVO PWA & ALERTAS DE RELOJ =================
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -820,12 +814,12 @@
 
         function solicitarPermisoNotificaciones() {
             if (!('Notification' in window)) {
-                alert('Este navegador no soporta notificaciones de escritorio.');
+                alert('Este navegador no soporta notificaciones.');
                 return;
             }
             Notification.requestPermission().then(permission => {
                 if (permission === 'granted') {
-                    enviarNotificacion("¡Entorno Enlazado!", "Recibirás pings acústicos y visuales al expirar plazos.");
+                    enviarNotificacion("Entorno Enlazado", "Recibirás pings acústicos y visuales al expirar plazos.");
                     renderEverything();
                 }
             });
