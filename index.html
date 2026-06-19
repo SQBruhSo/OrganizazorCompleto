@@ -4,11 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Organizador Personal</title>
-    <!-- Favicon -->
+    <!-- Favicon de PC -->
     <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
 
-    <!-- Conexión del Manifiesto PWA -->
-    <link rel="manifest" href="./manifest.json">
+    <!-- Inyección dinámica del Manifiesto según dispositivo (PC vs Celular) -->
+    <script>
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        // Si detecta móvil o tablet, inyecta el manifiesto con icono de celular, sino el de PC
+        if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            manifestLink.href = './manifest-mobile.json';
+        } else {
+            manifestLink.href = './manifest.json';
+        }
+        document.head.appendChild(manifestLink);
+    </script>
     
     <style>
         :root {
@@ -523,7 +533,7 @@
         let selectedDayKey = null; 
         let activeNoteTitle = '';
         let selectedColor = '#6B1D2F';
-        let tareasNotificadas = new Set(); // Evita duplicar alertas en el mismo minuto
+        let tareasNotificadas = new Set(); 
 
         const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
 
@@ -582,7 +592,6 @@
             let time = document.getElementById('task-time').value.trim();
             if(!text) return;
             
-            // Forzar formato HH:MM limpio
             if(time && time.includes(':')) {
                 let parts = time.split(':');
                 let hrs = parts[0].padStart(2, '0');
@@ -782,7 +791,6 @@
                 notesContainer.appendChild(btnNota);
             });
 
-            // Actualizar texto del Widget de Notificaciones según estado real
             const statusText = document.getElementById('pwa-status-text');
             if (Notification.permission === 'granted') {
                 statusText.innerText = "Alertas activivas y vinculadas.";
@@ -795,7 +803,6 @@
 
         // ================= SISTEMA NATIVO PWA & ALERTAS DE RELOJ =================
 
-        // Registro de Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -819,11 +826,12 @@
 
         function enviarNotificacion(titulo, cuerpo) {
             if (Notification.permission === 'granted') {
+                // Las notificaciones del sistema siempre usarán el icono de PC/Web por consistencia de marca de escritorio
                 const opciones = {
                     body: cuerpo,
-                    icon: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png', // Tu logo aquí
+                    icon: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png', 
                     vibrate: [200, 100, 200],
-                    badge: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png' // Y aquí
+                    badge: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png' 
                };
 
                 if (navigator.serviceWorker.controller) {
@@ -834,7 +842,6 @@
                     new Notification(titulo, opciones);
                 }
 
-                // Generación de Audio Sintético sin archivos externos (Ping Estilo iOS)
                 try {
                     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                     const osc = audioContext.createOscillator();
@@ -855,7 +862,6 @@
             }
         }
 
-        // Reloj Checker de Tareas (Ejecución cada 30 segundos para precisión perfecta)
         setInterval(() => {
             const ahora = new Date();
             const hrs = String(ahora.getHours()).padStart(2, '0');
@@ -864,7 +870,6 @@
 
             data.tasks.forEach(t => {
                 if(t.time && !t.completed) {
-                    // Forzar formato a comparar
                     let taskTimeClean = t.time.trim();
                     if(taskTimeClean === horaActualStr && !tareasNotificadas.has(t.text + horaActualStr)) {
                         enviarNotificacion("Plazo Expirado", `Es momento de procesar: ${t.text}`);
@@ -873,7 +878,6 @@
                 }
             });
 
-            // Limpieza diaria de caché de alertas ejecutadas
             if(horaActualStr === "00:00") tareasNotificadas.clear();
 
         }, 30000);
