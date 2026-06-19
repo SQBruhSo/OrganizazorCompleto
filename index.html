@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
-<link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Organizador Personal</title>
+    
+    <!-- Favicon tradicional para las pestañas de la PC -->
+    <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
     <link rel="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
 
+    <!-- Inyección dinámica y estricta del Manifiesto según el dispositivo -->
     <script>
         (function() {
             const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -793,7 +800,7 @@
 
             const statusText = document.getElementById('pwa-status-text');
             if (Notification.permission === 'granted') {
-                statusText.innerText = "Alertas activivas y vinculadas.";
+                statusText.innerText = "Alertas activas y vinculadas.";
             } else if (Notification.permission === 'denied') {
                 statusText.innerText = "Bloqueadas desde el navegador.";
             }
@@ -818,7 +825,7 @@
             }
             Notification.requestPermission().then(permission => {
                 if (permission === 'granted') {
-                    enviarNotificacion("Notificaciones Activadas", `Organizador Personal`);
+                    enviarNotificacion("¡Entorno Enlazado!", "Recibirás pings acústicos y visuales al expirar plazos.");
                     renderEverything();
                 }
             });
@@ -826,7 +833,6 @@
 
         function enviarNotificacion(titulo, cuerpo) {
             if (Notification.permission === 'granted') {
-                // Las notificaciones del sistema siempre usarán el icono de PC/Web por consistencia de marca de escritorio
                 const opciones = {
                     body: cuerpo,
                     icon: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png', 
@@ -858,7 +864,7 @@
                     
                     osc.start();
                     osc.stop(audioContext.currentTime + 0.15);
-                } catch(e) { console.log("Audio bloqueado temporalmente por interacción"); }
+                } catch(e) { console.log("Audio bloqueado temporalmente"); }
             }
         }
 
@@ -872,7 +878,7 @@
                 if(t.time && !t.completed) {
                     let taskTimeClean = t.time.trim();
                     if(taskTimeClean === horaActualStr && !tareasNotificadas.has(t.text + horaActualStr)) {
-                        enviarNotificacion("Proyectos", `Es hora de hacer el siguiente proyecto: ${t.text}`);
+                        enviarNotificacion("Plazo Expirado", `Es momento de procesar: ${t.text}`);
                         tareasNotificadas.add(t.text + horaActualStr);
                     }
                 }
