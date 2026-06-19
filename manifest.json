@@ -1,0 +1,17 @@
+{
+  "short_name": "Workspace",
+  "name": "Personal Workspace App",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/5968/5968756.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#000000",
+  "theme_color": "#0d0d0c",
+  "display": "standalone",
+  "orientation": "portrait"
+}
