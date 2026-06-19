@@ -1,8 +1,9 @@
-const CACHE_NAME = 'workspace-v5'; // Subimos a v5 para forzar la actualización limpia
+const CACHE_NAME = 'workspace-v6'; // Subimos a v6 para aplicar el cambio de manifiestos
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './manifest-pc.json'
 ];
 
 self.addEventListener('install', (e) => {
