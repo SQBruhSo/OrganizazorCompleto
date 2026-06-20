@@ -1,50 +1,6 @@
-========================================================================
-                     HISTORIAL DE ACTUALIZACIONES (upd.txt)
-========================================================================
-
-[SISTEMA DE FILTRADO SEMVER ACTIVO EN CONFIGURACIÓN]
-- Major (1.0.0): Cambios globales, rediseños o reestructuraciones críticas.
-- Minor (0.1.0): Añadir nuevas funciones, vistas o herramientas secundarias.
-- Patch (0.0.1): Corrección de errores, optimización de código y bugs.
-
-------------------------------------------------------------------------
-VERSIÓN 1.0.0 (Update Principal)
-------------------------------------------------------------------------
-* [Sintaxis] Implementación del nuevo Parser Estricto de Marcas Personalizadas:
-  - 'H1 ' -> Títulos principales.
-  - 'H2 ' -> Subtítulos destacados.
-  - 'T '  -> Texto o párrafo base.
-  - Mantenedor nativo para formatos de énfasis: Bold (**) y Italic (*).
-* [Idiomas] Simplificación y depuración del sistema multilingüe:
-  - Soporte exclusivo y optimizado para Español (es) e Inglés (en).
-  - Eliminación de traducciones e idiomas residuales para mayor ligereza.
-* [Filtro SemVer] Añadido selector avanzado de alertas en el menú de ajustes:
-  - Permite al usuario conmutar entre: "Solo Updates", "Updates y Subupdates" o "Filtro Total (incluyendo Bugs)".
-* [Editor] Integración de botones rápidos de formato en el modal de notas fijas.
-
-------------------------------------------------------------------------
-VERSIÓN 0.2.0 (Subupdate)
-------------------------------------------------------------------------
-* [Interfaz] Integración del selector de identidad para el "Control de Espacio".
-* [Calendario] Añadido sistema de asignación de colores identificadores para eventos mensuales.
-* [Navegación] Optimización de transiciones y estados visuales entre las tres vistas core (Eventos, Pendientes, Notas).
-
-------------------------------------------------------------------------
-VERSIÓN 0.1.0 (Subupdate Inicial)
-------------------------------------------------------------------------
-* [Estructura] Creación del esqueleto base del Organizador Personal.
-* [Módulos] Despliegue de los primeros contenedores dinámicos: Cronograma diario, Actividades independientes y Bloque de notas básicas.
-* [Persistencia] Vinculación inicial con el LocalStorage (`aura_studio_data`).
-
-------------------------------------------------------------------------
-VERSIÓN 0.0.2 (Bug Fix)
-------------------------------------------------------------------------
-* [Persistencia] Corregido error crítico que duplicaba el HTML residual dentro de los bloques de notas al re-guardar el contenido.
-* [Estilos] Ajustado el desborde de texto (overflow) en los botones de previsualización de notas largas en dispositivos móviles.
-
-------------------------------------------------------------------------
-VERSIÓN 0.0.1 (Bug Fix Inicial)
-------------------------------------------------------------------------
-* [Notificaciones] Reparado el desfase del bucle (`setInterval`) que duplicaba alertas de la misma tarea si la app se mantenía en segundo plano.
-* [PWA] Ajustado el trigger de detección del `beforeinstallprompt` para evitar falsos negativos en navegadores Chromium de escritorio.
-========================================================================
+[v2.1.0] - 2026-06-20
+- ADD: Panel lateral de novedades nativo para visualización de cambios.
+- ADD: Botón dinámico de ayuda y soporte técnico en barra inferior.
+- FIX: Restauración de animaciones basadas en curvas Bézier (--aura-bezier, --fade-bezier).
+- FIX: Optimización de la persistencia de idiomas y recarga adaptativa del DOM.
+- ENH: Limpieza visual y alineación geométrica del panel de configuraciones.
