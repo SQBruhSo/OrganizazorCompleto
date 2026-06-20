@@ -1,11 +1,1 @@
-<H1"Restauracion del Ecosistema">
-<V"2.1.1">
-
-<H2"Notas de la Version">
-<T"Se ha restaurado por completo el ecosistema de la aplicacion tras una perdida masiva de codigo. Esta actualizacion es *critica* para el funcionamiento offline y la consistencia visual.">
-
-<H2"Cambios Implementados">
-<T"• *CSS*: Reconstruccion total del panel de ayuda lateral con transiciones suaves basadas en _--aura-bezier_.">
-<T"• *Idiomas*: Selector dinmico corregido para procesar las *10 lenguas* nativas mediante un diccionario unificado.">
-<T"• *UI/UX*: Reincorporacion del sistema de animaciones de entrada en tarjetas e items de menu.">
-<T"• *Guia*: El boton de ayuda ahora despliega el manual tecnico oficial interactivo.">
+skibdi toilet
