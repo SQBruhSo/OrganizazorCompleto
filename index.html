@@ -79,6 +79,12 @@
             overflow-x: hidden;
             min-height: 100vh;
             transition: background-color 0.4s var(--fade-bezier), color 0.4s var(--fade-bezier);
+
+            /* REQUERIMIENTO 3: Desactivar selección de texto arrastrando en toda la app */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         .phone-container {
@@ -283,19 +289,13 @@
         }
         .input-flat:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
-        .btn-add {
-            background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
-            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.25s var(--fade-bezier);
-        }
-        .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
-        .btn-add:active { transform: translateY(1px); }
-
         /* Editor de Notas Avanzado */
         .format-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; background: var(--bg-color); padding: 6px; border-radius: 14px; }
         .format-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.2s ease; }
         .format-btn:hover { background: var(--accent-brand); color: #FFFFFF; border-color: var(--accent-brand); }
 
-        .rich-editor { width: 100%; height: 220px; background: var(--bg-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; transition: all 0.25s ease; }
+        /* REQUERIMIENTO 2 PERMITIDO: En el editor de texto enriquecido, permitimos la selección para poder formatear */
+        .rich-editor { width: 100%; height: 220px; background: var(--bg-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; transition: all 0.25s ease; user-select: text !important; -webkit-user-select: text !important; }
         .rich-editor:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
         /* Calendario */
@@ -321,18 +321,56 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.97); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); opacity: 0; transition: transform 0.3s var(--drawer-bezier), opacity 0.3s var(--fade-bezier); max-height: 90vh; overflow-y: auto; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        /* Cajones Desplegables con Curvas Pro */
+        /* REQUERIMIENTO 1: Cajones modificados con desenfoque completo (Full blur background) y bloqueo interactivo total */
+        .cajon-overlay-blocker {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 12, 14, 0.4);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 105;
+            opacity: 0;
+            transition: opacity 0.4s var(--fade-bezier);
+        }
+        .cajon-overlay-blocker.active {
+            display: block;
+            opacity: 1;
+        }
+
         .cajon-drawer {
-            position: fixed; left: 0; right: 0; bottom: 0; background: var(--blur-bg); backdrop-filter: blur(20px);
+            position: fixed; left: 0; right: 0; bottom: 0; background: var(--card-bg);
             border-top-left-radius: 28px; border-top-right-radius: 28px; border-top: 1px solid var(--border-color);
-            box-shadow: 0 -8px 32px rgba(0,0,0,0.05); z-index: 110; padding: 24px;
+            box-shadow: 0 -12px 40px rgba(0,0,0,0.12); z-index: 110; padding: 24px;
             transform: translateY(105%); transition: transform 0.4s var(--drawer-bezier);
             max-height: 85vh; overflow-y: auto;
         }
         .cajon-drawer.active { transform: translateY(0); }
         
-        .drawer-handle { width: 40px; height: 5px; background: var(--border-color); border-radius: 10px; margin: -10px auto 16px auto; cursor: pointer; transition: background-color 0.2s; }
-        .drawer-handle:hover { background: var(--text-muted); }
+        /* Botón cerrar "X" absoluto en la esquina superior derecha del Drawer */
+        .cajon-close-x {
+            position: absolute;
+            top: 20px;
+            right: 22px;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 26px;
+            line-height: 1;
+            font-weight: 300;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        .cajon-close-x:hover {
+            background: var(--input-bg);
+            color: var(--text-main);
+        }
 
         .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; width: 100%; padding: 14px; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s var(--fade-bezier); animation: fadeIn 0.3s ease; }
         .note-item-btn:hover { border-color: var(--accent-brand); transform: translateX(3px); }
@@ -406,6 +444,8 @@
 </head>
 <body>
 
+    <div class="cajon-overlay-blocker" id="cajon-blocker"></div>
+
     <div class="phone-container">
         
         <div id="view-home" class="view">
@@ -419,11 +459,9 @@
                     <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openDrawer('drawer-help')">
                         <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
-                    <!-- Botón Novedades -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
                         <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
-                    <!-- Botón Ajustes -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
                         <img src="https://cdn-icons-png.magnific.com/512/6619/6619132.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Configuración">
                     </button>
@@ -592,10 +630,10 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
-<!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA -->
-<div class="cajon-drawer" id="drawer-help" style="z-index: 100;">
-    <div class="drawer-handle" onclick="closeDrawer('drawer-help')"></div>
-    <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-help-title">Manual de Uso del Espacio</h3>
+<div class="cajon-drawer" id="drawer-help">
+    <button class="cajon-close-x" onclick="closeDrawer('drawer-help')">&times;</button>
+    
+    <h3 style="margin-top: 8px; margin-bottom: 16px; font-size: 18px; text-align: center; padding-right: 24px;" id="txt-help-title">Manual de Uso del Espacio</h3>
     <div id="help-steps-container">
         <div class="guide-step active" data-step="1">
             <h4 style="color: var(--accent-brand);">1. Centro de Control Doméstico</h4>
@@ -620,13 +658,12 @@
     </div>
 </div>
 
-<!-- CAJÓN DE NOVEDADES Y ACTUALIZACIONES -->
-<div class="cajon-drawer" id="drawer-news" style="z-index: 100;">
-    <div class="drawer-handle" onclick="closeDrawer('drawer-news')"></div>
-    <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
+<div class="cajon-drawer" id="drawer-news">
+    <button class="cajon-close-x" onclick="closeDrawer('drawer-news')">&times;</button>
+    
+    <h3 style="margin-top: 8px; margin-bottom: 16px; font-size: 18px; text-align: center; padding-right: 24px;" id="txt-news-title">Historial de Actualizaciones</h3>
     <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 60vh; padding-right: 4px;">
-        <!-- Render dinámico mediante JS -->
-    </div>
+        </div>
 </div>
 
     <script>
@@ -866,17 +903,22 @@
             }, 300);
         }
 
+        // REQUERIMIENTO 1: Lógica para abrir y cerrar cajones aplicando Blur al fondo y evitando interacción
         function openDrawer(drawerId) {
+            const blocker = document.getElementById('cajon-blocker');
             const drawer = document.getElementById(drawerId);
-            if(drawer) {
+            if(drawer && blocker) {
+                blocker.classList.add('active');
                 drawer.classList.add('active');
                 if(drawerId === 'drawer-news') loadUpdatesLog();
             }
         }
 
         function closeDrawer(drawerId) {
+            const blocker = document.getElementById('cajon-blocker');
             const drawer = document.getElementById(drawerId);
             if(drawer) drawer.classList.remove('active');
+            if(blocker) blocker.classList.remove('active');
         }
 
         // PARSER MEJORADO PARA DETECTAR TU SINTAXIS PERSONALIZADA DE UPD.TXT
