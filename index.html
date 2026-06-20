@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Organizador Personal Pro</title>
+    <title>Organizador Personal</title>
     
     <!-- Favicons y Apple Touch Icon -->
     <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
@@ -773,7 +773,11 @@
             document.getElementById('txt-home-title').innerHTML = l.homeTitle + `<span id="username-display" onclick="openModal('username-modal')">${data.username}</span>`;
             document.getElementById('txt-cal-header').innerText = l.calHeader;
             document.getElementById('txt-tasks-header').innerText = l.tasksHeader;
-            document.getElementById('txt-notes-header').innerText = l.notesHeader;
+            
+            // Reparación del nodo de traducción para no corromper la jerarquía de la vista de notas
+            const notesHeaderNode = document.getElementById('txt-notes-header');
+            if (notesHeaderNode) notesHeaderNode.innerText = l.notesHeader;
+            
             document.getElementById('txt-cronograma-title').innerText = l.cronograma;
             
             document.querySelectorAll('.btn-lbl-back').forEach(b => b.innerText = l.lblBack);
@@ -851,23 +855,19 @@
                 let text = await response.text();
                 
                 let htmlOutput = "";
-                // Dividimos por líneas
                 const lines = text.split('\n');
                 
                 lines.forEach(line => {
                     let cleaned = line.trim();
                     if (!cleaned) return;
 
-                    // Comprobamos si la línea viene envuelta en los delimitadores base del sistema <...>
                     if (cleaned.startsWith('<') && cleaned.endsWith('>')) {
-                        // Extraemos lo que hay dentro de los caracteres < y >
                         let innerContent = cleaned.substring(1, cleaned.length - 1).trim();
 
-                        let targetClass = "log-p"; // Por defecto es texto normal
+                        let targetClass = "log-p"; 
                         let isHeader = false;
                         let tagType = "";
 
-                        // Clasificación de bloques estructurales prioritarios
                         if (innerContent.startsWith('# ')) {
                             targetClass = "log-h1";
                             innerContent = innerContent.substring(2);
@@ -890,24 +890,17 @@
                             tagType = "p";
                         }
 
-                        // Procesador de Estilos en línea recursivo (Inline Markdown Parser)
-                        // 1. Cursiva Negrita (_*texto*_)
                         innerContent = innerContent.replace(/_\*(.*?)\*_/g, '<strong><em>$1</em></strong>');
-                        // 2. Negrita (*texto*)
                         innerContent = innerContent.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-                        // 3. Cursiva (_texto_)
                         innerContent = innerContent.replace(/_(.*?)_/g, '<em>$1</em>');
-                        // 4. Bloques de código (`codigo`)
                         innerContent = innerContent.replace(/`(.*?)`/g, '<span class="log-code">$1</span>');
 
-                        // Inyección limpia al HTML estructurado
                         if (isHeader) {
                             htmlOutput += `<${tagType} class="${targetClass}">${innerContent}</${tagType}>`;
                         } else {
                             htmlOutput += `<p class="${targetClass}">${innerContent}</p>`;
                         }
                     } else {
-                        // Respaldo de texto plano por seguridad si se olvida envolver la línea en < >
                         htmlOutput += `<p class="log-p">${cleaned}</p>`;
                     }
                 });
@@ -967,10 +960,12 @@
             renderTasks();
         }
 
-        // BLOQUE DE NOTAS FIJAS
+        // BLOQUE DE NOTAS FIJAS (REPARADO Y BLINDADO COGNITIVAMENTE)
         function renderNotes() {
             const container = document.getElementById('notes-container');
+            if (!container) return;
             container.innerHTML = "";
+            
             if(!data.notes || data.notes.length === 0) {
                 container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:14px; padding:30px 0;">${data.lang === 'en' ? 'No notes stored.' : 'No hay notas almacenadas.'}</p>`;
                 return;
@@ -990,6 +985,7 @@
         let editingNoteIndex = null;
         function addNote() {
             const input = document.getElementById('note-title-input');
+            if (!input) return;
             const title = input.value.trim();
             if(!title) return;
             
@@ -1133,18 +1129,6 @@
             };
         }
 
-        function saveCalendarEvent() {
-            const title = document.getElementById('cal-input-title').value.trim();
-            if(!title) return;
-            
-            data.events[selectedDayStr] = { title: title, color: selectedColor };
-            saveToLocalStorage();
-            closeModals();
-            
-            const parts = selectedDayStr.split('-');
-            selectCalendarDay(parseInt(parts[2]), selectedDayStr);
-        }
-
         // COLOR PICKER INTERFACE
         document.querySelectorAll('.color-picker .color-opt').forEach(opt => {
             opt.onclick = (e) => {
@@ -1250,6 +1234,7 @@
             changeTheme(data.theme);
             initCalendar();
             changeLanguage(data.lang);
+            renderNotes(); // Forzamos renderizado inicial de seguridad
         });
     </script>
 </body>
