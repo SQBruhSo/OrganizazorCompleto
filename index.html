@@ -419,11 +419,13 @@
                     <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openDrawer('drawer-help')">
                         <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5c0-2.21-1.79-4-4-4z"/></svg>
                     </button>
-                    <button class="btn-back" style="padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center;" onclick="openDrawer('drawer-news')">
-                        <img src="https://cdn-icons-png.magnific.com/512/2692/2692815.png" style="width: 22px; height: 22px; object-fit: contain;" alt="Novedades">
+                    <!-- Botón Novedades -->
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
+                        <img src="https://cdn-icons-png.magnific.com/512/2692/2692815.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
-                    <button class="btn-back" style="padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center;" onclick="openModal('config-modal')">
-                        <img src="https://cdn-icons-png.magnific.com/512/6619/6619132.png" style="width: 22px; height: 22px; object-fit: contain;" alt="Configuración">
+                    <!-- Botón Ajustes -->
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
+                        <img src="https://cdn-icons-png.magnific.com/512/6619/6619132.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Configuración">
                     </button>
                 </div>
             </div>
@@ -590,39 +592,48 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
-    <div class="cajon-drawer" id="drawer-help">
-        <div class="drawer-handle" onclick="closeDrawer('drawer-help')"></div>
-        <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-help-title">Manual de Uso del Espacio</h3>
-        <div id="help-steps-container">
-            <div class="guide-step active" data-step="1">
-                <h4 style="color: var(--accent-brand);">1. Centro de Control Doméstico</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Desde la pantalla de inicio puedes ver un resumen ejecutivo en tiempo real de tu agenda diaria ("Cronograma del Día") y acceder rápidamente a los tres bloques de la grilla minimalista.</p>
-            </div>
-            <div class="guide-step" data-step="2">
-                <h4 style="color: var(--accent-green);">2. Agenda de Eventos Mensuales</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Accede al calendario, navega usando las flechas y presiona cualquier día para planificar eventos. Podrás asignarles colores de categorización personalizados para un rápido impacto visual.</p>
-            </div>
-            <div class="guide-step" data-step="3">
-                <h4 style="color: var(--accent-yellow);">3. Actividades con Horarios</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Al añadir pendientes en la sección de Actividades, puedes include una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
-            </div>
-            <div class="guide-step" data-step="4">
-                <h4 style="color: #1A73E8;">4. Notas Estilo iOS Enriquecidas</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Crea bloques de notas fijas y ábrelas para editarlas con comandos WYSIWYG interactivos (Títulos H1/H2, negritas, itálicas) guardando el formato de manera interna.</p>
-            </div>
+<!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA -->
+<div class="cajon-drawer" id="drawer-help" style="z-index: 100;">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: -10px;">
+        <button onclick="closeDrawer('drawer-help')" style="background: transparent; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; padding: 4px 8px;">&times;</button>
+    </div>
+    <div class="drawer-handle" onclick="closeDrawer('drawer-help')"></div>
+    <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-help-title">Manual de Uso del Espacio</h3>
+    <div id="help-steps-container">
+        <div class="guide-step active" data-step="1">
+            <h4 style="color: var(--accent-brand);">1. Centro de Control Doméstico</h4>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Desde la pantalla de inicio puedes ver un resumen ejecutivo en tiempo real de tu agenda diaria ("Cronograma del Día") y acceder rápidamente a los tres bloques de la grilla minimalista.</p>
         </div>
-        <div class="guide-nav">
-            <button class="btn-back" id="btn-guide-prev" onclick="moveGuideStep(-1)" disabled>Anterior</button>
-            <button class="btn-add" id="btn-guide-next" onclick="moveGuideStep(1)" style="padding: 10px 20px;">Siguiente</button>
+        <div class="guide-step" data-step="2">
+            <h4 style="color: var(--accent-green);">2. Agenda de Eventos Mensuales</h4>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Accede al calendario, navega usando las flechas y presiona cualquier día para planificar eventos. Podrás asignarles colores de categorización personalizados para un rápido impacto visual.</p>
+        </div>
+        <div class="guide-step" data-step="3">
+            <h4 style="color: var(--accent-yellow);">3. Actividades con Horarios</h4>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Al añadir pendientes en la sección de Actividades, puedes include una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
+        </div>
+        <div class="guide-step" data-step="4">
+            <h4 style="color: #1A73E8;">4. Notas Estilo iOS Enriquecidas</h4>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Crea bloques de notas fijas y ábrelas para editarlas con comandos WYSIWYG interactivos (Títulos H1/H2, negritas, itálicas) guardando el formato de manera interna.</p>
         </div>
     </div>
+    <div class="guide-nav">
+        <button class="btn-back" id="btn-guide-prev" onclick="moveGuideStep(-1)" disabled>Anterior</button>
+        <button class="btn-add" id="btn-guide-next" onclick="moveGuideStep(1)" style="padding: 10px 20px;">Siguiente</button>
+    </div>
+</div>
 
-    <div class="cajon-drawer" id="drawer-news">
-        <div class="drawer-handle" onclick="closeDrawer('drawer-news')"></div>
-        <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
-        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 60vh; padding-right: 4px;">
-            </div>
+<!-- CAJÓN DE NOVEDADES Y ACTUALIZACIONES -->
+<div class="cajon-drawer" id="drawer-news" style="z-index: 100;">
+    <div style="display: flex; justify-content: flex-end; margin-bottom: -10px;">
+        <button onclick="closeDrawer('drawer-news')" style="background: transparent; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; padding: 4px 8px;">&times;</button>
     </div>
+    <div class="drawer-handle" onclick="closeDrawer('drawer-news')"></div>
+    <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
+    <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 60vh; padding-right: 4px;">
+        <!-- Render dinámico mediante JS -->
+    </div>
+</div>
 
     <script>
         // ESQUEMA DE DATOS CENTRALIZADOS Y LOCALSTORAGE (Aura Studio Data)
