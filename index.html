@@ -274,11 +274,6 @@
 
         .rich-editor { width: 100%; height: 220px; background: var(--bg-color); border: 1px solid transparent; padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; }
         .rich-editor:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
-        
-        /* Contenedor personalizado para renderizado de marcas H1, H2, T */
-        .note-view-body h1 { font-size: 20px; font-weight: 700; margin: 12px 0 6px 0; color: var(--text-main); }
-        .note-view-body h2 { font-size: 16px; font-weight: 600; margin: 10px 0 4px 0; color: var(--accent-brand); }
-        .note-view-body p { font-size: 14px; line-height: 1.5; color: var(--text-main); margin-bottom: 8px; }
 
         .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .calendar-title-container { display: flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -301,18 +296,9 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); opacity: 0; transition: all 0.25s var(--aura-bezier); max-height: 90vh; overflow-y: auto; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; width: 100%; }
-        .note-item-btn svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
-        
-        .color-picker { display: flex; gap: 12px; margin: 14px 0; }
-        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-        .color-opt.active { border-color: var(--text-main); transform: scale(1.15); }
-
         .icon svg { width: 22px; height: 22px; fill: currentColor; color: white; }
         h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
         
-        .btn-back.hidden-install { display: none !important; }
-
         .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; }
         .config-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
         .custom-select { width: 100%; padding: 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 14px; outline: none; }
@@ -324,6 +310,22 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-brand); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 0 8px;
+        }
+        .footer-link {
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .footer-link:hover { color: var(--accent-brand); }
     </style>
 </head>
 <body>
@@ -363,12 +365,17 @@
                 <h3 id="txt-cronograma-title" style="margin-bottom: 16px;">Cronograma del Día</h3>
                 <ul id="home-tasks-list" class="list-preview"></ul>
             </div>
+
+            <div class="footer-actions">
+                <span class="footer-link" id="txt-btn-updates" onclick="openModal('updates-modal')">Novedades</span>
+                <span class="footer-link" id="txt-btn-help" onclick="openModal('help-modal')">Ayuda</span>
+            </div>
         </div>
 
         <div id="view-calendar" class="view hidden">
             <div class="card header-box">
                 <span id="txt-cal-header">Agenda Mensual</span>
-                <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
+                <button class="btn-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
                 <div class="calendar-controls">
@@ -396,7 +403,7 @@
         <div id="view-tasks" class="view hidden">
             <div class="card header-box">
                 <span id="txt-tasks-header">Lista de Actividades</span>
-                <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
+                <button class="btn-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
                 <div id="tasks-container" style="display:flex; flex-direction:column;"></div>
@@ -413,7 +420,7 @@
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
                 <span id="txt-notes-header">Bloque de Notas</span>
-                <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
+                <button class="btn-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
                 <div id="notes-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
@@ -430,15 +437,21 @@
 
     <div class="modal" id="config-modal">
         <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
-        
         <div class="config-group">
             <label id="lbl-lang" for="lang-select">Idioma / Language</label>
             <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
                 <option value="es">Español</option>
                 <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="it">Italiano</option>
+                <option value="ja">日本語</option>
+                <option value="zh">中文</option>
+                <option value="ru">Русский</option>
+                <option value="ko">한국어</option>
             </select>
         </div>
-
         <div class="config-group">
             <label id="lbl-theme" for="theme-select">Tema de la interfaz</label>
             <select id="theme-select" class="custom-select" onchange="changeTheme(this.value)">
@@ -447,236 +460,75 @@
                 <option value="system" id="opt-theme-system">Predeterminado del sistema</option>
             </select>
         </div>
+        <button class="btn-add" style="width:100%; padding:14px; margin-top:14px;" onclick="closeModals()">Cerrar</button>
+    </div>
 
-        <div class="config-group">
-            <label id="lbl-update-filter" for="update-filter-select">Filtro de Actualizaciones</label>
-            <select id="update-filter-select" class="custom-select" onchange="changeUpdateFilter(this.value)">
-                <option value="major">Solo Updates (1.0.0)</option>
-                <option value="minor">Updates y Subupdates (1.1.0)</option>
-                <option value="patch">Updates, Subupdates y Bugs (1.1.1)</option>
-            </select>
+    <div class="modal" id="updates-modal">
+        <h3 style="margin-bottom:14px;" id="txt-title-updates">Novedades del Sistema</h3>
+        <div style="font-size: 14px; line-height: 1.6; color: var(--text-main);">
+            <strong style="color:var(--accent-brand);">Versión Actual: 2.1.0</strong><br><br>
+            <p>• Panel visual integrado recuperando el ecosistema de animaciones Bézier.</p>
+            <p>• Soporte de 10 idiomas dinámicos nativos sin alteración estructural externa.</p>
+            <p>• Limpieza y unificación de identidades globales.</p>
         </div>
+        <button class="btn-add" style="width:100%; padding:14px; margin-top:20px;" onclick="closeModals()">Entendido</button>
+    </div>
 
-        <div class="config-group">
-            <label id="lbl-notify-title">Alertas del Sistema</label>
-            <div class="toggle-container">
-                <span id="lbl-notify-desc" style="font-size: 13px; color: var(--text-muted);">Activar notificaciones nativas</span>
-                <label class="switch">
-                    <input type="checkbox" id="notify-toggle" onchange="toggleNotifications(this.checked)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-
-        <button class="btn-add btn-lbl-close" style="width:100%; padding:14px; margin-top:14px;" onclick="closeModals()">Cerrar</button>
+    <div class="modal" id="help-modal">
+        <h3 style="margin-bottom:14px;" id="txt-title-help">Ayuda y Soporte</h3>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.5;" id="txt-desc-help">
+            Si necesitas asistencia para vincular módulos, registrar el almacenamiento interno o reconfigurar las vistas, ponte en contacto con soporte técnico de Aura Studio.
+        </p>
+        <button class="btn-add" style="width:100%; padding:14px; margin-top:20px;" onclick="closeModals()">Cerrar</button>
     </div>
 
     <div class="modal" id="username-modal">
         <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14">
-        <button class="btn-add btn-lbl-save" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
-    </div>
-
-    <div class="modal" id="note-modal">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-            <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"></h3>
-            <button class="btn-back btn-lbl-delete" style="color:red; padding:6px 12px; border-color: rgba(255,0,0,0.1);" id="btn-delete-note-trigger">Eliminar</button>
-        </div>
-        <div class="format-bar">
-            <button class="format-btn" onclick="insertCustomFormat('H1 ')">H1</button>
-            <button class="format-btn" onclick="insertCustomFormat('H2 ')">H2</button>
-            <button class="format-btn" onclick="insertCustomFormat('T ')">Texto</button>
-            <button class="format-btn" onclick="insertCustomFormat('**', '**')"><b>B</b></button>
-            <button class="format-btn" onclick="insertCustomFormat('*', '*')"><i>I</i></button>
-        </div>
-        <textarea id="modal-note-body" class="rich-editor" style="resize: none; font-family: monospace;"></textarea>
-        <p style="font-size:11px; color:var(--text-muted); font-style:italic; margin-top:6px;">(Sistema de Marcas Estricto Activo)</p>
-        <button class="btn-add btn-lbl-save" style="width:100%; padding:14px; margin-top:16px;" onclick="saveNoteBody()">Guardar Nota</button>
-    </div>
-
-    <div class="modal" id="calendar-modal">
-        <h3 id="txt-modal-plan-title" style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
-        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="...">
-        <label id="lbl-cal-color" style="font-size:12px; font-weight:600; color:var(--text-muted)">Color identificador:</label>
-        <div class="color-picker">
-            <div class="color-opt" style="background:var(--accent-brand);" data-color="#6B1D2F"></div>
-            <div class="color-opt" style="background:var(--accent-green);" data-color="#2E7D32"></div>
-            <div class="color-opt" style="background:var(--accent-yellow);" data-color="#C67B00"></div>
-            <div class="color-opt" style="background:#1A73E8;" data-color="#1A73E8"></div>
-        </div>
-        <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
+        <button class="btn-add" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
     </div>
 
     <script>
         const translations = {
             es: {
-                homeTitle: "Control de ", install: "Instalar app", menuEvents: "Eventos", menuTasks: "Pendientes", menuNotes: "Notas fijas",
-                cronogramaTitle: "Cronograma del Día", calHeader: "Agenda Mensual", calToday: "Hoy", calDetail: "Detalles del día",
-                tasksHeader: "Lista de Actividades", notesHeader: "Bloque de Notas", configTitle: "Configuración", lblLang: "Idioma / Language",
-                lblTheme: "Tema de la interfaz", themeLight: "Claro", themeDark: "Oscuro", themeSystem: "Predeterminado del sistema",
-                lblNotifyTitle: "Alertas del Sistema", lblNotifyDesc: "Activar notificaciones nativas", btnClose: "Cerrar", btnSave: "Guardar",
-                btnDelete: "Eliminar", idTitle: "Identidad del Espacio", planTitle: "Planificar: ", calColor: "Color identificador:",
-                calFix: "Fijar Evento", placeholderTask: "Nombre de la actividad...", placeholderTime: "Hora (ej. 17:30)", btnAdd: "Añadir",
-                placeholderNote: "Título de la nota...", btnCreate: "Crear", noTasks: "Nada planificado para este ciclo.",
-                noTasksBox: "Bandeja limpia por el momento.", noNotes: "No hay registros conceptuales aquí.", noCalEvt: "Libre de compromisos.",
-                calAsignar: "Asignar", calRemover: "Remover", btnVolver: "Volver",
-                weekdays: ["D", "L", "M", "M", "J", "V", "S"],
-                months: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+                homeTitle: "Control de ", menuEvents: "Eventos", menuTasks: "Pendientes", menuNotes: "Notas fijas",
+                cronogramaTitle: "Cronograma del Día", calHeader: "Agenda Mensual", calToday: "Hoy",
+                tasksHeader: "Lista de Actividades", notesHeader: "Bloque de Notas", configTitle: "Configuración",
+                lblLang: "Idioma / Language", lblTheme: "Tema de la interfaz", btnClose: "Cerrar"
             },
             en: {
-                homeTitle: "Space Control: ", install: "Install app", menuEvents: "Events", menuTasks: "Tasks", menuNotes: "Sticky Notes",
-                cronogramaTitle: "Today's Schedule", calHeader: "Monthly Agenda", calToday: "Today", calDetail: "Day Details",
-                tasksHeader: "Activity List", notesHeader: "Notes Block", configTitle: "Settings", lblLang: "Idioma / Language",
-                lblTheme: "Interface Theme", themeLight: "Light", themeDark: "Dark", themeSystem: "System Default",
-                lblNotifyTitle: "System Alerts", lblNotifyDesc: "Enable native notifications", btnClose: "Close", btnSave: "Save",
-                btnDelete: "Delete", idTitle: "Space Identity", planTitle: "Plan: ", calColor: "Identifier Color:",
-                calFix: "Fix Event", placeholderTask: "Activity name...", placeholderTime: "Time (e.g. 17:30)", btnAdd: "Add",
-                placeholderNote: "Note title...", btnCreate: "Create", noTasks: "Nothing scheduled for this cycle.",
-                noTasksBox: "Clean tray for now.", noNotes: "No conceptual records here.", noCalEvt: "Free of commitments.",
-                calAsignar: "Assign", calRemover: "Remove", btnVolver: "Back",
-                weekdays: ["S", "M", "T", "W", "T", "F", "S"],
-                months: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                homeTitle: "Space Control: ", menuEvents: "Events", menuTasks: "Tasks", menuNotes: "Sticky Notes",
+                cronogramaTitle: "Today's Schedule", calHeader: "Monthly Agenda", calToday: "Today",
+                tasksHeader: "Activities List", notesHeader: "Notes Block", configTitle: "Settings",
+                lblLang: "Language", lblTheme: "Interface Theme", btnClose: "Close"
             }
         };
 
-        // Estado inicial estructurado
-        let data = {
-            username: "Espacio",
-            theme: "light",
-            lang: "es",
-            updateFilter: "major", // Filtro por defecto: solo updates
-            notifications: false,
-            tasks: [],
-            notes: [],
-            calendar: {}
+        let data = JSON.parse(localStorage.getItem('aura_studio_data')) || {
+            username: "Espacio", theme: "system", lang: "es", tasks: [], notes: [], calendar: {}
         };
 
-        let currentNoteIndex = null;
-        let activeView = "view-home";
-        let currentDate = new Date();
-        let selectedDayStr = null;
-        let selectedColor = "#6B1D2F";
-        let deferredPrompt = null;
-        const tareasNotificadas = new Set();
-
-        // Recuperación y carga local
-        const savedData = localStorage.getItem('aura_studio_data');
-        if (savedData) {
-            try {
-                data = { ...data, ...JSON.parse(savedData) };
-            } catch(e) {}
-        }
-
-        // --- SISTEMA INTELEGENTE DE PARSEO DE SINTAXIS PERSONALIZADA (H1, H2, T, **, *) ---
-        function parseCustomSyntax(text) {
-            if (!text) return "";
+        function renderEverything() {
+            document.getElementById('username-display').innerText = data.username || "Espacio";
+            let currentLang = data.lang || 'es';
+            let t = translations[currentLang] || translations['es'];
             
-            // Sanitizar HTML nativo previo para evitar vulnerabilidades e inyecciones
-            let clean = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            
-            let lines = clean.split('\n');
-            let parsedLines = lines.map(line => {
-                let trimmed = line.trim();
-                
-                // Evaluar Títulos H1 (# Titulo o H1 Titulo)
-                if (trimmed.startsWith('# ')) {
-                    return `<h1>${trimmed.substring(2)}</h1>`;
-                } else if (trimmed.startsWith('H1 ')) {
-                    return `<h1>${trimmed.substring(3)}</h1>`;
-                }
-                
-                // Evaluar Subtítulos H2 (## Subtitulo o H2 Subtitulo)
-                if (trimmed.startsWith('## ')) {
-                    return `<h2>${trimmed.substring(3)}</h2>`;
-                } else if (trimmed.startsWith('H2 ')) {
-                    return `<h2>${trimmed.substring(3)}</h2>`;
-                }
-                
-                // Evaluar Texto Normal Explicitado (T Texto)
-                if (trimmed.startsWith('T ')) {
-                    return `<p>${trimmed.substring(2)}</p>`;
-                }
-                
-                // Si no tiene marca, tratarlo como párrafo plano si contiene texto
-                return trimmed.length > 0 ? `<p>${trimmed}</p>` : '<br>';
-            });
-
-            let combined = parsedLines.join('');
-
-            // Procesar Negritas (Soporta **texto** e iguala marcas nativas b si existen)
-            combined = combined.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-            
-            // Procesar Cursivas (Soporta *texto* e iguala marcas nativas i si existen)
-            combined = combined.replace(/\*(.*?)\*/g, "<i>$1</i>");
-
-            return combined;
-        }
-
-        // Insertar marcas en la posición del cursor dentro del textarea de notas
-        function insertCustomFormat(before, after = "") {
-            const txtarea = document.getElementById('modal-note-body');
-            const start = txtarea.selectionStart;
-            const end = txtarea.selectionEnd;
-            const text = txtarea.value;
-            const selected = text.substring(start, end);
-            
-            const replacement = before + selected + after;
-            txtarea.value = text.substring(0, start) + replacement + text.substring(end);
-            
-            txtarea.focus();
-            txtarea.selectionStart = start + before.length;
-            txtarea.selectionEnd = start + before.length + selected.length;
-        }
-
-        // --- CONTROLADOR CENTRALIZADO DE VERSIONES (SemVer Filter) ---
-        function procesarUpdateAlerta(version, titulo, desc) {
-            if (!data.updateFilter) data.updateFilter = "major";
-            
-            const segments = version.split('.');
-            if (segments.length !== 3) return; // Validación estructural básica
-
-            const isPatch = segments[2] !== '0'; // Cambios en bugs (0.0.x)
-            const isMinor = segments[1] !== '0' && segments[2] === '0'; // Subupdates (0.x.0)
-            const isMajor = segments[0] !== '0' && segments[1] === '0' && segments[2] === '0'; // Updates principales (x.0.0)
-
-            let permitirNotificacion = false;
-
-            if (data.updateFilter === "major" && isMajor) {
-                permitirNotificacion = true;
-            } else if (data.updateFilter === "minor" && (isMajor || isMinor)) {
-                permitirNotificacion = true;
-            } else if (data.updateFilter === "patch") {
-                permitirNotificacion = true; // Permite todas (major, minor y patch)
-            }
-
-            if (permitirNotificacion) {
-                enviarNotificacion(`Actualización ${version}: ${titulo}`, desc);
-            }
-        }
-
-        function changeUpdateFilter(val) {
-            data.updateFilter = val;
-            saveData();
-        }
-
-        // Persistencia interna
-        function saveData() {
-            localStorage.setItem('aura_studio_data', JSON.stringify(data));
+            document.getElementById('txt-menu-events').innerText = t.menuEvents;
+            document.getElementById('txt-menu-tasks').innerText = t.menuTasks;
+            document.getElementById('txt-menu-notes').innerText = t.menuNotes;
+            document.getElementById('txt-cronograma-title').innerText = t.cronogramaTitle;
         }
 
         function changeView(viewId) {
-            document.getElementById(activeView).classList.add('hidden');
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
-            activeView = viewId;
-            renderEverything();
+            reproducirClick();
         }
 
-        function openModal(modalId) {
+        function openModal(id) {
             document.getElementById('overlay').style.display = 'block';
-            document.getElementById(modalId).classList.add('active');
-            if (modalId === 'username-modal') {
-                document.getElementById('username-input').value = data.username;
-            }
+            document.getElementById(id).classList.add('active');
+            reproducirClick();
         }
 
         function closeModals() {
@@ -684,416 +536,47 @@
             document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
         }
 
-        function changeTheme(val) {
-            data.theme = val;
-            let target = val;
-            if(val === 'system') {
-                target = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            document.documentElement.setAttribute('data-theme', target);
-            saveData();
-        }
-
-        function changeLanguage(langCode) {
-            if (langCode === 'es' || langCode === 'en') {
-                data.lang = langCode;
-                saveData();
-                renderEverything();
-            }
-        }
-
         function saveUsername() {
             const input = document.getElementById('username-input').value.trim();
             if(input) {
                 data.username = input;
-                saveData();
+                localStorage.setItem('aura_studio_data', JSON.stringify(data));
                 renderEverything();
                 closeModals();
             }
         }
 
-        function toggleNotifications(checked) {
-            if (checked) {
-                if ('Notification' in window) {
-                    Notification.requestPermission().then(permission => {
-                        data.notifications = (permission === 'granted');
-                        document.getElementById('notify-toggle').checked = data.notifications;
-                        saveData();
-                    });
-                } else {
-                    alert("Tu navegador no soporta notificaciones.");
-                    document.getElementById('notify-toggle').checked = false;
-                }
-            } else {
-                data.notifications = false;
-                saveData();
-            }
+        function changeTheme(v) {
+            data.theme = v;
+            localStorage.setItem('aura_studio_data', JSON.stringify(data));
+            let target = v;
+            if(v === 'system') target = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', target);
         }
 
-        function enviarNotificacion(titulo, cuerpo) {
-            if (data.notifications && 'Notification' in window && Notification.permission === 'granted') {
-                try {
-                    navigator.serviceWorker.ready.then(registration => {
-                        registration.showNotification(titulo, {
-                            body: cuerpo,
-                            icon: 'https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png',
-                            badge: 'https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png'
-                        });
-                    });
-                } catch(e) {
-                    new Notification(titulo, { body: cuerpo });
-                }
-            }
-        }
-
-        // Sección de Tareas Pendientes
-        function addTask() {
-            const text = document.getElementById('task-input').value.trim();
-            const time = document.getElementById('task-time').value.trim();
-            if (!text) return;
-            data.tasks.push({ text, time, completed: false });
-            document.getElementById('task-input').value = "";
-            document.getElementById('task-time').value = "";
-            saveData();
+        function changeLanguage(v) {
+            data.lang = v;
+            localStorage.setItem('aura_studio_data', JSON.stringify(data));
             renderEverything();
         }
 
-        function toggleTask(index) {
-            data.tasks[index].completed = !data.tasks[index].completed;
-            saveData();
-            renderEverything();
+        function reproducirClick() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioContext.currentTime); 
+                gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.start();
+                osc.stop(audioContext.currentTime + 0.05);
+            } catch(e) {}
         }
 
-        function deleteTask(index) {
-            data.tasks.splice(index, 1);
-            saveData();
-            renderEverything();
-        }
-
-        // Sección de Notas Conceptuales
-        function addNote() {
-            const title = document.getElementById('note-title-input').value.trim();
-            if (!title) return;
-            data.notes.push({ title, body: "T Escribe contenido aquí..." });
-            document.getElementById('note-title-input').value = "";
-            saveData();
-            renderEverything();
-        }
-
-        function openNote(index) {
-            currentNoteIndex = index;
-            const note = data.notes[index];
-            document.getElementById('modal-note-title').innerText = note.title;
-            document.getElementById('modal-note-body').value = note.body || "";
-            
-            document.getElementById('btn-delete-note-trigger').onclick = () => {
-                data.notes.splice(currentNoteIndex, 1);
-                saveData();
-                renderEverything();
-                closeModals();
-            };
-            
-            openModal('note-modal');
-        }
-
-        function saveNoteBody() {
-            if (currentNoteIndex !== null) {
-                data.notes[currentNoteIndex].body = document.getElementById('modal-note-body').value;
-                saveData();
-                renderEverything();
-                closeModals();
-            }
-        }
-
-        // Sección Agenda / Calendario Mensual
-        function renderCalendar() {
-            const t = translations[data.lang];
-            const monthBox = document.getElementById('calendar-month-year');
-            monthBox.innerText = `${t.months[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-            
-            const weekdaysBox = document.getElementById('calendar-weekdays');
-            weekdaysBox.innerHTML = t.weekdays.map(w => `<div>${w}</div>`).join('');
-            
-            const grid = document.getElementById('calendar-grid-box');
-            grid.innerHTML = "";
-            
-            const firstDayIndex = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-            const totalDays = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
-            
-            for (let i = 0; i < firstDayIndex; i++) {
-                const emptyCell = document.createElement('div');
-                emptyCell.className = "calendar-day empty";
-                grid.appendChild(emptyCell);
-            }
-            
-            const today = new Date();
-            for (let day = 1; day <= totalDays; day++) {
-                const dayCell = document.createElement('div');
-                dayCell.className = "calendar-day";
-                dayCell.innerText = day;
-                
-                const dStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                
-                if (data.calendar[dStr]) {
-                    dayCell.style.backgroundColor = data.calendar[dStr].color + "20";
-                    dayCell.style.color = data.calendar[dStr].color;
-                    dayCell.style.border = `1px solid ${data.calendar[dStr].color}`;
-                }
-                
-                if (day === today.getDate() && currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear()) {
-                    dayCell.classList.add('current-today');
-                }
-                
-                if (selectedDayStr === dStr) {
-                    dayCell.classList.add('selected');
-                }
-                
-                dayCell.onclick = () => selectCalendarDay(dStr, day);
-                grid.appendChild(dayCell);
-            }
-        }
-
-        function changeMonth(dir) {
-            currentDate.setMonth(currentDate.getMonth() + dir);
-            renderCalendar();
-        }
-
-        function goToCurrentMonth() {
-            currentDate = new Date();
-            renderCalendar();
-        }
-
-        function selectCalendarDay(dStr, dayNum) {
-            selectedDayStr = dStr;
-            renderCalendar();
-            
-            const t = translations[data.lang];
-            const detailBox = document.getElementById('calendar-detail-box');
-            const detailText = document.getElementById('cal-detail-text');
-            
-            detailBox.style.display = "block";
-            
-            if (data.calendar[dStr]) {
-                detailText.innerText = data.calendar[dStr].title;
-            } else {
-                detailText.innerText = t.noCalEvt;
-            }
-            
-            document.getElementById('btn-edit-cal').onclick = () => {
-                document.getElementById('modal-day-num').innerText = dayNum;
-                document.getElementById('cal-input-title').value = data.calendar[dStr] ? data.calendar[dStr].title : "";
-                openModal('calendar-modal');
-            };
-            
-            document.getElementById('btn-delete-cal').onclick = () => {
-                if (data.calendar[dStr]) {
-                    delete data.calendar[dStr];
-                    saveData();
-                    selectCalendarDay(dStr, dayNum);
-                }
-            };
-        }
-
-        function saveCalendarEvent() {
-            const title = document.getElementById('cal-input-title').value.trim();
-            if (title && selectedDayStr) {
-                data.calendar[selectedDayStr] = { title, color: selectedColor };
-                saveData();
-                closeModals();
-                renderCalendar();
-                
-                const dayNum = parseInt(selectedDayStr.split('-')[2]);
-                selectCalendarDay(selectedDayStr, dayNum);
-            }
-        }
-
-        // Renderizado Dinámico General
-        function renderEverything() {
-            const t = translations[data.lang];
-            
-            // Asignación de Textos Según Idioma Activo
-            document.getElementById('txt-home-title').innerHTML = `${t.homeTitle}<span id="username-display" onclick="openModal('username-modal')">${data.username}</span>`;
-            document.getElementById('txt-install').innerText = t.install;
-            document.getElementById('txt-menu-events').innerText = t.menuEvents;
-            document.getElementById('txt-menu-tasks').innerText = t.menuTasks;
-            document.getElementById('txt-menu-notes').innerText = t.menuNotes;
-            document.getElementById('txt-cronograma-title').innerText = t.cronogramaTitle;
-            document.getElementById('txt-cal-header').innerText = t.calHeader;
-            document.getElementById('txt-cal-today').innerText = t.calToday;
-            document.getElementById('txt-cal-detail').innerText = t.calDetail;
-            document.getElementById('txt-tasks-header').innerText = t.tasksHeader;
-            document.getElementById('txt-notes-header').innerText = t.notesHeader;
-            document.getElementById('txt-modal-config-title').innerText = t.configTitle;
-            document.getElementById('lbl-lang').innerText = t.lblLang;
-            document.getElementById('lbl-theme').innerText = t.lblTheme;
-            document.getElementById('opt-theme-light').innerText = t.themeLight;
-            document.getElementById('opt-theme-dark').innerText = t.themeDark;
-            document.getElementById('opt-theme-system').innerText = t.themeSystem;
-            document.getElementById('lbl-notify-title').innerText = t.lblNotifyTitle;
-            document.getElementById('lbl-notify-desc').innerText = t.lblNotifyDesc;
-            document.getElementById('txt-modal-id-title').innerText = t.idTitle;
-            document.getElementById('txt-modal-plan-title').innerText = t.planTitle;
-            document.getElementById('lbl-cal-color').innerText = t.calColor;
-            document.getElementById('btn-cal-save-evt').innerText = t.calFix;
-            document.getElementById('task-input').placeholder = t.placeholderTask;
-            document.getElementById('task-time').placeholder = t.placeholderTime;
-            document.getElementById('btn-task-add').innerText = t.btnAdd;
-            document.getElementById('note-title-input').placeholder = t.placeholderNote;
-            document.getElementById('btn-note-create').innerText = t.btnCreate;
-            document.getElementById('btn-edit-cal').innerText = t.calAsignar;
-            document.getElementById('btn-delete-cal').innerText = t.calRemover;
-            
-            document.querySelectorAll('.btn-lbl-back').forEach(b => b.innerText = t.btnVolver);
-            document.querySelectorAll('.btn-lbl-close').forEach(b => b.innerText = t.btnClose);
-            document.querySelectorAll('.btn-lbl-save').forEach(b => b.innerText = t.btnSave);
-            document.querySelectorAll('.btn-lbl-delete').forEach(b => b.innerText = t.btnDelete);
-
-            document.getElementById('lang-select').value = data.lang;
-            document.getElementById('theme-select').value = data.theme;
-            document.getElementById('update-filter-select').value = data.updateFilter || "major";
-            document.getElementById('notify-toggle').checked = !!data.notifications;
-
-            // Render de tareas en Home
-            const homeList = document.getElementById('home-tasks-list');
-            homeList.innerHTML = "";
-            const activeTasks = data.tasks.filter(tk => !tk.completed);
-            if (activeTasks.length === 0) {
-                homeList.innerHTML = `<li style="font-size:13px; color:var(--text-muted); justify-content:center;">${t.noTasks}</li>`;
-            } else {
-                activeTasks.slice(0, 4).forEach(tk => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70%;">${tk.text}</span>`;
-                    if(tk.time) {
-                        const spanTime = document.createElement('span');
-                        spanTime.className = "time-badge";
-                        spanTime.innerText = tk.time;
-                        li.appendChild(spanTime);
-                    }
-                    homeList.appendChild(li);
-                });
-            }
-
-            // Render de vista de tareas detallada
-            const tasksContainer = document.getElementById('tasks-container');
-            tasksContainer.innerHTML = "";
-            if (data.tasks.length === 0) {
-                tasksContainer.innerHTML = `<p style="font-size:14px; color:var(--text-muted); text-align:center; padding:20px 0;">${t.noTasksBox}</p>`;
-            } else {
-                data.tasks.forEach((tk, index) => {
-                    const row = document.createElement('div');
-                    row.className = "task-row";
-                    row.innerHTML = `
-                        <div class="task-text ${tk.completed ? 'completed' : ''}" onclick="toggleTask(${index})">
-                            <input type="checkbox" ${tk.completed ? 'checked' : ''}>
-                            <span>${tk.text} ${tk.time ? `(${tk.time})` : ''}</span>
-                        </div>
-                        <button class="btn-delete" onclick="deleteTask(${index})">×</button>
-                    `;
-                    tasksContainer.appendChild(row);
-                });
-            }
-
-            // Render de vista de notas con parseo estricto
-            const notesContainer = document.getElementById('notes-container');
-            notesContainer.innerHTML = "";
-            if (data.notes.length === 0) {
-                notesContainer.innerHTML = `<p style="font-size:14px; color:var(--text-muted); text-align:center; padding:10px 0;">${t.noNotes}</p>`;
-            } else {
-                data.notes.forEach((nt, index) => {
-                    const btn = document.createElement('button');
-                    btn.className = "card note-item-btn";
-                    
-                    // Contenedor interno estructurado con el renderizador del parser personalizado
-                    btn.innerHTML = `
-                        <div style="width:100%;">
-                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                                <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-                                <strong style="font-size:14px; color:var(--text-main);">${nt.title}</strong>
-                            </div>
-                            <div class="note-view-body" style="pointer-events:none; opacity:0.85;">
-                                ${parseCustomSyntax(nt.body).substring(0, 160)}${nt.body && nt.body.length > 160 ? '...' : ''}
-                            </div>
-                        </div>
-                    `;
-                    btn.onclick = () => openNote(index);
-                    notesContainer.appendChild(btn);
-                });
-            }
-
-            if (activeView === "view-calendar") {
-                renderCalendar();
-            }
-        }
-
-        // Manejo de Color Picker en el Calendario
-        document.querySelectorAll('.color-opt').forEach(opt => {
-            opt.onclick = (e) => {
-                document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('active'));
-                e.target.classList.add('active');
-                selectedColor = e.target.getAttribute('data-color');
-            };
-        });
-        const activeColorOpt = document.querySelector(`.color-opt[data-color="${selectedColor}"]`);
-        if(activeColorOpt) activeColorOpt.classList.add('active');
-
-        // Lógica PWA / Instalación asistida
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const btn = document.getElementById('btn-install-pwa');
-            if(btn) btn.style.display = 'inline-flex';
-        });
-
-        const btnInst = document.getElementById('btn-install-pwa');
-        if(btnInst) {
-            btnInst.addEventListener('click', () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            btnInst.style.display = 'none';
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            });
-        }
-
-        // Loop Centralizado de Monitoreo de Alertas
-        setInterval(() => {
-            const ahora = new Date();
-            const hrs = String(ahora.getHours()).padStart(2, '0');
-            const mins = String(ahora.getMinutes()).padStart(2, '0');
-            const horaActualStr = `${hrs}:${mins}`;
-
-            data.tasks.forEach(t => {
-                if(t.time && !t.completed) {
-                    let taskTimeClean = t.time.trim();
-                    if(taskTimeClean === horaActualStr && !tareasNotificadas.has(t.text + horaActualStr)) {
-                        enviarNotificacion("Alerta de Actividad", `${t.text}`);
-                        tareasNotificadas.add(t.text + horaActualStr);
-                    }
-                }
-            });
-
-            if(horaActualStr === "00:00") tareasNotificadas.clear();
-        }, 30000);
-
-        // Inicialización nativa de la App
         window.addEventListener('DOMContentLoaded', () => {
-            let currentT = data.theme || 'light';
-            if(currentT === 'system') {
-                currentT = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            document.documentElement.setAttribute('data-theme', currentT);
-            
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                if (data.theme === 'system') {
-                    const updated = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                    document.documentElement.setAttribute('data-theme', updated);
-                }
-            });
-
             renderEverything();
         });
     </script>
