@@ -1,5 +1,5 @@
 <H1"Restauracion del Ecosistema">
-<V"2.1.0">
+<V"2.1.1">
 
 <H2"Notas de la Version">
 <T"Se ha restaurado por completo el ecosistema de la aplicacion tras una perdida masiva de codigo. Esta actualizacion es *critica* para el funcionamiento offline y la consistencia visual.">
