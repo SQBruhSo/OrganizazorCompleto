@@ -48,7 +48,8 @@
             --input-bg: #F4F5F6;
             --aura-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
             --fade-bezier: cubic-bezier(0.25, 1, 0.5, 1);
-            --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236B1D2F'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+            --dropdown-bg: rgba(255, 255, 255, 0.85);
+            --dropdown-blur: blur(20px);
         }
 
         [data-theme="dark"] {
@@ -59,7 +60,7 @@
             --border-color: #2D3135;
             --input-bg: #212327;
             --accent-brand: #9E3A50; 
-            --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%239E3A50'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+            --dropdown-bg: rgba(22, 24, 27, 0.85);
         }
 
         * {
@@ -290,7 +291,7 @@
         .calendar-day.current-today { background: var(--accent-brand) !important; color: white !important; font-weight: 700; }
 
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(17, 18, 20, 0.4); backdrop-filter: blur(4px); z-index: 99; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); opacity: 0; transition: all 0.25s var(--aura-bezier); max-height: 90vh; overflow-y: auto; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); opacity: 0; transition: all 0.25s var(--aura-bezier); max-height: 90vh; overflow-y: visible; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
         .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; width: 100%; }
@@ -305,34 +306,87 @@
         
         .btn-back.hidden-install { display: none !important; }
 
-        .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; }
+        .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; position: relative; }
         .config-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-        
-        .custom-select { 
+
+        /* NUEVO COMPONENTE CUSTOM SELECT ESTILO APPLE/GLASSMORPHISM */
+        .aura-select-box {
+            position: relative;
+            width: 100%;
+            user-select: none;
+        }
+        .aura-select-trigger {
             width: 100%; 
-            padding: 14px 40px 14px 16px; 
+            padding: 14px 16px; 
             border-radius: 14px; 
             background-color: var(--input-bg); 
             border: 1px solid var(--border-color); 
             color: var(--text-main); 
             font-size: 14px; 
             font-weight: 500;
-            outline: none; 
-            appearance: none; 
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: var(--select-arrow);
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            background-size: 18px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             transition: all 0.2s var(--fade-bezier);
         }
-        .custom-select:focus {
+        .aura-select-box.active .aura-select-trigger {
             border-color: var(--accent-brand);
             background-color: var(--card-bg);
             box-shadow: 0 4px 12px rgba(107,29,47,0.04);
         }
+        .aura-select-trigger::after {
+            content: '';
+            width: 0; height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--text-muted);
+            transition: transform 0.2s var(--fade-bezier);
+        }
+        .aura-select-box.active .aura-select-trigger::after {
+            transform: rotate(180deg);
+        }
+        .aura-select-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0; right: 0;
+            background: var(--dropdown-bg);
+            backdrop-filter: var(--dropdown-blur);
+            -webkit-backdrop-filter: var(--dropdown-blur);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            z-index: 150;
+            max-height: 240px;
+            overflow-y: auto;
+            opacity: 0;
+            transform: translateY(-8px) scale(0.98);
+            pointer-events: none;
+            transition: all 0.2s var(--fade-bezier);
+        }
+        .aura-select-box.active .aura-select-dropdown {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .aura-select-option {
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .aura-select-option:hover {
+            background: rgba(107, 29, 47, 0.08);
+            color: var(--accent-brand);
+        }
+        .aura-select-option.selected {
+            background: var(--accent-brand);
+            color: #FFFFFF !important;
+        }
+        .aura-select-option:first-child { border-top-left-radius: 13px; border-top-right-radius: 13px; }
+        .aura-select-option:last-child { border-bottom-left-radius: 13px; border-bottom-right-radius: 13px; }
         
         .img-question-icon {
             width: 18px;
@@ -365,7 +419,6 @@
         .tutorial-reason-item:last-child { margin-bottom: 0; }
         .tutorial-reason-item svg { width: 16px; height: 16px; color: var(--accent-brand); flex-shrink: 0; margin-top: 2px; }
 
-        /* Pie de configuración y estilos del contenedor de versión */
         .version-box-footer {
             display: flex;
             align-items: center;
@@ -392,18 +445,55 @@
         }
         .btn-re-changelog:hover { opacity: 1; }
 
-        /* Estilos del aviso de actualizaciones */
-        .update-prompt-box { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-        .update-changelog-content {
+        /* NUEVO REDISEÑO PREMIUM DE COMPONENTE DE ACTUALIZACIONES */
+        .update-prompt-box { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; width: 100%; }
+        
+        .changelog-premium-card {
+            width: 100%;
             background: var(--input-bg);
-            border-radius: 14px;
-            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 16px;
+            text-align: left;
+        }
+        .changelog-premium-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        .changelog-premium-badge {
+            background: var(--accent-brand);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+            letter-spacing: 0.3px;
+        }
+        .changelog-premium-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .changelog-premium-item {
+            display: flex;
+            align-items: transform;
+            gap: 10px;
             font-size: 13.5px;
             color: var(--text-main);
-            text-align: left;
-            width: 100%;
-            border: 1px solid var(--border-color);
             line-height: 1.4;
+        }
+        .changelog-premium-item-bullet {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-brand);
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -512,6 +602,7 @@
 
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
+    <!-- Modal de Tutorial Inicial -->
     <div class="modal" id="tutorial-modal">
         <div class="tutorial-step active" id="step-1">
             <h3 style="font-size: 19px;">¡Te damos la bienvenida!</h3>
@@ -553,21 +644,27 @@
         </div>
     </div>
 
+    <!-- MODAL DE FLUJO DE ACTUALIZACIÓN REDISEÑADO PREMIUM -->
     <div class="modal" id="update-prompt-modal">
         <div class="update-prompt-box" id="update-step-ask">
-            <div style="background: var(--input-bg); padding: 16px; border-radius: 50%; color: var(--accent-brand);">
+            <div style="background: rgba(107,29,47,0.1); padding: 16px; border-radius: 50%; color: var(--accent-brand);">
                 <svg style="width: 32px; height: 32px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10s-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
             </div>
             <h3>¡Nueva Actualización!</h3>
-            <p style="font-size: 14px; color: var(--text-muted);">Se ha detectado una versión más reciente instalada en tu contenedor de espacio. ¿Quieres ver qué cambios trae ahora mismo?</p>
+            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.4;">Se han inyectado nuevas optimizaciones a tu contenedor de espacio. ¿Quieres descubrir qué novedades trae ahora mismo?</p>
             <div style="display: flex; gap: 12px; width: 100%; margin-top: 6px;">
                 <button class="btn-back" style="flex: 1; padding: 14px; border-radius: 14px;" onclick="closeModals()">No</button>
                 <button class="btn-add" style="flex: 1; padding: 14px; background: var(--accent-brand); color: white;" onclick="showCurrentChangelogInModal()">Sí</button>
             </div>
         </div>
         <div class="update-prompt-box" id="update-step-details" style="display: none;">
-            <h3 id="update-details-title">Cambios de la v2.1.0</h3>
-            <div class="update-changelog-content" id="update-details-text"></div>
+            <div class="changelog-premium-card">
+                <div class="changelog-premium-header">
+                    <h3 id="update-details-title" style="font-size:16px;">Notas del Sistema</h3>
+                    <span class="changelog-premium-badge" id="update-details-version-badge">v2.1.0</span>
+                </div>
+                <div id="update-details-text"></div>
+            </div>
             <button class="btn-add" style="width: 100%; padding: 14px;" onclick="closeModals()">Entendido</button>
         </div>
     </div>
@@ -575,29 +672,37 @@
     <div class="modal" id="config-modal">
         <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
         
+        <!-- COMPONENTE CUSTOM SELECT IDIOMA -->
         <div class="config-group">
-            <label id="lbl-lang" for="lang-select">Idioma / Language</label>
-            <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="it">Italiano</option>
-                <option value="ja">日本語</option>
-                <option value="zh">中文</option>
-                <option value="ru">Русский</option>
-                <option value="ko">한국어</option>
-            </select>
+            <label id="lbl-lang">Idioma / Language</label>
+            <div class="aura-select-box" id="select-lang-box">
+                <div class="aura-select-trigger" id="select-lang-trigger" onclick="toggleAuraSelect('select-lang-box')">Español</div>
+                <div class="aura-select-dropdown">
+                    <div class="aura-select-option" data-value="es" onclick="selectAuraOption('select-lang-box', 'es', 'Español', changeLanguage)">Español</div>
+                    <div class="aura-select-option" data-value="en" onclick="selectAuraOption('select-lang-box', 'en', 'English', changeLanguage)">English</div>
+                    <div class="aura-select-option" data-value="pt" onclick="selectAuraOption('select-lang-box', 'pt', 'Português', changeLanguage)">Português</div>
+                    <div class="aura-select-option" data-value="fr" onclick="selectAuraOption('select-lang-box', 'fr', 'Français', changeLanguage)">Français</div>
+                    <div class="aura-select-option" data-value="de" onclick="selectAuraOption('select-lang-box', 'de', 'Deutsch', changeLanguage)">Deutsch</div>
+                    <div class="aura-select-option" data-value="it" onclick="selectAuraOption('select-lang-box', 'it', 'Italiano', changeLanguage)">Italiano</div>
+                    <div class="aura-select-option" data-value="ja" onclick="selectAuraOption('select-lang-box', 'ja', '日本語', changeLanguage)">日本語</div>
+                    <div class="aura-select-option" data-value="zh" onclick="selectAuraOption('select-lang-box', 'zh', '中文', changeLanguage)">中文</div>
+                    <div class="aura-select-option" data-value="ru" onclick="selectAuraOption('select-lang-box', 'ru', 'Русский', changeLanguage)">Русский</div>
+                    <div class="aura-select-option" data-value="ko" onclick="selectAuraOption('select-lang-box', 'ko', '한국어', changeLanguage)">한국어</div>
+                </div>
+            </div>
         </div>
 
+        <!-- COMPONENTE CUSTOM SELECT TEMA -->
         <div class="config-group">
-            <label id="lbl-theme" for="theme-select">Tema de la interfaz</label>
-            <select id="theme-select" class="custom-select" onchange="changeTheme(this.value)">
-                <option value="light" id="opt-theme-light">Claro</option>
-                <option value="dark" id="opt-theme-dark">Oscuro</option>
-                <option value="system" id="opt-theme-system">Predeterminado del sistema</option>
-            </select>
+            <label id="lbl-theme">Tema de la interfaz</label>
+            <div class="aura-select-box" id="select-theme-box">
+                <div class="aura-select-trigger" id="select-theme-trigger" onclick="toggleAuraSelect('select-theme-box')">Claro</div>
+                <div class="aura-select-dropdown">
+                    <div class="aura-select-option" data-value="light" id="opt-theme-light" onclick="selectAuraOption('select-theme-box', 'light', 'Claro', changeTheme)">Claro</div>
+                    <div class="aura-select-option" data-value="dark" id="opt-theme-dark" onclick="selectAuraOption('select-theme-box', 'dark', 'Oscuro', changeTheme)">Oscuro</div>
+                    <div class="aura-select-option" data-value="system" id="opt-theme-system" onclick="selectAuraOption('select-theme-box', 'system', 'Predeterminado del sistema', changeTheme)">Predeterminado del sistema</div>
+                </div>
+            </div>
         </div>
 
         <div class="config-group">
@@ -656,12 +761,19 @@
     </div>
 
     <script>
-        // Historial global de novedades del organizador
+        // Formateo del Historial con tags de listas estilizadas premium
         const CHANGELOG_DATA = {
-            "2.0.0": "• Base del organizador optimizada en rendimiento.<br>• Añadido soporte inicial PWA para instalación de aplicaciones móviles y ordenadores.",
-            "2.1.0": "• Reemplazo del botón de ayuda clásica por el nuevo icono optimizado de signo de pregunta.<br>• Rediseño completo de menús desplegables (<select>) con transiciones fluidas de glassmorphism de estilo Apple.<br>• Implementación de un gestor inteligente de alertas e historial de versiones nativo en configuraciones."
+            "2.0.0": `<ul class="changelog-premium-list">
+                        <li class="changelog-premium-item"><div class="changelog-premium-item-bullet"></div><span>Base del organizador optimizada en rendimiento integral.</span></li>
+                        <li class="changelog-premium-item"><div class="changelog-premium-item-bullet"></div><span>Añadido soporte definitivo PWA para instalación fluida en móviles y ordenadores.</span></li>
+                      </ul>`,
+            "2.1.0": `<ul class="changelog-premium-list">
+                        <li class="changelog-premium-item"><div class="changelog-premium-item-bullet"></div><span>Reemplazo del botón de ayuda clásica por el nuevo icono adaptativo de signo de pregunta.</span></li>
+                        <li class="changelog-premium-item"><div class="changelog-premium-item-bullet"></div><span>Inyección de componentes Custom Select con estética Apple Glassmorphism evitando menús nativos feos.</span></li>
+                        <li class="changelog-premium-item"><div class="changelog-premium-item-bullet"></div><span>Implementación de un gestor modular de alertas e historial de versiones inmersivas.</span></li>
+                      </ul>`
         };
-        const CURRENT_CODE_VERSION = "2.1.0"; // Versión actual de este script
+        const CURRENT_CODE_VERSION = "2.1.0";
 
         const translations = {
             es: {
@@ -685,98 +797,9 @@
                 noTasks: "Nothing planned for this cycle.", noTasksBox: "Clean tray for now.", noNotes: "No notes here.", noCalEvt: "Free of commitments.",
                 calAsignar: "Assign", calRemover: "Remove", btnVolver: "Back", weekdays: ["S", "M", "T", "W", "T", "F", "S"],
                 months: ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
-            },
-            pt: {
-                homeTitle: "Controle de ", install: "Instalar app", menuEvents: "Eventos", menuTasks: "Pendentes", menuNotes: "Notas fixas", cronogramaTitle: "Cronograma do Dia",
-                calHeader: "Agenda Mensual", calToday: "Hoje", calDetail: "Detalhes do dia", tasksHeader: "Lista de Atividades", notesHeader: "Bloco de Notas",
-                configTitle: "Configurações", lblLang: "Idioma / Language", lblTheme: "Tema da interface", themeLight: "Claro", themeDark: "Escuro", themeSystem: "Padrão do sistema",
-                lblNotifyTitle: "Alertas do Sistema", lblNotifyDesc: "Ativar notificações nativas", btnClose: "Fechar", btnSave: "Salvar", btnDelete: "Excluir",
-                idTitle: "Identidade do Espaço", planTitle: "Planejar: ", calColor: "Cor identificadora:", calFix: "Fixar Evento", placeholderTask: "Nome da atividade...",
-                placeholderTime: "Hora (ex: 17:30)", btnAdd: "Adicionar", placeholderNote: "Título da nota...", btnCreate: "Criar", placeholderCalEvt: "O que está planejado para hoje?",
-                noTasks: "Nada planejado para este ciclo.", noTasksBox: "Bandeja limpa no momento.", noNotes: "Nenhuma nota aqui.", noCalEvt: "Livre de compromissos.",
-                calAsignar: "Atribuir", calRemover: "Remover", btnVolver: "Voltar", weekdays: ["D", "S", "T", "Q", "Q", "S", "S"],
-                months: ["janeiro", "fevereiro", "março", "abril", "mayo", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
-            },
-            fr: {
-                homeTitle: "Contrôle de ", install: "Installer l'app", menuEvents: "Événements", menuTasks: "Tâches", menuNotes: "Notes Fixes", cronogramaTitle: "Planning du Jour",
-                calHeader: "Agenda Mensuel", calToday: "Aujourd'hui", calDetail: "Détails du jour", tasksHeader: "Liste des Activités", notesHeader: "Bloc de Notes",
-                configTitle: "Configuration", lblLang: "Idioma / Language", lblTheme: "Thème de l'interface", themeLight: "Clair", themeDark: "Sombre", themeSystem: "Par défaut du système",
-                lblNotifyTitle: "Alertes Système", lblNotifyDesc: "Activer les notifications natives", btnClose: "Fermer", btnSave: "Enregistrer", btnDelete: "Supprimer",
-                idTitle: "Identité de l'Espace", planTitle: "Planifier: ", calColor: "Couleur d'identification:", calFix: "Fixer l'événement", placeholderTask: "Nom de l'activité...",
-                placeholderTime: "Heure (ex. 17:30)", btnAdd: "Ajouter", placeholderNote: "Titre de la note...", btnCreate: "Créer", placeholderCalEvt: "Qu'est-je previsto per oggi?",
-                noTasks: "Rien de prévu pour ce cycle.", noTasksBox: "Plateau propre pour le moment.", noNotes: "Aucune note ici.", noCalEvt: "Libre d'engagements.",
-                calAsignar: "Assigner", calRemover: "Supprimer", btnVolver: "Retour", weekdays: ["D", "L", "M", "M", "J", "V", "S"],
-                months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
-            },
-            de: {
-                homeTitle: "Raumkontrolle: ", install: "App installieren", menuEvents: "Ereignisse", menuTasks: "Aufgaben", menuNotes: "Notizen", cronogramaTitle: "Tagesplan",
-                calHeader: "Monatsagenda", calToday: "Heute", calDetail: "Tagesdetails", tasksHeader: "Aktivitätenliste", notesHeader: "Notizblock",
-                configTitle: "Einstellungen", lblLang: "Idioma / Language", lblTheme: "Oberflächendesign", themeLight: "Hell", themeDark: "Dunkel", themeSystem: "Systemstandard",
-                lblNotifyTitle: "Systembenachrichtigungen", lblNotifyDesc: "Native Benachrichtigungen aktivieren", btnClose: "Schließen", btnSave: "Speichern", btnDelete: "Löschen",
-                idTitle: "Raumidentität", planTitle: "Planen: ", calColor: "Kennfarbe:", calFix: "Ereignis festlegen", placeholderTask: "Aktivitätsname...",
-                placeholderTime: "Zeit (z.B. 17:30)", btnAdd: "Hinzufügen", placeholderNote: "Notiztitel...", btnCreate: "Erstellen", placeholderCalEvt: "Was ist für heute geplant?",
-                noTasks: "Nichts geplant.", noTasksBox: "Fach vorerst leer.", noNotes: "Keine Notizen hier.", noCalEvt: "Frei von Verpflichtungen.",
-                calAsignar: "Zuweisen", calRemover: "Entfernen", btnVolver: "Zurück", weekdays: ["S", "M", "D", "M", "D", "F", "S"],
-                months: ["januar", "februar", "märz", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "dezember"]
-            },
-            it: {
-                homeTitle: "Controllo di ", install: "Installa app", menuEvents: "Eventi", menuTasks: "Attività", menuNotes: "Note Fisse", cronogramaTitle: "Programma del Giorno",
-                calHeader: "Agenda Mensile", calToday: "Oggi", calDetail: "Dettagli del giorno", tasksHeader: "Lista Attività", notesHeader: "Blocco Note",
-                configTitle: "Impostazioni", lblLang: "Idioma / Language", lblTheme: "Tema dell'interfaccia", themeLight: "Chiaro", themeDark: "Scuro", themeSystem: "Predefinito del sistema",
-                lblNotifyTitle: "Avvisi di Sistema", lblNotifyDesc: "Attiva notifiche native", btnClose: "Chiudi", btnSave: "Salva", btnDelete: "Elimina",
-                idTitle: "Identità dello Spazio", planTitle: "Pianifica: ", calColor: "Colore identificativo:", calFix: "Fissa Evento", placeholderTask: "Nome attività...",
-                placeholderTime: "Ora (es. 17:30)", btnAdd: "Aggiungi", placeholderNote: "Titolo della nota...", btnCreate: "Crea", placeholderCalEvt: "Cosa c'è in programma oggi?",
-                noTasks: "Nulla di pianificato.", noTasksBox: "Vassoio pulito al momento.", noNotes: "Nessuna nota qui.", noCalEvt: "Libero da impegni.",
-                calAsignar: "Assegna", calRemover: "Rimuovi", btnVolver: "Indietro", weekdays: ["D", "L", "M", "M", "G", "V", "S"],
-                months: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "setembre", "ottobre", "novembre", "dicembre"]
-            },
-            ja: {
-                homeTitle: "空間コントロール: ", install: "アプリをインストール", menuEvents: "イベント", menuTasks: "タスク", menuNotes: "固定メモ", cronogramaTitle: "本日のスケジュール",
-                calHeader: "月間アジェンダ", calToday: "今日", calDetail: "一日の詳細", tasksHeader: "アクティビティ一覧", notesHeader: "メモ帳",
-                configTitle: "設定", lblLang: "Idioma / Language", lblTheme: "テーマ設定", themeLight: "ライト", themeDark: "ダーク", themeSystem: "システムデフォルト",
-                lblNotifyTitle: "システム通知", lblNotifyDesc: "ネイティブ通知を有効化", btnClose: "閉じる", btnSave: "保存", btnDelete: "削除",
-                idTitle: "空間のアイデンティティ", planTitle: "計画: ", calColor: "識別カラー:", calFix: "イベントを設定", placeholderTask: "アクティビティ名...",
-                placeholderTime: "時間 (例: 17:30)", btnAdd: "追加", placeholderNote: "メモのタイトル...", btnCreate: "作成", placeholderCalEvt: "今日の予定は？",
-                noTasks: "予定はありません。", noTasksBox: "現在トレイは空です。", noNotes: "ここにメモはありません。", noCalEvt: "予定はありません。",
-                calAsignar: "割り当て", calRemover: "削除", btnVolver: "戻る", weekdays: ["日", "月", "火", "水", "木", "金", "土"],
-                months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
-            },
-            zh: {
-                homeTitle: "空间控制: ", install: "安装应用", menuEvents: "活动", menuTasks: "待办事项", menuNotes: "固定便签", cronogramaTitle: "今日日程",
-                calHeader: "月度议程", calToday: "今天", calDetail: "每日详情", tasksHeader: "活动列表", notesHeader: "便签本",
-                configTitle: "设置", lblLang: "Idioma / Language", lblTheme: "界面主题", themeLight: "浅色", themeDark: "深色", themeSystem: "系统默认",
-                lblNotifyTitle: "系统通知", lblNotifyDesc: "开启原生系统通知", btnClose: "关闭", btnSave: "保存", btnDelete: "删除",
-                idTitle: "空间标识", planTitle: "规划: ", calColor: "标识颜色:", calFix: "固定活动", placeholderTask: "活动名称...",
-                placeholderTime: "时间 (例如 17:30)", btnAdd: "添加", placeholderNote: "便签标题...", btnCreate: "创建", placeholderCalEvt: "今天有什么计划？",
-                noTasks: "无任何计划。", noTasksBox: "目前无待办事项。", noNotes: "此处无便签。", noCalEvt: "暂无安排的活动。",
-                calAsignar: "指派", calRemover: "移除", btnVolver: "返回", weekdays: ["日", "一", "二", "三", "四", "五", "六"],
-                months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
-            },
-            ru: {
-                homeTitle: "Контроль пространства: ", install: "Установить прил.", menuEvents: "События", menuTasks: "Задачи", menuNotes: "Заметки", cronogramaTitle: "Расписание на день",
-                calHeader: "Ежемесячная повестка", calToday: "Сегодня", calDetail: "Детали дня", tasksHeader: "Список задач", notesHeader: "Блокнот",
-                configTitle: "Настройки", lblLang: "Idioma / Language", lblTheme: "Тема интерфейса", themeLight: "Светлая", themeDark: "Темная", themeSystem: "Системная по умолчанию",
-                lblNotifyTitle: "Системные уведомления", lblNotifyDesc: "Включить нативные уведомления", btnClose: "Закрыть", btnSave: "Сохранить", btnDelete: "Удалить",
-                idTitle: "Идентификация", planTitle: "Планировать: ", calColor: "Цвет-идентификатор:", calFix: "Закрепить событие", placeholderTask: "Название задачи...",
-                placeholderTime: "Время (напр. 17:30)", btnAdd: "Добавить", placeholderNote: "Заголовок заметки...", btnCreate: "Создать", placeholderCalEvt: "Что запланировано?",
-                noTasks: "Ничего не запланировано.", noTasksBox: "На данный момент чисто.", noNotes: "Заметок не найдено.", noCalEvt: "Свободно от событий.",
-                calAsignar: "Назначить", calRemover: "Удалить", btnVolver: "Назад", weekdays: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-                months: ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"]
-            },
-            ko: {
-                homeTitle: "공간 제어: ", install: "앱 설치", menuEvents: "이벤트", menuTasks: "할 일", menuNotes: "고정 메모", cronogramaTitle: "오늘의 일정",
-                calHeader: "월간 일정", calToday: "오늘", calDetail: "하루 상세 정보", tasksHeader: "활동 목록", notesHeader: "메모장",
-                configTitle: "설정", lblLang: "Idioma / Language", lblTheme: "인터페이스 테마", themeLight: "라이트", themeDark: "다크", themeSystem: "시스템 기본값",
-                lblNotifyTitle: "시스템 알림", lblNotifyDesc: "네이티브 알림 활성화", btnClose: "닫기", btnSave: "저장", btnDelete: "삭제",
-                idTitle: "공간 식별", planTitle: "계획: ", calColor: "식별 색상:", calFix: "이벤트 고정", placeholderTask: "활동 이름...",
-                placeholderTime: "시간 (예: 17:30)", btnAdd: "추가", placeholderNote: "메모 제목...", btnCreate: "생성", placeholderCalEvt: "오늘 계획은 무엇인가요?",
-                noTasks: "계획된 일정이 없습니다.", noTasksBox: "현재 보관함이 비어 있습니다.", noNotes: "메모가 없습니다.", noCalEvt: "등록된 이벤트가 없습니다.",
-                calAsignar: "할당", calRemover: "제거", btnVolver: "돌아가기", weekdays: ["일", "월", "화", "수", "목", "금", "토"],
-                months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
             }
         };
 
-        // Estado inicial de datos (Añadido last_seen_version)
         let data = { username: 'Personal', tasks: [], notes: {}, calendar: {}, theme: 'light', lang: 'es', notificationsEnabled: false, tutorialCompleted: false, last_seen_version: '0.0.0' };
         let deferredPrompt = null;
         
@@ -793,6 +816,67 @@
         let activeNoteTitle = '';
         let selectedColor = '#6B1D2F';
         let tareasNotificadas = new Set(); 
+
+        // FUNCIONES ADICIONALES PARA LOS SELECTS PERSONALIZADOS
+        function toggleAuraSelect(boxId) {
+            const box = document.getElementById(boxId);
+            const wasActive = box.classList.contains('active');
+            
+            // Cerrar todos los demás primero
+            document.querySelectorAll('.aura-select-box').forEach(b => b.classList.remove('active'));
+            
+            if (!wasActive) {
+                box.classList.add('active');
+            }
+        }
+
+        function selectAuraOption(boxId, val, label, callback) {
+            const box = document.getElementById(boxId);
+            const trigger = box.querySelector('.aura-select-trigger');
+            
+            trigger.innerText = label;
+            box.classList.remove('active');
+            
+            box.querySelectorAll('.aura-select-option').forEach(opt => {
+                if(opt.getAttribute('data-value') === val) opt.classList.add('selected');
+                else opt.classList.remove('selected');
+            });
+
+            if (callback) callback(val);
+        }
+
+        // Cerrar dropdowns si se hace clic fuera de ellos
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.aura-select-box')) {
+                document.querySelectorAll('.aura-select-box').forEach(b => b.classList.remove('active'));
+            }
+        });
+
+        function syncCustomSelectsVisuals() {
+            // Sincronizar select de idioma
+            const currentLang = data.lang || 'es';
+            const langBox = document.getElementById('select-lang-box');
+            if(langBox) {
+                const activeOpt = langBox.querySelector(`.aura-select-option[data-value="${currentLang}"]`);
+                if(activeOpt) {
+                    document.getElementById('select-lang-trigger').innerText = activeOpt.innerText;
+                    langBox.querySelectorAll('.aura-select-option').forEach(o => o.classList.remove('selected'));
+                    activeOpt.classList.add('selected');
+                }
+            }
+
+            // Sincronizar select de tema
+            const currentTheme = data.theme || 'light';
+            const themeBox = document.getElementById('select-theme-box');
+            if(themeBox) {
+                const activeOpt = themeBox.querySelector(`.aura-select-option[data-value="${currentTheme}"]`);
+                if(activeOpt) {
+                    document.getElementById('select-theme-trigger').innerText = activeOpt.innerText;
+                    themeBox.querySelectorAll('.aura-select-option').forEach(o => o.classList.remove('selected'));
+                    activeOpt.classList.add('selected');
+                }
+            }
+        }
 
         function saveData() {
             localStorage.setItem('aura_studio_data', JSON.stringify(data));
@@ -812,11 +896,6 @@
                 nextView.offsetHeight; 
                 nextView.style.opacity = '1';
                 nextView.style.transform = 'scale(1)';
-            }
-            
-            if(viewId !== 'view-calendar') {
-                document.getElementById('calendar-detail-box').style.display = 'none';
-                selectedDayKey = null;
             }
         }
 
@@ -841,29 +920,24 @@
             }
         }
 
-        // Lógica para comprobar si hay nuevas actualizaciones
         function verificarActualizaciones() {
             if (!data.last_seen_version) {
                 data.last_seen_version = "0.0.0";
             }
 
-            // Si la versión nativa del código es superior a la última que vio el usuario
             if (compareVersions(CURRENT_CODE_VERSION, data.last_seen_version) > 0) {
                 document.getElementById('update-step-ask').style.display = 'flex';
                 document.getElementById('update-step-details').style.display = 'none';
                 
-                // Abrimos el modal flotante de actualización
                 setTimeout(() => {
                     openModal('update-prompt-modal');
                 }, 600);
 
-                // Forzamos el registro de la versión para que no vuelva a saltar de manera intrusiva
                 data.last_seen_version = CURRENT_CODE_VERSION;
                 localStorage.setItem('aura_studio_data', JSON.stringify(data));
             }
         }
 
-        // Comparador semántico de versiones (Mayor.Subversion.Bugs)
         function compareVersions(v1, v2) {
             let p1 = v1.split('.').map(Number);
             let p2 = v2.split('.').map(Number);
@@ -875,7 +949,7 @@
         }
 
         function showCurrentChangelogInModal() {
-            document.getElementById('update-details-title').innerText = `Cambios de la v${CURRENT_CODE_VERSION}`;
+            document.getElementById('update-details-version-badge').innerText = `v${CURRENT_CODE_VERSION}`;
             document.getElementById('update-details-text').innerHTML = CHANGELOG_DATA[CURRENT_CODE_VERSION] || "Correcciones y optimizaciones menores.";
             
             document.getElementById('update-step-ask').style.display = 'none';
@@ -885,7 +959,7 @@
         function triggerManualChangelog() {
             closeModals();
             setTimeout(() => {
-                document.getElementById('update-details-title').innerText = `Historial v${CURRENT_CODE_VERSION}`;
+                document.getElementById('update-details-version-badge').innerText = `v${CURRENT_CODE_VERSION}`;
                 document.getElementById('update-details-text').innerHTML = CHANGELOG_DATA[CURRENT_CODE_VERSION] || "Correcciones generales.";
                 document.getElementById('update-step-ask').style.display = 'none';
                 document.getElementById('update-step-details').style.display = 'flex';
@@ -905,23 +979,12 @@
         function nextTutorialStep(stepNumber) {
             document.querySelectorAll('.tutorial-step').forEach(step => step.classList.remove('active'));
             document.getElementById(`step-${stepNumber}`).classList.add('active');
-            
-            if(stepNumber === 2) {
-                const modalBtn = document.getElementById('btn-modal-install');
-                if(deferredPrompt) {
-                    modalBtn.style.display = 'block';
-                } else {
-                    modalBtn.style.display = 'none';
-                }
-            }
         }
 
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             document.getElementById('btn-install-pwa').style.display = 'inline-flex';
-            const modalBtn = document.getElementById('btn-modal-install');
-            if(modalBtn) modalBtn.style.display = 'block';
         });
 
         function triggerPWAInstall() {
@@ -930,19 +993,10 @@
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
                     document.getElementById('btn-install-pwa').style.display = 'none';
-                    const modalBtn = document.getElementById('btn-modal-install');
-                    if(modalBtn) modalBtn.style.display = 'none';
                 }
                 deferredPrompt = null;
             });
         }
-
-        window.addEventListener('appinstalled', () => {
-            deferredPrompt = null;
-            document.getElementById('btn-install-pwa').style.display = 'none';
-            const modalBtn = document.getElementById('btn-modal-install');
-            if(modalBtn) modalBtn.style.display = 'none';
-        });
 
         function applyLanguage() {
             const lang = data.lang || 'es';
@@ -985,12 +1039,11 @@
             document.getElementById('note-title-input').placeholder = t.placeholderNote;
             document.getElementById('btn-note-create').innerText = t.btnCreate;
             document.getElementById('cal-input-title').placeholder = t.placeholderCalEvt;
-            
-            if(document.getElementById('btn-edit-cal')) document.getElementById('btn-edit-cal').innerText = t.calAsignar;
-            if(document.getElementById('btn-delete-cal')) document.getElementById('btn-delete-cal').innerText = t.calRemover;
 
             const weekdaysBox = document.getElementById('calendar-weekdays');
             if(weekdaysBox) weekdaysBox.innerHTML = t.weekdays.map(d => `<div>${d}</div>`).join('');
+            
+            syncCustomSelectsVisuals();
         }
 
         function changeLanguage(langCode) {
@@ -1020,7 +1073,7 @@
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     data.notificationsEnabled = true;
-                    enviarNotificacion("Control de Espacio", "Las alertas del sistema se han vinculado de forma nativa.");
+                    enviarNotificacion("Control de Espacio", "Las alertas del sistema se han vinculado.");
                 } else {
                     data.notificationsEnabled = false;
                     document.getElementById('notify-toggle').checked = false;
@@ -1033,10 +1086,7 @@
 
         function enviarNotificacion(titulo, cuerpo) {
             if (data.notificationsEnabled && Notification.permission === 'granted') {
-                new Notification(titulo, {
-                    body: cuerpo,
-                    icon: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png'
-                });
+                new Notification(titulo, { body: cuerpo, icon: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png' });
             }
         }
 
@@ -1053,11 +1103,8 @@
             
             if(time && time.includes(':')) {
                 let parts = time.split(':');
-                let hrs = parts[0].padStart(2, '0');
-                let mins = parts[1].padStart(2, '0');
-                time = `${hrs}:${mins}`;
+                time = `${parts[0].padStart(2, '0')}:${parts[1].padStart(2, '0')}`;
             }
-
             data.tasks.push({ text, time: time || null, completed: false });
             document.getElementById('task-input').value = '';
             document.getElementById('task-time').value = '';
@@ -1072,8 +1119,7 @@
             if(!title) return;
             if(!data.notes[title]) data.notes[title] = '<div>Escribe aquí tu nota...</div>';
             document.getElementById('note-title-input').value = '';
-            saveData();
-            openNoteDetails(title);
+            saveData(); openNoteDetails(title);
         }
 
         function openNoteDetails(title) {
@@ -1099,15 +1145,13 @@
         function changeMonth(direction) {
             currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
             document.getElementById('calendar-detail-box').style.display = 'none';
-            selectedDayKey = null;
-            renderCalendar();
+            selectedDayKey = null; renderCalendar();
         }
 
         function goToCurrentMonth() {
             currentCalendarDate = new Date();
             document.getElementById('calendar-detail-box').style.display = 'none';
-            selectedDayKey = null;
-            renderCalendar();
+            selectedDayKey = null; renderCalendar();
         }
 
         function renderCalendar() {
@@ -1139,7 +1183,6 @@
                     btn.style.color = data.calendar[dayKey].color;
                     btn.style.borderBottom = `2px solid ${data.calendar[dayKey].color}`;
                 }
-
                 if (selectedDayKey === dayKey) btn.classList.add('selected');
                 if (day === realToday.getDate() && month === realToday.getMonth() && year === realToday.getFullYear()) btn.classList.add('current-today');
 
@@ -1149,9 +1192,7 @@
         }
 
         function selectDay(day, dayKey) {
-            selectedDayKey = dayKey;
-            renderCalendar();
-
+            selectedDayKey = dayKey; renderCalendar();
             const detailBox = document.getElementById('calendar-detail-box');
             const detailText = document.getElementById('cal-detail-text');
             const t = translations[data.lang || 'es'] || translations['es'];
@@ -1173,10 +1214,7 @@
 
             document.getElementById('btn-delete-cal').onclick = () => {
                 if(data.calendar[dayKey]) {
-                    delete data.calendar[dayKey];
-                    detailBox.style.display = 'none';
-                    selectedDayKey = null;
-                    saveData();
+                    delete data.calendar[dayKey]; detailBox.style.display = 'none'; selectedDayKey = null; saveData();
                 }
             };
         }
@@ -1197,26 +1235,21 @@
             const title = document.getElementById('cal-input-title').value.trim();
             if(title && selectedDayKey) {
                 data.calendar[selectedDayKey] = { title: title, color: selectedColor };
-                saveData();
-                selectDay(null, selectedDayKey);
+                saveData(); selectDay(null, selectedDayKey);
             }
             closeModals();
         }
 
         function renderEverything() {
             applyLanguage();
-
             document.getElementById('username-input').value = data.username;
-            document.getElementById('lang-select').value = data.lang || 'es';
-            document.getElementById('theme-select').value = data.theme || 'light';
             document.getElementById('notify-toggle').checked = data.notificationsEnabled;
 
             const homeList = document.getElementById('home-tasks-list');
             const tasksContainer = document.getElementById('tasks-container');
             const t = translations[data.lang || 'es'] || translations['es'];
             
-            homeList.innerHTML = '';
-            tasksContainer.innerHTML = '';
+            homeList.innerHTML = ''; tasksContainer.innerHTML = '';
 
             if(data.tasks.length === 0) {
                 homeList.innerHTML = `<li style="color:var(--text-muted)">${t.noTasks}</li>`;
@@ -1226,16 +1259,12 @@
             data.tasks.forEach((tTask, idx) => {
                 const itemHome = document.createElement('li');
                 const timeTag = tTask.time ? `<span class="time-badge">${tTask.time}</span>` : '';
-                itemHome.innerHTML = `
-                    <span style="${tTask.completed ? 'text-decoration:line-through; color:var(--text-muted); opacity: 0.6;' : ''}">${tTask.text}</span>
-                    ${timeTag}
-                `;
+                itemHome.innerHTML = `<span style="${tTask.completed ? 'text-decoration:line-through; color:var(--text-muted); opacity: 0.6;' : ''}">${tTask.text}</span>${timeTag}`;
                 homeList.appendChild(itemHome);
 
                 const itemRow = document.createElement('div');
                 itemRow.className = 'task-row';
                 const timeText = tTask.time ? ` <small style="color:var(--accent-brand); font-weight:600;">(${tTask.time})</small>` : '';
-
                 itemRow.innerHTML = `
                     <div class="task-text ${tTask.completed ? 'completed' : ''}" onclick="toggleTask(${idx})">
                         <input type="checkbox" ${tTask.completed ? 'checked' : ''}>
@@ -1267,20 +1296,16 @@
 
         setInterval(() => {
             const ahora = new Date();
-            const hrs = String(ahora.getHours()).padStart(2, '0');
-            const mins = String(ahora.getMinutes()).padStart(2, '0');
-            const horaActualStr = `${hrs}:${mins}`;
+            const horaActualStr = `${String(ahora.getHours()).padStart(2, '0')}:${String(ahora.getMinutes()).padStart(2, '0')}`;
 
             data.tasks.forEach(t => {
                 if(t.time && !t.completed) {
-                    let taskTimeClean = t.time.trim();
-                    if(taskTimeClean === horaActualStr && !tareasNotificadas.has(t.text + horaActualStr)) {
+                    if(t.time.trim() === horaActualStr && !tareasNotificadas.has(t.text + horaActualStr)) {
                         enviarNotificacion("Alerta de Actividad", `${t.text}`);
                         tareasNotificadas.add(t.text + horaActualStr);
                     }
                 }
             });
-
             if(horaActualStr === "00:00") tareasNotificadas.clear();
         }, 30000);
 
@@ -1291,13 +1316,6 @@
             }
             document.documentElement.setAttribute('data-theme', currentT);
             
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                if (data.theme === 'system') {
-                    const updated = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                    document.documentElement.setAttribute('data-theme', updated);
-                }
-            });
-
             renderEverything();
             openTutorial(false);
         });
