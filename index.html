@@ -1,431 +1,1112 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Configuración</title>
-  <style>
-    /* ==========================================================================
-       VARIABLES Y TEMAS (Estilo Apple / Minimalista)
-       ========================================================================== */
-    :root {
-      /* Tema Claro (Por defecto) */
-      --bg-color: #f5f5f7;
-      --text-color: #1d1d1f;
-      --glass-bg: rgba(255, 255, 255, 0.7);
-      --glass-border: rgba(0, 0, 0, 0.08);
-      --accent-color: #0071e3;
-      --input-bg: rgba(0, 0, 0, 0.04);
-      --input-border: rgba(0, 0, 0, 0.1);
-      --modal-overlay: rgba(0, 0, 0, 0.3);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Organizador Personal</title>
+    
+    <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
+    <link class="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
 
-    [data-theme="dark"] {
-      /* Tema Oscuro */
-      --bg-color: #000000;
-      --text-color: #f5f5f7;
-      --glass-bg: rgba(28, 28, 30, 0.75);
-      --glass-border: rgba(255, 255, 255, 0.12);
-      --accent-color: #0a84ff;
-      --input-bg: rgba(255, 255, 255, 0.08);
-      --input-border: rgba(255, 255, 255, 0.15);
-      --modal-overlay: rgba(0, 0, 0, 0.6);
-    }
+    <script>
+        (function() {
+            const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent) || window.innerWidth <= 768;
+            const manifestLink = document.createElement('link');
+            manifestLink.rel = 'manifest';
+            
+            if (isMobile) {
+                manifestLink.href = './manifest.json';
+            } else {
+                manifestLink.href = './manifest-pc.json';
+            }
+            document.head.appendChild(manifestLink);
 
-    /* ==========================================================================
-       ESTILOS GENERALES
-       ========================================================================== */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+            // Cargar e inyectar el tema guardado antes de renderizar para evitar destellos blancos
+            let rawData = localStorage.getItem('aura_studio_data');
+            if (rawData) {
+                try {
+                    let d = JSON.parse(rawData);
+                    let theme = d.theme || 'light';
+                    if (theme === 'system') {
+                        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    }
+                    document.documentElement.setAttribute('data-theme', theme);
+                } catch(e){}
+            }
+        })();
+    </script>
+    
+    <style>
+        :root {
+            --bg-color: #F4F5F6;
+            --card-bg: #FFFFFF;
+            --text-main: #111214;
+            --text-muted: #626469;
+            --accent-brand: #6B1D2F; 
+            --accent-green: #2E7D32;
+            --accent-yellow: #C67B00;
+            --border-color: #E2E4E7;
+            --input-bg: #F4F5F6;
+            --aura-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --fade-bezier: cubic-bezier(0.25, 1, 0.5, 1);
+        }
 
-    body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: background-color 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.4s ease;
-    }
+        [data-theme="dark"] {
+            --bg-color: #0B0C0E;
+            --card-bg: #16181B;
+            --text-main: #ECEEDF;
+            --text-muted: #9AA0A6;
+            --border-color: #2D3135;
+            --input-bg: #212327;
+        }
 
-    /* Botón de Ajustes principal */
-    .btn-config-trigger {
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      color: var(--text-color);
-      padding: 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: transform 0.2s ease, background-color 0.3s;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    .btn-config-trigger:hover {
-      transform: scale(1.05);
-      background: var(--input-bg);
-    }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 24px 16px;
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-    .btn-config-trigger:active {
-      transform: scale(0.95);
-    }
+        .phone-container {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
 
-    /* ==========================================================================
-       MODAL DE CONFIGURACIÓN (Glassmorphism)
-       ========================================================================== */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: var(--modal-overlay);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-    }
+        .card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0, 0, 0, 0.02);
+            animation: cardEntrance 0.5s var(--fade-bezier) backwards;
+        }
 
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .modal-content {
-      background: var(--glass-bg);
-      backdrop-filter: blur(30px);
-      -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--glass-border);
-      width: 90%;
-      max-width: 420px;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      transform: scale(0.9);
-      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
 
-    .modal-overlay.active .modal-content {
-      transform: scale(1);
-    }
+        .btn-back {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s var(--fade-bezier);
+        }
+        .btn-back:hover { background: rgba(0,0,0,0.05); transform: translateY(-1px); }
+        [data-theme="dark"] .btn-back:hover { background: rgba(255,255,255,0.05); }
 
-    /* Cabecera del Modal */
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
+        .btn-today {
+            background: transparent;
+            color: var(--accent-brand);
+            border: 1px solid var(--accent-brand);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 4px;
+        }
+        .btn-today:hover { background: rgba(107, 29, 47, 0.05); }
 
-    .modal-header h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: -0.5px;
-    }
+        .view {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            opacity: 1;
+            transform: scale(1);
+            transition: opacity 0.25s var(--fade-bezier), transform 0.25s var(--fade-bezier);
+        }
 
-    .close-btn {
-      background: none;
-      border: none;
-      color: var(--text-color);
-      font-size: 1.5rem;
-      cursor: pointer;
-      opacity: 0.6;
-      line-height: 1;
-      padding: 4px;
-      transition: opacity 0.2s;
-    }
+        .view.hidden {
+            display: none !important;
+            opacity: 0;
+            transform: scale(0.97);
+        }
 
-    .close-btn:hover {
-      opacity: 1;
-    }
+        .brand-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
 
-    /* Cuerpo y Grupos de Opciones */
-    .modal-body {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+        .welcome-title {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-main);
+            letter-spacing: -0.4px;
+        }
+        .welcome-title span {
+            color: var(--accent-brand);
+            font-weight: 700;
+            cursor: pointer;
+        }
 
-    .config-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+        .grid-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
 
-    .config-group label {
-      font-size: 0.85rem;
-      font-weight: 500;
-      opacity: 0.8;
-    }
+        .menu-item {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 22px 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
+            border: 1px solid rgba(0, 0, 0, 0.01);
+            transition: all 0.25s var(--aura-bezier);
+        }
+        .menu-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+            border-color: var(--border-color);
+        }
+        .menu-item:active { transform: scale(0.95); }
 
-    /* Selectores personalizados */
-    .custom-select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid var(--input-border);
-      border-radius: 10px;
-      background: var(--input-bg);
-      color: var(--text-color);
-      font-size: 0.95rem;
-      font-family: inherit;
-      outline: none;
-      cursor: pointer;
-      appearance: none;
-      -webkit-appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='gray' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      background-size: 16px;
-      transition: border-color 0.2s;
-    }
+        .menu-item .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: transform 0.3s var(--aura-bezier);
+        }
+        .menu-item:hover .icon { transform: scale(1.1) rotate(4deg); }
+        .menu-item span { font-size: 13px; font-weight: 600; color: var(--text-main); }
 
-    .custom-select:focus {
-      border-color: var(--accent-color);
-    }
+        .list-preview { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+        .list-preview li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 15px;
+            animation: itemFadeIn 0.3s var(--fade-bezier) both;
+        }
 
-    /* Estructura del Switch (Toggle) estilo iOS */
-    .toggle-group {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 4px;
-    }
+        .time-badge {
+            background: var(--bg-color);
+            color: var(--accent-brand);
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
 
-    .toggle-text-container {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+        .task-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+            gap: 12px;
+        }
+        
+        @keyframes itemFadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .toggle-text-container small {
-      font-size: 0.75rem;
-      opacity: 0.5;
-    }
+        .task-text { cursor: pointer; display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+        .task-text span { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .task-text.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.6; }
+        .task-text input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent-brand); cursor: pointer; }
 
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 28px;
-      flex-shrink: 0;
-    }
+        .btn-delete {
+            background: transparent; color: var(--text-muted); border: none; font-size: 18px; cursor: pointer;
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        }
+        .btn-delete:hover { background: #FCE8E6; color: #C5221F; }
 
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
+        .task-input-container { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+        .input-row-bottom { display: flex; gap: 10px; }
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: rgba(120, 120, 128, 0.3);
-      transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      border-radius: 34px;
-    }
+        .input-flat {
+            flex: 1; background: var(--input-bg); border: 1px solid transparent; padding: 14px 16px; border-radius: 14px;
+            font-size: 15px; color: var(--text-main); outline: none; transition: all 0.2s var(--fade-bezier);
+        }
+        .input-flat:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 24px;
-      width: 24px;
-      left: 2px;
-      bottom: 2px;
-      background-color: white;
-      transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
+        .btn-add {
+            background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
+            font-weight: 500; font-size: 14px; cursor: pointer; transition: all 0.2s var(--fade-bezier);
+        }
+        .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
 
-    input:checked + .slider {
-      background-color: var(--accent-color);
-    }
+        .format-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; background: var(--bg-color); padding: 6px; border-radius: 14px; }
+        .format-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); }
+        .format-btn:hover { background: var(--accent-brand); color: #FFFFFF; border-color: var(--accent-brand); }
 
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
-  </style>
+        .rich-editor { width: 100%; height: 220px; background: var(--bg-color); border: 1px solid transparent; padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; }
+        .rich-editor:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
+
+        .calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+        .calendar-title-container { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .calendar-title { font-size: 17px; font-weight: 600; text-transform: capitalize; }
+        .weekdays-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 10px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        
+        .calendar-day {
+            background: transparent; color: var(--text-main); aspect-ratio: 1; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500;
+            cursor: pointer; border: 1px solid transparent; transition: all 0.2s var(--fade-bezier);
+        }
+        .calendar-day:hover:not(.empty) { background: rgba(0,0,0,0.05); }
+        [data-theme="dark"] .calendar-day:hover:not(.empty) { background: rgba(255,255,255,0.05); }
+        .calendar-day.empty { background: transparent; cursor: default; }
+        .calendar-day.selected { border-color: var(--accent-brand) !important; color: var(--accent-brand) !important; font-weight: 700; }
+        .calendar-day.current-today { background: var(--accent-brand) !important; color: white !important; font-weight: 700; }
+
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(17, 18, 20, 0.4); backdrop-filter: blur(4px); z-index: 99; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -45%) scale(0.95); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); opacity: 0; transition: all 0.3s var(--aura-bezier); max-height: 90vh; overflow-y: auto; }
+        .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+        .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; }
+        .note-item-btn svg { width: 16px; height: 16px; color: var(--text-muted); flex-shrink: 0; }
+        
+        .color-picker { display: flex; gap: 12px; margin: 14px 0; }
+        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+        .color-opt.active { border-color: var(--text-main); transform: scale(1.15); }
+
+        .icon svg { width: 22px; height: 22px; fill: currentColor; }
+        h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
+        
+        .btn-back.hidden-install { display: none !important; }
+
+        /* Estilos Configuración */
+        .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .config-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .custom-select { width: 100%; padding: 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 14px; outline: none; }
+        
+        /* Switch de Notificaciones Estilo iOS */
+        .toggle-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-brand); }
+        input:checked + .slider:before { transform: translateX(20px); }
+    </style>
 </head>
 <body>
 
-  <!-- BOTÓN PRINCIPAL -->
-  <button id="open-config-btn" class="btn-config-trigger" title="Configuración">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"></circle>
-      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-    </svg>
-  </button>
-
-  <!-- CAPA OVERLAY / MODAL DE CONFIGURACIÓN -->
-  <div id="config-modal" class="modal-overlay">
-    <div class="modal-content">
-      
-      <div class="modal-header">
-        <h2>Configuración</h2>
-        <button id="close-config-btn" class="close-btn" aria-label="Cerrar">&times;</button>
-      </div>
-      
-      <div class="modal-body">
+    <div class="phone-container">
         
-        <!-- Selector de Idioma (10 Lenguajes) -->
-        <div class="config-group">
-          <label for="language-select">Idioma / Language</label>
-          <select id="language-select" class="custom-select">
-            <option value="es">Español</option>
-            <option value="en">English</option>
-            <option value="pt">Português</option>
-            <option value="fr">Français</option>
-            <option value="de">Deutsch</option>
-            <option value="it">Italiano</option>
-            <option value="ja">日本語</option>
-            <option value="zh">中文</option>
-            <option value="ru">Русский</option>
-            <option value="ko">한국어</option>
-          </select>
+        <div id="view-home" class="view">
+            <div class="card brand-header">
+                <div class="welcome-title" id="txt-home-title">Control de <span id="username-display" onclick="openModal('username-modal')">Espacio</span></div>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <button class="btn-back" id="btn-install-pwa" style="padding: 6px 14px; font-size: 12px;">
+                        <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                        <span id="txt-install">Instalar app</span>
+                    </button>
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openModal('config-modal')">
+                        <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid-menu">
+                <div class="menu-item" onclick="changeView('view-calendar')">
+                    <div class="icon" style="background-color: var(--accent-brand);"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
+                    <span id="txt-menu-events">Eventos</span>
+                </div>
+                <div class="menu-item" onclick="changeView('view-tasks')">
+                    <div class="icon" style="background-color: var(--accent-green);"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></div>
+                    <span id="txt-menu-tasks">Pendientes</span>
+                </div>
+                <div class="menu-item" onclick="changeView('view-notes')">
+                    <div class="icon" style="background-color: var(--accent-yellow);"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></div>
+                    <span id="txt-menu-notes">Notas fijas</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 id="txt-cronograma-title" style="margin-bottom: 16px;">Cronograma del Día</h3>
+                <ul id="home-tasks-list" class="list-preview"></ul>
+            </div>
         </div>
 
-        <!-- Selector de Tema -->
-        <div class="config-group">
-          <label for="theme-select">Tema de la Interfaz</label>
-          <select id="theme-select" class="custom-select">
-            <option value="system">Predeterminado del sistema</option>
-            <option value="light">Claro</option>
-            <option value="dark">Oscuro</option>
-          </select>
+        <div id="view-calendar" class="view hidden">
+            <div class="card header-box">
+                <span id="txt-cal-header">Agenda Mensual</span>
+                <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
+            </div>
+            <div class="card">
+                <div class="calendar-controls">
+                    <button class="btn-back" style="padding: 6px 12px;" onclick="changeMonth(-1)">◀</button>
+                    <div class="calendar-title-container">
+                        <div class="calendar-title" id="calendar-month-year"></div>
+                        <button class="btn-today" id="txt-cal-today" onclick="goToCurrentMonth()">Hoy</button>
+                    </div>
+                    <button class="btn-back" style="padding: 6px 12px;" onclick="changeMonth(1)">▶</button>
+                </div>
+                <div class="weekdays-grid" id="calendar-weekdays"></div>
+                <div class="calendar-grid" id="calendar-grid-box"></div>
+                
+                <div id="calendar-detail-box" style="display:none; border-top:1px solid var(--border-color); padding-top:16px; margin-top:14px;">
+                    <h3 id="txt-cal-detail" style="color:var(--accent-brand); font-size:15px; margin-bottom: 4px;">Detalles del día</h3>
+                    <p id="cal-detail-text" style="margin-bottom: 14px; font-size:14px; color:var(--text-muted);"></p>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-back" id="btn-edit-cal" style="background:var(--accent-brand); color:white; border:none; flex: 1;">Asignar</button>
+                        <button class="btn-back" id="btn-delete-cal" style="color:red; border-color:rgba(255,0,0,0.2);">Remover</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Switch de Notificaciones del Sistema -->
-        <div class="config-group toggle-group">
-          <div class="toggle-text-container">
-            <label for="notification-toggle">Notificaciones</label>
-            <small>Usa las alertas nativas del sistema operativo</small>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="notification-toggle">
-            <span class="slider"></span>
-          </label>
+        <div id="view-tasks" class="view hidden">
+            <div class="card header-box">
+                <span id="txt-tasks-header">Lista de Actividades</span>
+                <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
+            </div>
+            <div class="card">
+                <div id="tasks-container" style="display:flex; flex-direction:column;"></div>
+                <div class="task-input-container">
+                    <input type="text" id="task-input" class="input-flat" maxlength="50" placeholder="Nombre de la actividad...">
+                    <div class="input-row-bottom">
+                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" placeholder="Hora (ej. 17:30)">
+                        <button class="btn-add" id="btn-task-add" style="flex: 1;" onclick="addTask()">Añadir</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-      </div>
+        <div id="view-notes" class="view hidden">
+            <div class="card header-box">
+                <span id="txt-notes-header">Bloque de Notas</span>
+                <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
+            </div>
+            <div class="card">
+                <div id="notes-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
+                <div class="input-group" style="display:flex; gap:10px;">
+                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" placeholder="Título de la nota...">
+                    <button class="btn-add" id="btn-note-create" onclick="addNote()">Crear</button>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </div>
 
-  <!-- ==========================================================================
-       LÓGICA JAVASCRIPT
-       ========================================================================== */ -->
-  <script>
-    // Nodos de control de la UI
-    const openBtn = document.getElementById('open-config-btn');
-    const closeBtn = document.getElementById('close-config-btn');
-    const modal = document.getElementById('config-modal');
-    const themeSelect = document.getElementById('theme-select');
-    const langSelect = document.getElementById('language-select');
-    const notifyToggle = document.getElementById('notification-toggle');
+    <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
-    // --- MANEJO DE APERTURA / CIERRE ---
-    openBtn.addEventListener('click', () => modal.classList.add('active'));
-    closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-    
-    // Cerrar el modal haciendo clic fuera de la caja de contenido
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('active');
-    });
+    <div class="modal" id="config-modal">
+        <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
+        
+        <div class="config-group">
+            <label id="lbl-lang" for="lang-select">Idioma / Language</label>
+            <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="it">Italiano</option>
+                <option value="ja">日本語</option>
+                <option value="zh">中文</option>
+                <option value="ru">Русский</option>
+                <option value="ko">한국어</option>
+            </select>
+        </div>
 
-    // --- MANEJO DE TEMAS ---
-    function applyTheme(theme) {
-      if (theme === 'system') {
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
-      } else {
-        document.documentElement.setAttribute('data-theme', theme);
-      }
-    }
+        <div class="config-group">
+            <label id="lbl-theme" for="theme-select">Tema de la interfaz</label>
+            <select id="theme-select" class="custom-select" onchange="changeTheme(this.value)">
+                <option value="light" id="opt-theme-light">Claro</option>
+                <option value="dark" id="opt-theme-dark">Oscuro</option>
+                <option value="system" id="opt-theme-system">Predeterminado del sistema</option>
+            </select>
+        </div>
 
-    themeSelect.addEventListener('change', (e) => {
-      const selectedTheme = e.target.value;
-      localStorage.setItem('pref-theme', selectedTheme);
-      applyTheme(selectedTheme);
-    });
+        <div class="config-group">
+            <label id="lbl-notify-title">Alertas del Sistema</label>
+            <div class="toggle-container">
+                <span id="lbl-notify-desc" style="font-size: 13px; color: var(--text-muted);">Activar notificaciones nativas</span>
+                <label class="switch">
+                    <input type="checkbox" id="notify-toggle" onchange="toggleNotifications(this.checked)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
 
-    // Escucha cambios del sistema operativo si la opción elegida es 'system'
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      if (themeSelect.value === 'system') applyTheme('system');
-    });
+        <button class="btn-add btn-lbl-close" style="width:100%; padding:14px; margin-top:14px;" onclick="closeModals()">Cerrar</button>
+    </div>
 
+    <div class="modal" id="username-modal">
+        <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
+        <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14">
+        <button class="btn-add btn-lbl-save" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
+    </div>
 
-    // --- NOTIFICACIONES NATIVAS DEL SISTEMA ---
-    notifyToggle.addEventListener('change', async (e) => {
-      if (e.target.checked) {
-        // Validación de soporte del navegador
-        if (!("Notification" in window)) {
-          alert("Este navegador no soporta notificaciones del sistema.");
-          e.target.checked = false;
-          return;
+    <div class="modal" id="note-modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"></h3>
+            <button class="btn-back btn-lbl-delete" style="color:red; padding:6px 12px; border-color: rgba(255,0,0,0.1);" id="btn-delete-note-trigger">Eliminar</button>
+        </div>
+        <div class="format-bar">
+            <button class="format-btn" onclick="applyFormat('formatBlock', '<h1>')">H1</button>
+            <button class="format-btn" onclick="applyFormat('formatBlock', '<h2>')">H2</button>
+            <button class="format-btn" onclick="applyFormat('formatBlock', '<p>')">Texto</button>
+            <button class="format-btn" onclick="applyFormat('bold')"><b>B</b></button>
+            <button class="format-btn" onclick="applyFormat('italic')"><i>I</i></button>
+        </div>
+        <div id="modal-note-body" class="rich-editor" contenteditable="true"></div>
+        <p style="font-size:11px; color:var(--text-muted); font-style:italic; margin-top:6px;">(Early Phase - Minor Bugs)</p>
+        <button class="btn-add btn-lbl-save" style="width:100%; padding:14px; margin-top:16px;" onclick="saveNoteBody()">Guardar Nota</button>
+    </div>
+
+    <div class="modal" id="calendar-modal">
+        <h3 id="txt-modal-plan-title" style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
+        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="...">
+        <label id="lbl-cal-color" style="font-size:12px; font-weight:600; color:var(--text-muted)">Color identificador:</label>
+        <div class="color-picker">
+            <div class="color-opt" style="background:var(--accent-brand);" data-color="#6B1D2F"></div>
+            <div class="color-opt" style="background:var(--accent-green);" data-color="#2E7D32"></div>
+            <div class="color-opt" style="background:var(--accent-yellow);" data-color="#C67B00"></div>
+            <div class="color-opt" style="background:#1A73E8;" data-color="#1A73E8"></div>
+        </div>
+        <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
+    </div>
+
+    <script>
+        // --- DICCIONARIO DE IDIOMAS (10 IDIOMAS) ---
+        const translations = {
+            es: {
+                homeTitle: "Control de ", install: "Instalar app", menuEvents: "Eventos", menuTasks: "Pendientes", menuNotes: "Notas fijas", cronogramaTitle: "Cronograma del Día",
+                calHeader: "Agenda Mensual", calToday: "Hoy", calDetail: "Detalles del día", tasksHeader: "Lista de Actividades", notesHeader: "Bloque de Notas",
+                configTitle: "Configuración", lblLang: "Idioma / Language", lblTheme: "Tema de la interfaz", themeLight: "Claro", themeDark: "Oscuro", themeSystem: "Predeterminado del sistema",
+                lblNotifyTitle: "Alertas del Sistema", lblNotifyDesc: "Activar notificaciones nativas", btnClose: "Cerrar", btnSave: "Guardar", btnDelete: "Eliminar",
+                idTitle: "Identidad del Espacio", planTitle: "Planificar: ", calColor: "Color identificador:", calFix: "Fijar Evento", placeholderTask: "Nombre de la actividad...",
+                placeholderTime: "Hora (ej. 17:30)", btnAdd: "Añadir", placeholderNote: "Título de la nota...", btnCreate: "Crear", placeholderCalEvt: "¿Qué hay planeado para hoy?",
+                noTasks: "Nada planificado para este ciclo.", noTasksBox: "Bandeja limpia por el momento.", noNotes: "No hay registros conceptuales aquí.", noCalEvt: "Libre de compromisos o eventos registrados.",
+                calAsignar: "Asignar", calRemover: "Remover", btnVolver: "Volver", weekdays: ["D", "L", "M", "M", "J", "V", "S"],
+                months: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+            },
+            en: {
+                homeTitle: "Space Control: ", install: "Install app", menuEvents: "Events", menuTasks: "Tasks", menuNotes: "Sticky Notes", cronogramaTitle: "Today's Schedule",
+                calHeader: "Monthly Agenda", calToday: "Today", calDetail: "Day Details", tasksHeader: "Activity List", notesHeader: "Notes Block",
+                configTitle: "Settings", lblLang: "Idioma / Language", lblTheme: "Interface Theme", themeLight: "Light", themeDark: "Dark", themeSystem: "System Default",
+                lblNotifyTitle: "System Alerts", lblNotifyDesc: "Enable native notifications", btnClose: "Close", btnSave: "Save", btnDelete: "Delete",
+                idTitle: "Space Identity", planTitle: "Plan: ", calColor: "Identifier Color:", calFix: "Set Event", placeholderTask: "Activity name...",
+                placeholderTime: "Time (e.g., 17:30)", btnAdd: "Add", placeholderNote: "Note title...", btnCreate: "Create", placeholderCalEvt: "What is planned for today?",
+                noTasks: "Nothing planned for this cycle.", noTasksBox: "Clean tray for now.", noNotes: "No conceptual records here.", noCalEvt: "Free of commitments or recorded events.",
+                calAsignar: "Assign", calRemover: "Remove", btnVolver: "Back", weekdays: ["S", "M", "T", "W", "T", "F", "S"],
+                months: ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
+            },
+            pt: {
+                homeTitle: "Controle de ", install: "Instalar app", menuEvents: "Eventos", menuTasks: "Pendentes", menuNotes: "Notas fixas", cronogramaTitle: "Cronograma do Dia",
+                calHeader: "Agenda Mensal", calToday: "Hoje", calDetail: "Detalhes do dia", tasksHeader: "Lista de Atividades", notesHeader: "Bloco de Notas",
+                configTitle: "Configurações", lblLang: "Idioma / Language", lblTheme: "Tema da interface", themeLight: "Claro", themeDark: "Escuro", themeSystem: "Padrão do sistema",
+                lblNotifyTitle: "Alertas do Sistema", lblNotifyDesc: "Ativar notificações nativas", btnClose: "Fechar", btnSave: "Salvar", btnDelete: "Excluir",
+                idTitle: "Identidade do Espaço", planTitle: "Planejar: ", calColor: "Cor identificadora:", calFix: "Fixar Evento", placeholderTask: "Nome da atividade...",
+                placeholderTime: "Hora (ex: 17:30)", btnAdd: "Adicionar", placeholderNote: "Título da nota...", btnCreate: "Criar", placeholderCalEvt: "O que está planejado para hoje?",
+                noTasks: "Nada planejado para este ciclo.", noTasksBox: "Bandeja limpa no momento.", noNotes: "Nenhum registro conceitual aqui.", noCalEvt: "Livre de compromissos ou eventos registrados.",
+                calAsignar: "Atribuir", calRemover: "Remover", btnVolver: "Voltar", weekdays: ["D", "S", "T", "Q", "Q", "S", "S"],
+                months: ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
+            },
+            fr: {
+                homeTitle: "Contrôle de ", install: "Installer l'app", menuEvents: "Événements", menuTasks: "Tâches", menuNotes: "Notes Fixes", cronogramaTitle: "Planning du Jour",
+                calHeader: "Agenda Mensuel", calToday: "Aujourd'hui", calDetail: "Détails du jour", tasksHeader: "Liste des Activités", notesHeader: "Bloc de Notes",
+                configTitle: "Configuration", lblLang: "Idioma / Language", lblTheme: "Thème de l'interface", themeLight: "Clair", themeDark: "Sombre", themeSystem: "Par défaut du système",
+                lblNotifyTitle: "Alertes Système", lblNotifyDesc: "Activer les notifications natives", btnClose: "Fermer", btnSave: "Enregistrer", btnDelete: "Supprimer",
+                idTitle: "Identité de l'Espace", planTitle: "Planifier: ", calColor: "Couleur d'identification:", calFix: "Fixer l'événement", placeholderTask: "Nom de l'activité...",
+                placeholderTime: "Heure (ex. 17:30)", btnAdd: "Ajouter", placeholderNote: "Titre de la note...", btnCreate: "Créer", placeholderCalEvt: "Qu'est-je prévu pour aujourd'hui?",
+                noTasks: "Rien de prévu pour ce cycle.", noTasksBox: "Plateau propre pour le moment.", noNotes: "Aucun enregistrement conceptuel ici.", noCalEvt: "Libre d'engagements ou d'événements enregistrés.",
+                calAsignar: "Assigner", calRemover: "Supprimer", btnVolver: "Retour", weekdays: ["D", "L", "M", "M", "J", "V", "S"],
+                months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
+            },
+            de: {
+                homeTitle: "Raumkontrolle: ", install: "App installieren", menuEvents: "Ereignisse", menuTasks: "Aufgaben", menuNotes: "Notizen", cronogramaTitle: "Tagesplan",
+                calHeader: "Monatsagenda", calToday: "Heute", calDetail: "Tagesdetails", tasksHeader: "Aktivitätenliste", notesHeader: "Notizblock",
+                configTitle: "Einstellungen", lblLang: "Idioma / Language", lblTheme: "Oberflächendesign", themeLight: "Hell", themeDark: "Dunkel", themeSystem: "Systemstandard",
+                lblNotifyTitle: "Systembenachrichtigungen", lblNotifyDesc: "Native Benachrichtigungen aktivieren", btnClose: "Schließen", btnSave: "Speichern", btnDelete: "Löschen",
+                idTitle: "Raumidentität", planTitle: "Planen: ", calColor: "Kennfarbe:", calFix: "Ereignis festlegen", placeholderTask: "Aktivitätsname...",
+                placeholderTime: "Zeit (z.B. 17:30)", btnAdd: "Hinzufügen", placeholderNote: "Notiztitel...", btnCreate: "Erstellen", placeholderCalEvt: "Was ist für heute geplant?",
+                noTasks: "Für diesen Zyklus ist nichts geplant.", noTasksBox: "Fach vorerst leer.", noNotes: "Keine konzeptionellen Aufzeichnungen hier.", noCalEvt: "Frei von Verpflichtungen oder erfassten Ereignissen.",
+                calAsignar: "Zuweisen", calRemover: "Entfernen", btnVolver: "Zurück", weekdays: ["S", "M", "D", "M", "D", "F", "S"],
+                months: ["januar", "februar", "märz", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "dezember"]
+            },
+            it: {
+                homeTitle: "Controllo di ", install: "Installa app", menuEvents: "Eventi", menuTasks: "Attività", menuNotes: "Note Fisse", cronogramaTitle: "Programma del Giorno",
+                calHeader: "Agenda Mensile", calToday: "Oggi", calDetail: "Dettagli del giorno", tasksHeader: "Lista Attività", notesHeader: "Blocco Note",
+                configTitle: "Impostazioni", lblLang: "Idioma / Language", lblTheme: "Tema dell'interfaccia", themeLight: "Chiaro", themeDark: "Scuro", themeSystem: "Predefinito del sistema",
+                lblNotifyTitle: "Avvisi di Sistema", lblNotifyDesc: "Attiva notifiche native", btnClose: "Chiudi", btnSave: "Salva", btnDelete: "Elimina",
+                idTitle: "Identità dello Spazio", planTitle: "Pianifica: ", calColor: "Colore identificativo:", calFix: "Fissa Evento", placeholderTask: "Nome attività...",
+                placeholderTime: "Ora (es. 17:30)", btnAdd: "Aggiungi", placeholderNote: "Titolo della nota...", btnCreate: "Crea", placeholderCalEvt: "Cosa c'è in programma oggi?",
+                noTasks: "Nulla di pianificato per questo ciclo.", noTasksBox: "Vassoio pulito al momento.", noNotes: "Nessun record concettuale qui.", noCalEvt: "Libero da impegni o eventi registrati.",
+                calAsignar: "Assegna", calRemover: "Rimuovi", btnVolver: "Indietro", weekdays: ["D", "L", "M", "M", "G", "V", "S"],
+                months: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"]
+            },
+            ja: {
+                homeTitle: "空間コントロール: ", install: "アプリをインストール", menuEvents: "イベント", menuTasks: "タスク", menuNotes: "固定メモ", cronogramaTitle: "本日のスケジュール",
+                calHeader: "月間アジェンダ", calToday: "今日", calDetail: "一日の詳細", tasksHeader: "アクティビティ一覧", notesHeader: "メモ帳",
+                configTitle: "設定", lblLang: "Idioma / Language", lblTheme: "テーマ設定", themeLight: "ライト", themeDark: "ダーク", themeSystem: "システムデフォルト",
+                lblNotifyTitle: "システム通知", lblNotifyDesc: "ネイティブ通知を有効化", btnClose: "閉じる", btnSave: "保存", btnDelete: "削除",
+                idTitle: "空間のアイデンティティ", planTitle: "計画: ", calColor: "識別カラー:", calFix: "イベントを設定", placeholderTask: "アクティビティ名...",
+                placeholderTime: "時間 (例: 17:30)", btnAdd: "追加", placeholderNote: "メモのタイトル...", btnCreate: "作成", placeholderCalEvt: "今日の予定は？",
+                noTasks: "このサイクルに予定はありません。", noTasksBox: "現在トレイは空です。", noNotes: "ここに概念的な記録はありません。", noCalEvt: "予定や登録されたイベントはありません。",
+                calAsignar: "割り当て", calRemover: "削除", btnVolver: "戻る", weekdays: ["日", "月", "火", "水", "木", "金", "土"],
+                months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
+            },
+            zh: {
+                homeTitle: "空间控制: ", install: "安装应用", menuEvents: "活动", menuTasks: "待办事项", menuNotes: "固定便签", cronogramaTitle: "今日日程",
+                calHeader: "月度议程", calToday: "今天", calDetail: "每日详情", tasksHeader: "活动列表", notesHeader: "便签本",
+                configTitle: "设置", lblLang: "Idioma / Language", lblTheme: "界面主题", themeLight: "浅色", themeDark: "深色", themeSystem: "系统默认",
+                lblNotifyTitle: "系统通知", lblNotifyDesc: "开启原生系统通知", btnClose: "关闭", btnSave: "保存", btnDelete: "删除",
+                idTitle: "空间标识", planTitle: "规划: ", calColor: "标识颜色:", calFix: "固定活动", placeholderTask: "活动名称...",
+                placeholderTime: "时间 (例如 17:30)", btnAdd: "添加", placeholderNote: "便签标题...", btnCreate: "创建", placeholderCalEvt: "今天有什么计划？",
+                noTasks: "此周期无任何计划。", noTasksBox: "目前无待办事项。", noNotes: "此处无概念记录。", noCalEvt: "暂无安排或登记的活动。",
+                calAsignar: "指派", calRemover: "移除", btnVolver: "返回", weekdays: ["日", "一", "二", "三", "四", "五", "六"],
+                months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
+            },
+            ru: {
+                homeTitle: "Контроль пространства: ", install: "Установить прил.", menuEvents: "События", menuTasks: "Задачи", menuNotes: "Заметки", cronogramaTitle: "Расписание на день",
+                calHeader: "Ежемесячная повестка", calToday: "Сегодня", calDetail: "Детали дня", tasksHeader: "Список задач", notesHeader: "Блокнот",
+                configTitle: "Настройки", lblLang: "Idioma / Language", lblTheme: "Тема интерфейса", themeLight: "Светлая", themeDark: "Темная", themeSystem: "Системная по умолчанию",
+                lblNotifyTitle: "Системные уведомления", lblNotifyDesc: "Включить нативные уведомления", btnClose: "Закрыть", btnSave: "Сохранить", btnDelete: "Удалить",
+                idTitle: "Идентификация", planTitle: "Планировать: ", calColor: "Цвет-идентификатор:", calFix: "Закрепить событие", placeholderTask: "Название задачи...",
+                placeholderTime: "Время (напр. 17:30)", btnAdd: "Добавить", placeholderNote: "Заголовок заметки...", btnCreate: "Создать", placeholderCalEvt: Что запланировано на сегодня?",
+                noTasks: "На этот цикл ничего не запланировано.", noTasksBox: "На данный момент чисто.", noNotes: "Концептуальных записей не найдено.", noCalEvt: "Свободно от обязательств или зарегистрированных событий.",
+                calAsignar: "Назначить", calRemover: "Удалить", btnVolver: "Назад", weekdays: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+                months: ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"]
+            },
+            ko: {
+                homeTitle: "공간 제어: ", install: "앱 설치", menuEvents: "이벤트", menuTasks: "할 일", menuNotes: "고정 메모", cronogramaTitle: "오늘의 일정",
+                calHeader: "월간 일정", calToday: "오늘", calDetail: "하루 상세 정보", tasksHeader: "활동 목록", notesHeader: "메모장",
+                configTitle: "설정", lblLang: "Idioma / Language", lblTheme: "인터페이스 테마", themeLight: "라이트", themeDark: "다크", themeSystem: "시스템 기본값",
+                lblNotifyTitle: "시스템 알림", lblNotifyDesc: "네이티브 알림 활성화", btnClose: "닫기", btnSave: "저장", btnDelete: "삭제",
+                idTitle: "공간 식별", planTitle: "계획: ", calColor: "식별 색상:", calFix: "이벤트 고정", placeholderTask: "활동 이름...",
+                placeholderTime: "시간 (예: 17:30)", btnAdd: "추가", placeholderNote: "메모 제목...", btnCreate: "생성", placeholderCalEvt: "오늘 계획은 무엇인가요?",
+                noTasks: "이 주기에 계획된 일정이 없습니다.", noTasksBox: "현재 보관함이 비어 있습니다.", noNotes: "개념적인 기록이 없습니다.", noCalEvt: "약속이나 등록된 이벤트가 없습니다.",
+                calAsignar: "할당", calRemover: "제거", btnVolver: "돌아가기", weekdays: ["일", "월", "화", "수", "목", "금", "토"],
+                months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+            }
+        };
+
+        let rawData = localStorage.getItem('aura_studio_data');
+        let data = { username: 'Personal', tasks: [], notes: {}, calendar: {}, sound: 1, theme: 'light', lang: 'es', notificationsEnabled: false };
+        
+        if (rawData) {
+            try {
+                let parsed = JSON.parse(rawData);
+                data = Object.assign(data, parsed);
+            } catch(e) { console.error(e); }
         }
 
-        // Solicitar el permiso oficial del sistema
-        const permission = await Notification.requestPermission();
-        if (permission === 'granted') {
-          localStorage.setItem('pref-notifications', 'enabled');
-          // Disparar aviso nativo de confirmación
-          new Notification("Notificaciones activadas", {
-            body: "El sistema emitirá alertas nativas desde ahora.",
-          });
-        } else {
-          // Si el usuario bloquea o deniega los permisos en el S.O.
-          e.target.checked = false;
-          localStorage.setItem('pref-notifications', 'disabled');
+        let currentCalendarDate = new Date();
+        let selectedDayKey = null; 
+        let activeNoteTitle = '';
+        let selectedColor = '#6B1D2F';
+        let tareasNotificadas = new Set(); 
+        let deferredPrompt = null; 
+
+        // --- MANEJO DE INSTALACIÓN PWA ---
+        if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+            window.addEventListener('DOMContentLoaded', () => {
+                const installBtn = document.getElementById('btn-install-pwa');
+                if (installBtn) installBtn.classList.add('hidden-install');
+            });
         }
-      } else {
-        localStorage.setItem('pref-notifications', 'disabled');
-      }
-    });
 
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtn = document.getElementById('btn-install-pwa');
+            if (installBtn) {
+                installBtn.classList.remove('hidden-install');
+                installBtn.style.background = 'rgba(107, 29, 47, 0.1)';
+                installBtn.style.borderColor = 'var(--accent-brand)';
+                installBtn.style.color = 'var(--accent-brand)';
+            }
+        });
 
-    // --- PERSISTENCIA Y CARGA LOCAL (LocalStorage) ---
-    function loadPreferences() {
-      // 1. Cargar e inicializar Tema
-      const savedTheme = localStorage.getItem('pref-theme') || 'system';
-      themeSelect.value = savedTheme;
-      applyTheme(savedTheme);
+        document.getElementById('btn-install-pwa').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('btn-install-pwa').classList.add('hidden-install');
+                }
+                deferredPrompt = null;
+            }
+        });
 
-      // 2. Cargar e inicializar Idioma
-      const savedLang = localStorage.getItem('pref-lang') || 'es';
-      langSelect.value = savedLang;
+        window.addEventListener('appinstalled', () => {
+            const installBtn = document.getElementById('btn-install-pwa');
+            if (installBtn) installBtn.classList.add('hidden-install');
+            deferredPrompt = null;
+        });
 
-      // 3. Cargar estado de Notificaciones
-      const savedNotify = localStorage.getItem('pref-notifications');
-      if (savedNotify === 'enabled' && Notification.permission === 'granted') {
-        notifyToggle.checked = true;
-      } else {
-        notifyToggle.checked = false;
-        if(savedNotify === 'enabled' && Notification.permission !== 'granted') {
-           localStorage.setItem('pref-notifications', 'disabled');
+        function saveData() {
+            localStorage.setItem('aura_studio_data', JSON.stringify(data));
+            renderEverything();
         }
-      }
-    }
 
-    // Guardar idioma al cambiar
-    langSelect.addEventListener('change', (e) => {
-      localStorage.setItem('pref-lang', e.target.value);
-    });
+        // --- ADMINISTRACIÓN DE IDIOMA Y TRADUCCIÓN ---
+        function applyLanguage() {
+            const lang = data.lang || 'es';
+            const t = translations[lang] || translations['es'];
 
-    // Ejecutar al cargar la página
-    loadPreferences();
-  </script>
+            document.getElementById('txt-home-title').innerHTML = `${t.homeTitle}<span id="username-display" onclick="openModal('username-modal')">${data.username}</span>`;
+            document.getElementById('txt-install').innerText = t.install;
+            document.getElementById('txt-menu-events').innerText = t.menuEvents;
+            document.getElementById('txt-menu-tasks').innerText = t.menuTasks;
+            document.getElementById('txt-menu-notes').innerText = t.menuNotes;
+            document.getElementById('txt-cronograma-title').innerText = t.cronogramaTitle;
+            
+            document.getElementById('txt-cal-header').innerText = t.calHeader;
+            document.getElementById('txt-cal-today').innerText = t.calToday;
+            document.getElementById('txt-cal-detail').innerText = t.calDetail;
+            document.getElementById('txt-tasks-header').innerText = t.tasksHeader;
+            document.getElementById('txt-notes-header').innerText = t.notesHeader;
+
+            // Modales
+            document.getElementById('txt-modal-config-title').innerText = t.configTitle;
+            document.getElementById('lbl-lang').innerText = t.lblLang;
+            document.getElementById('lbl-theme').innerText = t.lblTheme;
+            document.getElementById('opt-theme-light').innerText = t.themeLight;
+            document.getElementById('opt-theme-dark').innerText = t.themeDark;
+            document.getElementById('opt-theme-system').innerText = t.themeSystem;
+            document.getElementById('lbl-notify-title').innerText = t.lblNotifyTitle;
+            document.getElementById('lbl-notify-desc').innerText = t.lblNotifyDesc;
+            
+            document.querySelectorAll('.btn-lbl-close').forEach(b => b.innerText = t.btnClose);
+            document.querySelectorAll('.btn-lbl-save').forEach(b => b.innerText = t.btnSave);
+            document.querySelectorAll('.btn-lbl-delete').forEach(b => b.innerText = t.btnDelete);
+            document.querySelectorAll('.btn-lbl-back').forEach(b => b.innerText = t.btnVolver);
+
+            document.getElementById('txt-modal-id-title').innerText = t.idTitle;
+            document.getElementById('lbl-cal-color').innerText = t.calColor;
+            document.getElementById('btn-cal-save-evt').innerText = t.calFix;
+
+            // Placeholders
+            document.getElementById('task-input').placeholder = t.placeholderTask;
+            document.getElementById('task-time').placeholder = t.placeholderTime;
+            document.getElementById('btn-task-add').innerText = t.btnAdd;
+            document.getElementById('note-title-input').placeholder = t.placeholderNote;
+            document.getElementById('btn-note-create').innerText = t.btnCreate;
+            document.getElementById('cal-input-title').placeholder = t.placeholderCalEvt;
+            
+            if(document.getElementById('btn-edit-cal')) document.getElementById('btn-edit-cal').innerText = t.calAsignar;
+            if(document.getElementById('btn-delete-cal')) document.getElementById('btn-delete-cal').innerText = t.calRemover;
+
+            // Días de la semana
+            const weekdaysBox = document.getElementById('calendar-weekdays');
+            if(weekdaysBox) {
+                weekdaysBox.innerHTML = t.weekdays.map(d => `<div>${d}</div>`).join('');
+            }
+        }
+
+        function changeLanguage(langCode) {
+            data.lang = langCode;
+            saveData();
+        }
+
+        // --- ADMINISTRACIÓN DEL TEMA (CLARO, OSCURO, SISTEMA) ---
+        function changeTheme(themeVal) {
+            data.theme = themeVal;
+            let targetTheme = themeVal;
+            if (themeVal === 'system') {
+                targetTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            saveData();
+        }
+
+        // --- SISTEMA DE NOTIFICACIONES NATIVAS DEL SISTEMA ---
+        async function toggleNotifications(enabled) {
+            if (enabled) {
+                if (!('Notification' in window)) {
+                    alert('Este navegador no soporta notificaciones.');
+                    data.notificationsEnabled = false;
+                    document.getElementById('notify-toggle').checked = false;
+                    return;
+                }
+                
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    data.notificationsEnabled = true;
+                    new Notification("Espacio", { body: "Notificaciones del sistema vinculadas correctamente." });
+                } else {
+                    data.notificationsEnabled = false;
+                    document.getElementById('notify-toggle').checked = false;
+                }
+            } else {
+                data.notificationsEnabled = false;
+            }
+            saveData();
+        }
+
+        function enviarNotificacion(titulo, cuerpo) {
+            if (data.notificationsEnabled && Notification.permission === 'granted') {
+                const opciones = {
+                    body: cuerpo,
+                    icon: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png',
+                    badge: 'https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png'
+                };
+
+                if (navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.ready.then(registration => {
+                        registration.showNotification(titulo, opciones);
+                    });
+                } else {
+                    new Notification(titulo, opciones);
+                }
+            }
+        }
+
+        // --- LOGICA GENERAL DEL ORGANIZADOR ---
+        function applyFormat(command, value = null) {
+            document.execCommand(command, false, value);
+            document.getElementById('modal-note-body').focus();
+        }
+
+        function changeView(viewId) {
+            const currentActive = document.querySelector('.view:not(.hidden)');
+            if(currentActive && currentActive.id !== viewId) {
+                currentActive.style.opacity = '0';
+                currentActive.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    currentActive.classList.add('hidden');
+                    const nextView = document.getElementById(viewId);
+                    nextView.classList.remove('hidden');
+                    nextView.offsetHeight;
+                    nextView.style.opacity = '1';
+                    nextView.style.transform = 'scale(1)';
+                }, 150);
+            }
+            document.getElementById('calendar-detail-box').style.display = 'none';
+            selectedDayKey = null;
+            renderEverything();
+        }
+
+        function openModal(id) {
+            document.getElementById('overlay').style.display = 'block';
+            const modal = document.getElementById(id);
+            modal.style.display = 'block';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeModals() {
+            document.getElementById('overlay').style.display = 'none';
+            document.querySelectorAll('.modal').forEach(m => {
+                m.classList.remove('active');
+                setTimeout(() => m.style.display = 'none', 200);
+            });
+        }
+
+        function saveUsername() {
+            const name = document.getElementById('username-input').value.trim();
+            if(name) data.username = name;
+            saveData(); closeModals();
+        }
+
+        function addTask() {
+            const text = document.getElementById('task-input').value.trim();
+            let time = document.getElementById('task-time').value.trim();
+            if(!text) return;
+            
+            if(time && time.includes(':')) {
+                let parts = time.split(':');
+                let hrs = parts[0].padStart(2, '0');
+                let mins = parts[1].padStart(2, '0');
+                time = `${hrs}:${mins}`;
+            }
+
+            data.tasks.push({ text, time: time || null, completed: false });
+            document.getElementById('task-input').value = '';
+            document.getElementById('task-time').value = '';
+            saveData();
+        }
+
+        function toggleTask(idx) { data.tasks[idx].completed = !data.tasks[idx].completed; saveData(); }
+        function deleteTask(idx) { data.tasks.splice(idx, 1); saveData(); }
+
+        function addNote() {
+            const title = document.getElementById('note-title-input').value.trim();
+            if(!title) return;
+            if(!data.notes[title]) data.notes[title] = '<div>Escribe aquí...</div>';
+            document.getElementById('note-title-input').value = '';
+            saveData();
+            openNoteDetails(title);
+        }
+
+        function openNoteDetails(title) {
+            activeNoteTitle = title;
+            document.getElementById('modal-note-title').innerText = title;
+            document.getElementById('modal-note-body').innerHTML = data.notes[title] || '<div></div>';
+            document.getElementById('btn-delete-note-trigger').onclick = function() {
+                delete data.notes[title]; saveData(); closeModals();
+            };
+            openModal('note-modal');
+        }
+
+        function saveNoteBody() {
+            data.notes[activeNoteTitle] = document.getElementById('modal-note-body').innerHTML;
+            saveData(); closeModals();
+        }
+
+        function changeMonth(direction) {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + direction);
+            document.getElementById('calendar-detail-box').style.display = 'none';
+            selectedDayKey = null;
+            renderCalendar();
+        }
+
+        function goToCurrentMonth() {
+            currentCalendarDate = new Date();
+            document.getElementById('calendar-detail-box').style.display = 'none';
+            selectedDayKey = null;
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+            const realToday = new Date();
+            const t = translations[data.lang || 'es'] || translations['es'];
+
+            document.getElementById('calendar-month-year').innerText = `${t.months[month]} ${year}`;
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDays = new Date(year, month + 1, 0).getDate();
+            const container = document.getElementById('calendar-grid-box');
+            container.innerHTML = '';
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'calendar-day empty';
+                container.appendChild(emptyDiv);
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dayKey = `${year}-${month + 1}-${day}`;
+                const btn = document.createElement('button');
+                btn.className = 'calendar-day';
+                btn.innerText = day;
+
+                if (data.calendar[dayKey]) {
+                    btn.style.background = `${data.calendar[dayKey].color}12`;
+                    btn.style.color = data.calendar[dayKey].color;
+                    btn.style.fontWeight = '600';
+                    btn.style.borderBottom = `2px solid ${data.calendar[dayKey].color}`;
+                }
+
+                if (selectedDayKey === dayKey) btn.classList.add('selected');
+                if (day === realToday.getDate() && month === realToday.getMonth() && year === realToday.getFullYear()) btn.classList.add('current-today');
+
+                btn.onclick = () => selectDay(day, dayKey);
+                container.appendChild(btn);
+            }
+        }
+
+        function selectDay(day, dayKey) {
+            selectedDayKey = dayKey;
+            renderCalendar();
+
+            const detailBox = document.getElementById('calendar-detail-box');
+            const detailText = document.getElementById('cal-detail-text');
+            const t = translations[data.lang || 'es'] || translations['es'];
+
+            if(data.calendar[dayKey]) {
+                detailText.innerText = `${data.calendar[dayKey].title}`;
+            } else {
+                detailText.innerText = t.noCalEvt;
+            }
+            detailBox.style.display = 'block';
+
+            document.getElementById('btn-edit-cal').onclick = () => {
+                const partes = dayKey.split('-');
+                document.getElementById('modal-day-num').innerText = `${partes[2]}/${partes[1]}/${partes[0]}`;
+                document.getElementById('cal-input-title').value = data.calendar[dayKey] ? data.calendar[dayKey].title : '';
+                setModalColor(data.calendar[dayKey] ? data.calendar[dayKey].color : '#6B1D2F');
+                openModal('calendar-modal');
+            };
+
+            document.getElementById('btn-delete-cal').onclick = () => {
+                if(data.calendar[dayKey]) {
+                    delete data.calendar[dayKey];
+                    detailBox.style.display = 'none';
+                    selectedDayKey = null;
+                    saveData();
+                }
+            };
+        }
+
+        function setModalColor(color) {
+            selectedColor = color;
+            document.querySelectorAll('.color-opt').forEach(opt => {
+                if(opt.getAttribute('data-color') === color) opt.classList.add('active');
+                else opt.classList.remove('active');
+            });
+        }
+
+        document.querySelectorAll('.color-opt').forEach(opt => {
+            opt.onclick = function() { setModalColor(this.getAttribute('data-color')); }
+        });
+
+        function saveCalendarEvent() {
+            const title = document.getElementById('cal-input-title').value.trim();
+            if(title && selectedDayKey) {
+                data.calendar[selectedDayKey] = { title: title, color: selectedColor };
+                saveData();
+                selectDay(null, selectedDayKey);
+            }
+            closeModals();
+        }
+
+        function renderEverything() {
+            applyLanguage();
+
+            document.getElementById('username-input').value = data.username;
+            document.getElementById('lang-select').value = data.lang || 'es';
+            document.getElementById('theme-select').value = data.theme || 'light';
+            document.getElementById('notify-toggle').checked = data.notificationsEnabled;
+
+            const homeList = document.getElementById('home-tasks-list');
+            const tasksContainer = document.getElementById('tasks-container');
+            const t = translations[data.lang || 'es'] || translations['es'];
+            
+            homeList.innerHTML = '';
+            tasksContainer.innerHTML = '';
+
+            if(data.tasks.length === 0) {
+                homeList.innerHTML = `<li style="color:var(--text-muted)">${t.noTasks}</li>`;
+                tasksContainer.innerHTML = `<p style="color:var(--text-muted); padding:10px 0;">${t.noTasksBox}</p>`;
+            }
+
+            data.tasks.forEach((tTask, idx) => {
+                const itemHome = document.createElement('li');
+                itemHome.style.animationDelay = `${idx * 0.04}s`;
+                const timeTag = tTask.time ? `<span class="time-badge">${tTask.time}</span>` : '';
+                itemHome.innerHTML = `
+                    <span style="${tTask.completed ? 'text-decoration:line-through; color:var(--text-muted); opacity: 0.6;' : ''}">${tTask.text}</span>
+                    ${timeTag}
+                `;
+                homeList.appendChild(itemHome);
+
+                const itemRow = document.createElement('div');
+                itemRow.className = 'task-row';
+                const timeText = tTask.time ? ` <small style="color:var(--accent-brand); font-weight:600;">(${tTask.time})</small>` : '';
+
+                itemRow.innerHTML = `
+                    <div class="task-text ${tTask.completed ? 'completed' : ''}" onclick="toggleTask(${idx})">
+                        <input type="checkbox" ${tTask.completed ? 'checked' : ''}>
+                        <span>${tTask.text}${timeText}</span>
+                    </div>
+                    <button class="btn-delete" onclick="deleteTask(${idx})">×</button>
+                `;
+                tasksContainer.appendChild(itemRow);
+            });
+
+            const notesContainer = document.getElementById('notes-container');
+            notesContainer.innerHTML = '';
+            const keys = Object.keys(data.notes);
+            if(keys.length === 0) notesContainer.innerHTML = `<p style="color:var(--text-muted)">${t.noNotes}</p>`;
+            
+            keys.forEach((k, idx) => {
+                const btnNota = document.createElement('button');
+                btnNota.className = 'input-flat note-item-btn';
+                btnNota.style.animationDelay = `${idx * 0.04}s`;
+                btnNota.onclick = () => openNoteDetails(k);
+                btnNota.innerHTML = `
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    <span>${k}</span>
+                `;
+                notesContainer.appendChild(btnNota);
+            });
+
+            renderCalendar();
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registrado', reg))
+                    .catch(err => console.error('Error SW', err));
+            });
+        }
+
+        // --- VERIFICACIÓN CADA 30 SEGUNDOS ---
+        setInterval(() => {
+            const ahora = new Date();
+            const hrs = String(ahora.getHours()).padStart(2, '0');
+            const mins = String(ahora.getMinutes()).padStart(2, '0');
+            const horaActualStr = `${hrs}:${mins}`;
+
+            data.tasks.forEach(t => {
+                if(t.time && !t.completed) {
+                    let taskTimeClean = t.time.trim();
+                    if(taskTimeClean === horaActualStr && !tareasNotificadas.has(t.text + horaActualStr)) {
+                        enviarNotificacion("Plazo Expirado", `${t.text}`);
+                        tareasNotificadas.add(t.text + horaActualStr);
+                    }
+                }
+            });
+
+            if(horaActualStr === "00:00") tareasNotificadas.clear();
+
+        }, 30000);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Inicializar tema actual
+            let currentT = data.theme || 'light';
+            if(currentT === 'system') {
+                currentT = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', currentT);
+            
+            // Escuchar si el sistema operativo cambia de apariencia en tiempo real
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                if (data.theme === 'system') {
+                    const updated = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', updated);
+                }
+            });
+
+            renderEverything();
+        });
+    </script>
 </body>
 </html>
