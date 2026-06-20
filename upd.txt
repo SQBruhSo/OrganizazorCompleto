@@ -1,8 +1,10 @@
-[v2.1.0] - "Evolución de Ecosistema"
-- CORE: Implementado sistema de renderizado de texto con marcas (H1, H2, T).
-- UI: Restauración de animaciones Bézier (Cubic-Bezier) en transiciones de vistas.
-- LANG: Integración de Diccionario Global Dinámico. 
-- HELP: Añadido módulo de Guía de Usuario en botón de Ayuda.
-- PWA: Optimización de caché para modo offline en Service Worker.
-- BUGS: Corregida persistencia de temas en modo 'system' y bloqueo de audio en clicks.
-- UX: Panel de configuraciones con selectores nativos y feedback visual inmediato.
+[v2.1.0] - "Restauración de Ecosistema Completo"
+- RESTORE: Recuperación total del motor de renderizado del DOM (1100+ líneas).
+- CSS: Integración profunda de animaciones (Bézier-based) en paneles, cards y menús.
+- LANG: Implementación de sistema multi-idioma (10 lenguas) con persistencia en localStorage.
+- HELP: Módulo de guía interactiva "Manual de Usuario" con despliegue animado.
+- PWA: Sincronización completa con Service Worker y manifiestos (PC/Mobile).
+- DATA: Corrección de lógica para persistencia de tareas, notas y calendario.
+- ASSETS: Restauración de iconos y diseño de marca original.
+- NOTIF: Sistema de notificaciones en segundo plano mejorado.
+- UI: Panel de configuraciones con selectores nativos y tema 'system' dinámico.
