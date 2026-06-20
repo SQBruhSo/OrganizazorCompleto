@@ -58,6 +58,8 @@
             --text-muted: #9AA0A6;
             --border-color: #2D3135;
             --input-bg: #212327;
+            /* Tono corregido para que el rojo bordo no se apague en modo oscuro */
+            --accent-brand: #9E3A50; 
         }
 
         * {
@@ -322,6 +324,14 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-brand); }
         input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Estilos del Tutorial Integrado */
+        .tutorial-step { display: none; flex-direction: column; gap: 14px; text-align: center; }
+        .tutorial-step.active { display: flex; }
+        .tutorial-reason-box { background: var(--input-bg); border-radius: 16px; padding: 14px; text-align: left; margin-top: 8px; border: 1px dashed var(--border-color); }
+        .tutorial-reason-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 13.5px; color: var(--text-main); }
+        .tutorial-reason-item:last-child { margin-bottom: 0; }
+        .tutorial-reason-item svg { width: 16px; height: 16px; color: var(--accent-brand); flex-shrink: 0; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -332,9 +342,12 @@
             <div class="card brand-header">
                 <div class="welcome-title" id="txt-home-title">Control de <span id="username-display" onclick="openModal('username-modal')">Espacio</span></div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <button class="btn-back" id="btn-install-pwa" style="padding: 6px 14px; font-size: 12px; display: none;">
+                    <button class="btn-back" id="btn-install-pwa" style="padding: 6px 14px; font-size: 12px; display: none;" onclick="triggerPWAInstall()">
                         <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                         <span id="txt-install">Instalar app</span>
+                    </button>
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openTutorial(true)">
+                        <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
                     </button>
                     <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openModal('config-modal')">
                         <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
@@ -426,6 +439,48 @@
 
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
+    <!-- MODAL TUTORIAL E INSTALACIÓN -->
+    <div class="modal" id="tutorial-modal">
+        <div class="tutorial-step active" id="step-1">
+            <h3 style="font-size: 19px;">¡Te damos la bienvenida!</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Este es tu nuevo Control de Espacio para gestionar tu día a día de forma limpia y eficiente.</p>
+            <div class="tutorial-reason-box">
+                <div class="tutorial-reason-item">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <span><strong>Eventos:</strong> Un calendario interactivo rápido para estructurar tus objetivos mensuales.</span>
+                </div>
+                <div class="tutorial-reason-item">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <span><strong>Pendientes:</strong> Lista ágil con alertas integradas al minuto exacto.</span>
+                </div>
+                <div class="tutorial-reason-item">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    <span><strong>Notas fijas:</strong> Un lienzo conceptual enriquecido para que no pierdas ideas.</span>
+                </div>
+            </div>
+            <button class="btn-add" style="padding: 14px; margin-top: 10px;" onclick="nextTutorialStep(2)">Siguiente</button>
+        </div>
+        
+        <div class="tutorial-step" id="step-2">
+            <h3 style="font-size: 19px;">Mejora tu Experiencia</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Recomendamos instalar la aplicación en tu dispositivo para un acceso optimizado:</p>
+            <div class="tutorial-reason-box">
+                <div class="tutorial-reason-item">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    <span><strong>Fluidez nativa:</strong> Entorno sin barras de navegación molestas que distraigan.</span>
+                </div>
+                <div class="tutorial-reason-item">
+                    <svg viewBox="0 0 24 24"><path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                    <span><strong>Alertas directas:</strong> Recordatorios mucho más estables incluso con el navegador cerrado.</span>
+                </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <button class="btn-add" id="btn-modal-install" style="padding: 14px; background: var(--accent-brand); color: white; display: none;" onclick="triggerPWAInstall()">Instalar en el dispositivo</button>
+                <button class="btn-back" style="padding: 14px; border-radius: 14px;" onclick="closeModals()">Comenzar a usar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="config-modal">
         <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
         
@@ -505,7 +560,6 @@
     </div>
 
     <script>
-        // Diccionario completo de traducción (10 idiomas)
         const translations = {
             es: {
                 homeTitle: "Control de ", install: "Instalar app", menuEvents: "Eventos", menuTasks: "Pendientes", menuNotes: "Notas fijas", cronogramaTitle: "Cronograma del Día",
@@ -546,7 +600,7 @@
                 configTitle: "Configuration", lblLang: "Idioma / Language", lblTheme: "Thème de l'interface", themeLight: "Clair", themeDark: "Sombre", themeSystem: "Par défaut du système",
                 lblNotifyTitle: "Alertes Système", lblNotifyDesc: "Activer les notifications natives", btnClose: "Fermer", btnSave: "Enregistrer", btnDelete: "Supprimer",
                 idTitle: "Identité de l'Espace", planTitle: "Planifier: ", calColor: "Couleur d'identification:", calFix: "Fixer l'événement", placeholderTask: "Nom de l'activité...",
-                placeholderTime: "Heure (ex. 17:30)", btnAdd: "Ajouter", placeholderNote: "Titre de la note...", btnCreate: "Créer", placeholderCalEvt: "Qu'est-je prévu pour aujourd'hui?",
+                placeholderTime: "Heure (ex. 17:30)", btnAdd: "Ajouter", placeholderNote: "Titre de la note...", btnCreate: "Créer", placeholderCalEvt: "Qu'est-je previsto per oggi?",
                 noTasks: "Rien de prévu pour ce cycle.", noTasksBox: "Plateau propre pour le moment.", noNotes: "Aucune note ici.", noCalEvt: "Libre d'engagements.",
                 calAsignar: "Assigner", calRemover: "Supprimer", btnVolver: "Retour", weekdays: ["D", "L", "M", "M", "J", "V", "S"],
                 months: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"]
@@ -619,10 +673,9 @@
             }
         };
 
-        // Estado inicial de datos limpios
-        let data = { username: 'Personal', tasks: [], notes: {}, calendar: {}, theme: 'light', lang: 'es', notificationsEnabled: false };
+        let data = { username: 'Personal', tasks: [], notes: {}, calendar: {}, theme: 'light', lang: 'es', notificationsEnabled: false, tutorialCompleted: false };
+        let deferredPrompt = null;
         
-        // Carga desde localStorage de forma segura
         try {
             let rawData = localStorage.getItem('aura_studio_data');
             if (rawData) {
@@ -642,20 +695,17 @@
             renderEverything();
         }
 
-        // --- SISTEMA DE NAVEGACIÓN ENTRE VISTAS ---
+        // --- SISTEMA DE NAVEGACIÓN ---
         function changeView(viewId) {
-            // Ocultar todas las vistas
             document.querySelectorAll('.view').forEach(v => {
                 v.classList.add('hidden');
                 v.style.opacity = '0';
                 v.style.transform = 'scale(0.97)';
             });
 
-            // Mostrar la seleccionada
             const nextView = document.getElementById(viewId);
             if (nextView) {
                 nextView.classList.remove('hidden');
-                // Forzar reflujo de rendering
                 nextView.offsetHeight; 
                 nextView.style.opacity = '1';
                 nextView.style.transform = 'scale(1)';
@@ -667,7 +717,7 @@
             }
         }
 
-        // --- APERTURA Y CIERRE DE VENTANAS MODALES ---
+        // --- MODALES Y TUTORIAL ---
         function openModal(id) {
             document.getElementById('overlay').style.display = 'block';
             const modal = document.getElementById(id);
@@ -683,9 +733,63 @@
                 m.classList.remove('active');
                 setTimeout(() => m.style.display = 'none', 200);
             });
+            if(!data.tutorialCompleted) {
+                data.tutorialCompleted = true;
+                saveData();
+            }
         }
 
-        // --- CONFIGURACIONES (IDIOMA, TEMA, NOTIFICACIONES) ---
+        function openTutorial(force = false) {
+            if(!data.tutorialCompleted || force) {
+                nextTutorialStep(1);
+                openModal('tutorial-modal');
+            }
+        }
+
+        function nextTutorialStep(stepNumber) {
+            document.querySelectorAll('.tutorial-step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+            
+            if(stepNumber === 2) {
+                const modalBtn = document.getElementById('btn-modal-install');
+                if(deferredPrompt) {
+                    modalBtn.style.display = 'block';
+                } else {
+                    modalBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // --- CAPTURA E INSTALACIÓN PWA ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('btn-install-pwa').style.display = 'inline-flex';
+            const modalBtn = document.getElementById('btn-modal-install');
+            if(modalBtn) modalBtn.style.display = 'block';
+        });
+
+        function triggerPWAInstall() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    document.getElementById('btn-install-pwa').style.display = 'none';
+                    const modalBtn = document.getElementById('btn-modal-install');
+                    if(modalBtn) modalBtn.style.display = 'none';
+                }
+                deferredPrompt = null;
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            deferredPrompt = null;
+            document.getElementById('btn-install-pwa').style.display = 'none';
+            const modalBtn = document.getElementById('btn-modal-install');
+            if(modalBtn) modalBtn.style.display = 'none';
+        });
+
+        // --- CONFIGURACIONES ---
         function applyLanguage() {
             const lang = data.lang || 'es';
             const t = translations[lang] || translations['es'];
@@ -762,7 +866,7 @@
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     data.notificationsEnabled = true;
-                    new Notification("Control de Espacio", { body: "Las alertas del sistema se han vinculado de forma nativa." });
+                    enviarNotificacion("Control de Espacio", "Las alertas del sistema se han vinculado de forma nativa.");
                 } else {
                     data.notificationsEnabled = false;
                     document.getElementById('notify-toggle').checked = false;
@@ -788,7 +892,7 @@
             saveData(); closeModals();
         }
 
-        // --- CONTROLADOR DE ACTIVIDADES (PENDIENTES) ---
+        // --- CONTROLADOR DE ACTIVIDADES ---
         function addTask() {
             const text = document.getElementById('task-input').value.trim();
             let time = document.getElementById('task-time').value.trim();
@@ -810,7 +914,7 @@
         function toggleTask(idx) { data.tasks[idx].completed = !data.tasks[idx].completed; saveData(); }
         function deleteTask(idx) { data.tasks.splice(idx, 1); saveData(); }
 
-        // --- CONTROLADOR DE BLOC DE NOTAS ---
+        // --- CONTROLADOR DE NOTAS ---
         function addNote() {
             const title = document.getElementById('note-title-input').value.trim();
             if(!title) return;
@@ -948,7 +1052,7 @@
             closeModals();
         }
 
-        // --- REDIBUJAR TODA LA INTERFAZ ---
+        // --- RENDER GLOBAL ---
         function renderEverything() {
             applyLanguage();
 
@@ -1011,7 +1115,7 @@
             renderCalendar();
         }
 
-        // --- COMPROBADOR INTERNO DE RECORDATORIOS (CADA 30 SEGUNDOS) ---
+        // --- CHEQUEO DE ALERTAS (CADA 30 SEGUNDOS) ---
         setInterval(() => {
             const ahora = new Date();
             const hrs = String(ahora.getHours()).padStart(2, '0');
@@ -1031,7 +1135,7 @@
             if(horaActualStr === "00:00") tareasNotificadas.clear();
         }, 30000);
 
-        // Inicialización de la App
+        // Inicialización
         window.addEventListener('DOMContentLoaded', () => {
             let currentT = data.theme || 'light';
             if(currentT === 'system') {
@@ -1047,6 +1151,7 @@
             });
 
             renderEverything();
+            openTutorial(false);
         });
     </script>
 </body>
