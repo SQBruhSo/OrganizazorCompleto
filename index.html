@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Organizador Personal Pro</title>
     
+    <!-- Favicons y Apple Touch Icon -->
     <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
     <link class="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
 
@@ -110,9 +111,15 @@
             letter-spacing: -0.4px;
         }
 
-        h1, .log-h1 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.6px; margin-bottom: 12px; }
-        h2, .log-h2 { font-size: 19px; font-weight: 600; color: var(--text-main); letter-spacing: -0.4px; margin-top: 14px; margin-bottom: 6px; }
-        p, .log-p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); }
+        /* Tipografías dinámicas para el log de novedades */
+        .log-h1 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.6px; margin: 16px 0 10px 0; }
+        .log-h2 { font-size: 19px; font-weight: 600; color: var(--text-main); letter-spacing: -0.4px; margin: 14px 0 6px 0; }
+        .log-h3 { font-size: 16px; font-weight: 600; color: var(--text-main); margin: 10px 0 4px 0; }
+        .log-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-style: italic; }
+        .log-p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); margin-bottom: 8px; }
+        .log-code { font-family: monospace; background: var(--input-bg); padding: 2px 6px; border-radius: 6px; font-size: 13px; color: var(--accent-brand); }
+
+        h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
 
         .btn-back {
             background: transparent;
@@ -259,7 +266,6 @@
         .task-text span { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.25s ease, opacity 0.25s ease; }
         .task-text.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
         
-        /* Checkbox Nativo iOS Avanzado */
         .task-text input[type="checkbox"] { 
             appearance: none; 
             -webkit-appearance: none; 
@@ -342,7 +348,6 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.97); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); opacity: 0; transition: transform 0.3s var(--aura-bezier), opacity 0.3s var(--fade-bezier); max-height: 90vh; overflow-y: auto; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        /* Estilos de Cajones Blindados y sin barras de arrastre */
         .cajon-drawer {
             position: fixed; left: 0; right: 0; bottom: 0; background: var(--blur-bg); backdrop-filter: blur(20px);
             border-top-left-radius: 28px; border-top-right-radius: 28px; border-top: 1px solid var(--border-color);
@@ -366,7 +371,6 @@
         .color-opt.active { border-color: var(--text-main); transform: scale(1.15); }
 
         .icon svg { width: 22px; height: 22px; fill: currentColor; color: white; }
-        h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
         
         .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; }
         .config-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
@@ -381,10 +385,6 @@
         input:checked + .slider { background-color: var(--accent-brand); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .log-version-block { margin-bottom: 16px; border-left: 3px solid var(--accent-brand); padding-left: 12px; animation: rowIn 0.4s ease; }
-        .log-version-tag { font-weight: 700; color: var(--accent-brand); font-size: 14px; margin-bottom: 4px; }
-        .log-changes-list { list-style: none; padding-left: 4px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
-        
         .guide-step { display: none; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease; }
         .guide-step.active { display: flex; opacity: 1; transform: translateY(0); }
         .guide-nav { display: flex; justify-content: space-between; margin-top: 16px; }
@@ -396,6 +396,7 @@
 
     <div class="phone-container">
         
+        <!-- VISTA HOME -->
         <div id="view-home" class="view">
             <div class="card brand-header">
                 <div class="welcome-title" id="txt-home-title">Control de <span id="username-display" onclick="openModal('username-modal')">Espacio</span></div>
@@ -404,18 +405,22 @@
                         <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                         <span id="txt-install">Instalar app</span>
                     </button>
+                    <!-- Botón Guía Manual -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-help')">
                         <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Guía">
                     </button>
+                    <!-- Botón Novedades -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
                         <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
+                    <!-- Botón Ajustes -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
                         <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
                     </button>
                 </div>
             </div>
 
+            <!-- Menú Grid -->
             <div class="grid-menu">
                 <div class="menu-item" onclick="changeView('view-calendar')">
                     <div class="icon" style="background-color: var(--accent-brand);"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
@@ -431,12 +436,14 @@
                 </div>
             </div>
 
+            <!-- Preview Agenda del Día -->
             <div class="card">
                 <h3 id="txt-cronograma-title" style="margin-bottom: 16px;">Cronograma del Día</h3>
                 <ul id="home-tasks-list" class="list-preview"></ul>
             </div>
         </div>
 
+        <!-- VISTA CALENDARIO -->
         <div id="view-calendar" class="view hidden">
             <div class="card header-box">
                 <span id="txt-cal-header">Agenda Mensual</span>
@@ -465,6 +472,7 @@
             </div>
         </div>
 
+        <!-- VISTA PENDIENTES -->
         <div id="view-tasks" class="view hidden">
             <div class="card header-box">
                 <span id="txt-tasks-header">Lista de Actividades</span>
@@ -482,6 +490,7 @@
             </div>
         </div>
 
+        <!-- VISTA NOTAS FIJAS -->
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
                 <span id="txt-notes-header">Bloque de Notas</span>
@@ -498,8 +507,10 @@
 
     </div>
 
+    <!-- OVERLAY DE MODALES -->
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
+    <!-- MODAL AJUSTES -->
     <div class="modal" id="config-modal">
         <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
         
@@ -542,12 +553,14 @@
         <button class="btn-add btn-lbl-close" style="width:100%; padding:14px; margin-top:14px;" onclick="closeModals()">Cerrar</button>
     </div>
 
+    <!-- MODAL DE IDENTIDAD (Username) -->
     <div class="modal" id="username-modal">
         <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14">
         <button class="btn-add btn-lbl-save" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
     </div>
 
+    <!-- MODAL DETALLE/EDICIÓN NOTA -->
     <div class="modal" id="note-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
             <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"></h3>
@@ -565,6 +578,7 @@
         <button class="btn-add btn-lbl-save" style="width:100%; padding:14px; margin-top:16px;" onclick="saveNoteBody()">Guardar Nota</button>
     </div>
 
+    <!-- MODAL PLANIFICAR EVENTO CALENDARIO -->
     <div class="modal" id="calendar-modal">
         <h3 id="txt-modal-plan-title" style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
         <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?">
@@ -578,6 +592,7 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
+    <!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA (MODAL BLINDADO) -->
     <div class="cajon-drawer" id="drawer-help">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
             <button onclick="closeDrawer('drawer-help')" class="btn-close-x">&times;</button>
@@ -594,7 +609,7 @@
             </div>
             <div class="guide-step" data-step="3">
                 <h4 style="color: var(--accent-yellow); margin-bottom: 6px;">3. Actividades con Horarios</h4>
-                <p>Al añadir pendientes en la sección de Actividades, puedes incluir una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
+                <p>Al añadir pendientes en la sección de Actividades, puedes include una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
             </div>
             <div class="guide-step" data-step="4">
                 <h4 style="color: #1A73E8; margin-bottom: 6px;">4. Notas Estilo iOS Enriquecidas</h4>
@@ -607,13 +622,15 @@
         </div>
     </div>
 
+    <!-- CAJÓN DE NOVEDADES Y ACTUALIZACIONES (MODAL BLINDADO) -->
     <div class="cajon-drawer" id="drawer-news">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
             <button onclick="closeDrawer('drawer-news')" class="btn-close-x">&times;</button>
         </div>
         <h3 style="margin-bottom: 18px; font-size: 19px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
-        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 6px; overflow-y: auto; max-height: 55vh; padding-right: 4px;">
-            </div>
+        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; padding-right: 4px;">
+            <!-- Render dinámico mediante JS -->
+        </div>
     </div>
 
     <script>
@@ -695,13 +712,11 @@
             if(viewId === 'view-notes') renderNotes();
         }
 
-        // DRAWER CONTROLLER (CON INTERACCIÓN BLOQUEADA AL FONDO)
+        // DRAWER CONTROLLER
         function openDrawer(id) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
             setTimeout(() => overlay.style.opacity = '1', 10);
-            
-            // Desenlazamos el cierre automático del overlay para forzar click en "X"
             overlay.onclick = null;
 
             document.getElementById(id).classList.add('active');
@@ -714,7 +729,7 @@
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.display = 'none';
-                overlay.onclick = closeModals; // Devolvemos la función para modales comunes
+                overlay.onclick = closeModals;
             }, 300);
         }
 
@@ -819,52 +834,87 @@
             document.getElementById('btn-guide-prev').disabled = (currentGuideStep === 1);
             document.getElementById('btn-guide-next').innerText = (currentGuideStep === 4) ? (data.lang === 'en' ? 'Finish' : 'Finalizar') : (data.lang === 'en' ? 'Next' : 'Siguiente');
             
-            if(currentGuideStep === 4 && dir === 1 && document.getElementById('btn-guide-next').innerText === 'Finalizar' || document.getElementById('btn-guide-next').innerText === 'Finish') {
-                if(dir === 1 && currentGuideStep === 4) {
-                    // Si vuelve a presionar estando en el paso 4, cierra el drawer
-                    closeDrawer('drawer-help');
-                    currentGuideStep = 1;
-                    moveGuideStep(0);
-                }
+            if(currentGuideStep === 4 && dir === 1) {
+                closeDrawer('drawer-help');
+                currentGuideStep = 1;
+                moveGuideStep(0);
             }
         }
 
-        // PARSER DEL RECURSO UPD.TXT CON TIPOGRAFÍA ESTRUCTURADA
+        // NUEVO MOTOR PARSER <SINTAXIS_AVANZADA> PARA UPD.TXT
         async function loadUpdatesLog() {
             const container = document.getElementById('news-content-box');
             container.innerHTML = `<p style="text-align:center; padding:20px;">...</p>`;
             try {
                 const response = await fetch('./upd.txt');
                 if(!response.ok) throw new Error();
-                const text = await response.text();
+                let text = await response.text();
                 
-                let htmlContent = "";
+                let htmlOutput = "";
+                // Dividimos por líneas
                 const lines = text.split('\n');
                 
                 lines.forEach(line => {
                     let cleaned = line.trim();
-                    if(!cleaned) return;
-                    
-                    if(cleaned.startsWith("H1>")) {
-                        let content = cleaned.replace("H1>", "").replace("<H1", "").trim();
-                        htmlContent += `<div class="log-h1">${content}</div>`;
-                    } else if(cleaned.startsWith("H2>")) {
-                        let content = cleaned.replace("H2>", "").replace("<H2", "").trim();
-                        htmlContent += `<div class="log-h2">${content}</div>`;
+                    if (!cleaned) return;
+
+                    // Comprobamos si la línea viene envuelta en los delimitadores base del sistema <...>
+                    if (cleaned.startsWith('<') && cleaned.endsWith('>')) {
+                        // Extraemos lo que hay dentro de los caracteres < y >
+                        let innerContent = cleaned.substring(1, cleaned.length - 1).trim();
+
+                        let targetClass = "log-p"; // Por defecto es texto normal
+                        let isHeader = false;
+                        let tagType = "";
+
+                        // Clasificación de bloques estructurales prioritarios
+                        if (innerContent.startsWith('# ')) {
+                            targetClass = "log-h1";
+                            innerContent = innerContent.substring(2);
+                            isHeader = true;
+                            tagType = "div";
+                        } else if (innerContent.startsWith('## ')) {
+                            targetClass = "log-h2";
+                            innerContent = innerContent.substring(3);
+                            isHeader = true;
+                            tagType = "div";
+                        } else if (innerContent.startsWith('### ')) {
+                            targetClass = "log-h3";
+                            innerContent = innerContent.substring(4);
+                            isHeader = true;
+                            tagType = "div";
+                        } else if (innerContent.startsWith('-# ')) {
+                            targetClass = "log-sub";
+                            innerContent = innerContent.substring(3);
+                            isHeader = true;
+                            tagType = "p";
+                        }
+
+                        // Procesador de Estilos en línea recursivo (Inline Markdown Parser)
+                        // 1. Cursiva Negrita (_*texto*_)
+                        innerContent = innerContent.replace(/_\*(.*?)\*_/g, '<strong><em>$1</em></strong>');
+                        // 2. Negrita (*texto*)
+                        innerContent = innerContent.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+                        // 3. Cursiva (_texto_)
+                        innerContent = innerContent.replace(/_(.*?)_/g, '<em>$1</em>');
+                        // 4. Bloques de código (`codigo`)
+                        innerContent = innerContent.replace(/`(.*?)`/g, '<span class="log-code">$1</span>');
+
+                        // Inyección limpia al HTML estructurado
+                        if (isHeader) {
+                            htmlOutput += `<${tagType} class="${targetClass}">${innerContent}</${tagType}>`;
+                        } else {
+                            htmlOutput += `<p class="${targetClass}">${innerContent}</p>`;
+                        }
                     } else {
-                        // Cambios/Items regulares
-                        if(cleaned.startsWith("*")) {
-                            cleaned = `<b>${cleaned}</b>`;
-                        }
-                        if(cleaned.startsWith("_") && cleaned.endsWith("_")) {
-                            cleaned = `<i>${cleaned.substring(1, cleaned.length - 1)}</i>`;
-                        }
-                        htmlContent += `<p class="log-p">${cleaned}</p>`;
+                        // Respaldo de texto plano por seguridad si se olvida envolver la línea en < >
+                        htmlOutput += `<p class="log-p">${cleaned}</p>`;
                     }
                 });
-                container.innerHTML = htmlContent || "<p>No hay registros disponibles.</p>";
+
+                container.innerHTML = htmlOutput || "<p>No hay registros de actualización disponibles.</p>";
             } catch(e) {
-                container.innerHTML = `<p style="text-align:center; color:red; font-size:13px; padding:20px;">No se pudo sincronizar el archivo 'upd.txt' interno.</p>`;
+                container.innerHTML = `<p style="text-align:center; color:red; font-size:13px; padding:20px;">Error al procesar o localizar el archivo 'upd.txt'.</p>`;
             }
         }
 
@@ -977,7 +1027,7 @@
             }
         }
 
-        // CALENDARIO E INFRAESTRUCTURA DE PLANIFICACIÓN MENSUAL
+        // CALENDARIO MENSUAL
         function initCalendar() {
             const today = new Date();
             if (currentYear === undefined) currentYear = today.getFullYear();
@@ -1123,7 +1173,7 @@
             });
         }
 
-        // SISTEMA DE ALERTAS EN SEGUNDO PLANO
+        // NOTIFICACIONES
         function toggleNotifications(val) {
             if(val) {
                 if (!("Notification" in window)) {
@@ -1187,7 +1237,7 @@
             }
         });
 
-        // INITIALIZATION DE LA APLICACIÓN
+        // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             loadFromLocalStorage();
             
