@@ -45,7 +45,6 @@
             --border-color: #E2E4E7;
             --input-bg: #F4F5F6;
             --blur-bg: rgba(255, 255, 255, 0.75);
-            --icon-filter: brightness(0.1);
             
             /* Curvas de Transición Avanzadas (Bézier Pro) */
             --aura-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -61,7 +60,6 @@
             --border-color: #2D3135;
             --input-bg: #212327;
             --blur-bg: rgba(22, 24, 27, 0.75);
-            --icon-filter: brightness(0) invert(1);
         }
 
         * {
@@ -149,11 +147,6 @@
         }
         .btn-today:hover { background: rgba(107, 29, 47, 0.05); transform: translateY(-0.5px); }
         .btn-today:active { transform: translateY(0.5px); }
-
-        .btn-icon-top img {
-            filter: var(--icon-filter) !important;
-            transition: filter 0.3s ease;
-        }
 
         /* Vistas e Intercalación con Transiciones de Deslizamiento y Fundido */
         .view {
@@ -423,14 +416,16 @@
                         <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                         <span id="txt-install">Instalar app</span>
                     </button>
-                    <button class="btn-back btn-icon-top" style="padding: 8px; border-radius: 50%; display: flex;" onclick="openDrawer('drawer-help')">
-                        <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain;" alt="Ayuda">
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openDrawer('drawer-help')">
+                        <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
-                    <button class="btn-back btn-icon-top" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
-                        <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain;" alt="Novedades">
+                    <!-- Botón Novedades -->
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
+                        <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
-                    <button class="btn-back btn-icon-top" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
-                        <img src="https://cdn-icons-png.magnific.com/512/6619/6619132.png" style="width: 18px; height: 18px; object-fit: contain;" alt="Configuración">
+                    <!-- Botón Ajustes -->
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
+                        <img src="https://cdn-icons-png.magnific.com/512/6619/6619132.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Configuración">
                     </button>
                 </div>
             </div>
@@ -510,7 +505,7 @@
                 <div id="notes-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
                 <div class="input-group" style="display:flex; gap:10px;">
                     <input type="text" id="note-title-input" class="input-flat" maxlength="30" placeholder="Título de la nota...">
-                    <button class="btn-add" id="btn-note-create">Crear</button>
+                    <button class="btn-add" id="btn-note-create" onclick="addNote()">Crear</button>
                 </div>
             </div>
         </div>
@@ -527,6 +522,14 @@
             <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
                 <option value="es">Español</option>
                 <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="it">Italiano</option>
+                <option value="ja">日本語</option>
+                <option value="zh">中文</option>
+                <option value="ru">Русский</option>
+                <option value="ko">한국어</option>
             </select>
         </div>
 
@@ -589,6 +592,7 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
+<!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA -->
 <div class="cajon-drawer" id="drawer-help" style="z-index: 100;">
     <div class="drawer-handle" onclick="closeDrawer('drawer-help')"></div>
     <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-help-title">Manual de Uso del Espacio</h3>
@@ -616,11 +620,13 @@
     </div>
 </div>
 
+<!-- CAJÓN DE NOVEDADES Y ACTUALIZACIONES -->
 <div class="cajon-drawer" id="drawer-news" style="z-index: 100;">
     <div class="drawer-handle" onclick="closeDrawer('drawer-news')"></div>
     <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
     <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 60vh; padding-right: 4px;">
-        </div>
+        <!-- Render dinámico mediante JS -->
+    </div>
 </div>
 
     <script>
@@ -694,7 +700,7 @@
                 lblBack: "Volver",
                 lblAssign: "Asignar",
                 lblRemove: "Remover",
-                lblCreate: "Crear",
+                lblCreate: "Criar",
                 lblAdd: "Añadir",
                 lblFijar: "Fijar Evento",
                 phTaskName: "Nombre de la actividad...",
@@ -949,6 +955,20 @@
             document.getElementById('btn-guide-next').innerText = (currentHelpStep === steps.length) ? dict.lblClose : dict.lblNext;
         }
         
+        document.getElementById('btn-guide-next').addEventListener('click', () => {
+            const steps = document.querySelectorAll('.guide-step');
+            if(currentHelpStep === steps.length) {
+                closeDrawer('drawer-help');
+                setTimeout(() => {
+                    currentHelpStep = 1;
+                    steps.forEach(s => s.classList.remove('active'));
+                    steps[0].classList.add('active');
+                    document.getElementById('btn-guide-prev').disabled = true;
+                    document.getElementById('btn-guide-next').innerText = (i18n[data.lang] || i18n.es).lblNext;
+                }, 400);
+            }
+        });
+
         // SECCIÓN ACTIVIDADES
         function renderTasks() {
             const container = document.getElementById('tasks-container');
@@ -1220,6 +1240,13 @@
             };
         }
 
+        document.querySelectorAll('.color-picker .color-opt').forEach(opt => {
+            opt.addEventListener('click', function() {
+                document.querySelectorAll('.color-picker .color-opt').forEach(o => o.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
         function saveCalendarEvent() {
             if(!selectedDayStr) return;
             const title = document.getElementById('cal-input-title').value.trim();
@@ -1259,51 +1286,6 @@
 
         const tareasNotificadas = new Set();
 
-        // PWA
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            const btn = document.getElementById('btn-install-pwa');
-            if(btn) btn.style.display = 'inline-flex';
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadFromLocalStorage();
-            
-            document.getElementById('lang-select').value = data.lang;
-            document.getElementById('notify-toggle').checked = data.notify;
-            document.getElementById('theme-select').value = data.theme;
-            
-            changeTheme(data.theme);
-            initCalendar();
-            changeLanguage(data.lang);
-
-            // Asignación explícitas de EventListeners para evitar problemas de re-renderizado de nodos
-            document.getElementById('btn-note-create').addEventListener('click', addNote);
-            
-            document.getElementById('btn-guide-next').addEventListener('click', () => {
-                const steps = document.querySelectorAll('.guide-step');
-                if(currentHelpStep === steps.length) {
-                    closeDrawer('drawer-help');
-                    setTimeout(() => {
-                        currentHelpStep = 1;
-                        steps.forEach(s => s.classList.remove('active'));
-                        steps[0].classList.add('active');
-                        document.getElementById('btn-guide-prev').disabled = true;
-                        document.getElementById('btn-guide-next').innerText = (i18n[data.lang] || i18n.es).lblNext;
-                    }, 400);
-                }
-            });
-
-            document.querySelectorAll('.color-picker .color-opt').forEach(opt => {
-                opt.addEventListener('click', function() {
-                    document.querySelectorAll('.color-picker .color-opt').forEach(o => o.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-        });
-
         setInterval(() => {
             if(!data.notify || Notification.permission !== "granted") return;
 
@@ -1325,6 +1307,15 @@
             if(horaActualStr === "00:00") tareasNotificadas.clear();
         }, 25000);
 
+        // PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('btn-install-pwa');
+            if(btn) btn.style.display = 'inline-flex';
+        });
+
         document.getElementById('btn-install-pwa').addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -1334,6 +1325,18 @@
                 }
                 deferredPrompt = null;
             }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            
+            document.getElementById('lang-select').value = data.lang;
+            document.getElementById('notify-toggle').checked = data.notify;
+            document.getElementById('theme-select').value = data.theme;
+            
+            changeTheme(data.theme);
+            initCalendar();
+            changeLanguage(data.lang);
         });
     </script>
 </body>
