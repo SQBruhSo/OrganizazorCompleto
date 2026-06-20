@@ -1,10 +1,6 @@
-[v2.1.0] - "Restauración de Ecosistema Completo"
-- RESTORE: Recuperación total del motor de renderizado del DOM (1100+ líneas).
-- CSS: Integración profunda de animaciones (Bézier-based) en paneles, cards y menús.
-- LANG: Implementación de sistema multi-idioma (10 lenguas) con persistencia en localStorage.
-- HELP: Módulo de guía interactiva "Manual de Usuario" con despliegue animado.
-- PWA: Sincronización completa con Service Worker y manifiestos (PC/Mobile).
-- DATA: Corrección de lógica para persistencia de tareas, notas y calendario.
-- ASSETS: Restauración de iconos y diseño de marca original.
-- NOTIF: Sistema de notificaciones en segundo plano mejorado.
-- UI: Panel de configuraciones con selectores nativos y tema 'system' dinámico.
+<V"2.2.0">
+<T"Mejoras en el Sistema">
+<S"v2.2.0 Estable">
+<T"Se integró un sistema automático para leer el archivo *upd.txt* de manera dinámica.">
+<T"Soporte de estilos avanzados: Ahora podés usar *negrita*, _cursiva_ o mezclar texto *importante* con partes _estilizadas_ en una misma línea.">
+<T"Optimización completa de la barra de scroll estilo *Apple Glassmorphism* sin romper la interfaz.">
