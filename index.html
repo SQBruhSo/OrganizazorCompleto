@@ -481,9 +481,9 @@
             <div class="card">
                 <div id="tasks-container" style="display:flex; flex-direction:column;"></div>
                 <div class="task-input-container">
-                    <input type="text" id="task-input" class="input-flat" maxlength="50" placeholder="Nombre de la actividad...">
+                    <input type="text" id="task-input" class="input-flat" maxlength="50" autocomplete="off" placeholder="Nombre de la actividad...">
                     <div class="input-row-bottom">
-                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" placeholder="Hora (ej. 17:30)">
+                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" autocomplete="off" placeholder="Hora (ej. 17:30)">
                         <button class="btn-add" id="btn-task-add" style="flex: 1;" onclick="addTask()">Añadir</button>
                     </div>
                 </div>
@@ -499,7 +499,7 @@
             <div class="card">
                 <div id="notes-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
                 <div class="input-group" style="display:flex; gap:10px;">
-                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" placeholder="Título de la nota...">
+                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" autocomplete="off" placeholder="Título de la nota...">
                     <button class="btn-add" id="btn-note-create" onclick="addNote()">Crear</button>
                 </div>
             </div>
@@ -556,7 +556,7 @@
     <!-- MODAL DE IDENTIDAD (Username) -->
     <div class="modal" id="username-modal">
         <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
-        <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14">
+        <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14" autocomplete="off">
         <button class="btn-add btn-lbl-save" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
     </div>
 
@@ -581,7 +581,7 @@
     <!-- MODAL PLANIFICAR EVENTO CALENDARIO -->
     <div class="modal" id="calendar-modal">
         <h3 id="txt-modal-plan-title" style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
-        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?">
+        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?" autocomplete="off">
         <label id="lbl-cal-color" style="font-size:12px; font-weight:600; color:var(--text-muted)">Color identificador:</label>
         <div class="color-picker">
             <div class="color-opt active" style="background:var(--accent-brand);" data-color="#6B1D2F"></div>
@@ -971,7 +971,7 @@
         function renderNotes() {
             const container = document.getElementById('notes-container');
             container.innerHTML = "";
-            if(data.notes.length === 0) {
+            if(!data.notes || data.notes.length === 0) {
                 container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:14px; padding:30px 0;">${data.lang === 'en' ? 'No notes stored.' : 'No hay notas almacenadas.'}</p>`;
                 return;
             }
@@ -989,22 +989,18 @@
 
         let editingNoteIndex = null;
         function addNote() {
-           const input = document.getElementById('note-title-input');
-           const title = input.value.trim();
-           if(!title) return;
-           
-           // 1. Añadimos la nota al array
-           data.notes.push({ title: title, body: "<div>Empieza a escribir...</div>" });
-           
-           // 2. GUARDAMOS los cambios de forma local para que no se borren
-           saveToLocalStorage();
-           
-           // 3. Limpiamos el campo de texto
-           input.value = "";
-           
-           // 4. ACTUALIZAMOS la pantalla para que aparezca la nueva nota (Esto faltaba)
-           renderNotes();
-       }
+            const input = document.getElementById('note-title-input');
+            const title = input.value.trim();
+            if(!title) return;
+            
+            if (!data.notes) data.notes = [];
+            
+            data.notes.push({ title: title, body: "<div>Empieza a escribir...</div>" });
+            saveToLocalStorage();
+            input.value = "";
+            renderNotes();
+        }
+
         function openNoteEditor(index) {
             editingNoteIndex = index;
             const note = data.notes[index];
