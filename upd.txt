@@ -1,4 +1,4 @@
-<H1"Aura Studio - Historial de Cambios">
+<H1"Restauracion del Ecosistema">
 <V"2.1.0">
 
 <H2"Notas de la Version">
