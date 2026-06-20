@@ -1,11 +1,11 @@
-H1>Actualización V1.1.3<H1
-H2>Nuevas Características<H2
-
-H2>Añadidos:<H2
-H3>Historial de novedades<H3
-H3>Configuraciones > Idiomas; Tema de interfaz y Alertas/Notifiaciones<H3
-H3>Manual de Uso del Espacio<H3
-
-H2>Arreglos:<H2
-H3>Animaciones arregladas<H3
-H3>Notificaciones con sonido<H3
+<# Actualización V1.1.3>
+<-# Historial de Novedades del Sistema>
+<## Nuevas Características>
+<### Añadidos:>
+<*Historial de novedades* adaptado con motor RegEx dinámico.>
+<Configuraciones > Idiomas; Tema de interfaz y Alertas/Notificaciones.>
+<Manual de Uso del Espacio en formato Drawer blindado.>
+<### Arreglos:>
+<Animaciones internas optimizadas mediante curvas `cubic-bezier`.>
+<Notificaciones con sonido y alertas en segundo plano corregidas.>
+<Normalizar el ecosistema con un _diseño minimalista_ y *premium*.>
