@@ -51,7 +51,6 @@
             --aura-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
             --fade-bezier: cubic-bezier(0.25, 1, 0.5, 1);
             --drawer-bezier: cubic-bezier(0.32, 0.94, 0.6, 1);
-            --ios-spring: cubic-bezier(0.25, 1, 0.2, 1);
         }
 
         [data-theme="dark"] {
@@ -92,20 +91,20 @@
             position: relative;
         }
 
-        /* Componentes de Interfaz con micro-animación de entrada */
+        /* Componentes de Interfaz con Animaciones Suaves */
         .card {
             background: var(--card-bg);
             border-radius: 24px;
             padding: 24px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
             border: 1px solid var(--border-color);
-            animation: cardEntrance 0.6s var(--ios-spring) backwards;
+            animation: cardEntrance 0.6s var(--fade-bezier) backwards;
             transition: background-color 0.4s var(--fade-bezier), border-color 0.4s var(--fade-bezier), box-shadow 0.3s ease;
         }
 
         @keyframes cardEntrance {
-            from { opacity: 0; transform: scale(0.97) translateY(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .header-box {
@@ -129,10 +128,10 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.3s var(--ios-spring);
+            transition: all 0.25s var(--fade-bezier);
         }
         .btn-back:hover { background: rgba(0,0,0,0.04); transform: translateY(-1px); }
-        .btn-back:active { transform: translateY(0) scale(0.96); }
+        .btn-back:active { transform: translateY(1px) scale(0.98); }
         [data-theme="dark"] .btn-back:hover { background: rgba(255,255,255,0.04); }
 
         .btn-today {
@@ -144,27 +143,27 @@
             font-weight: 600;
             font-size: 12px;
             cursor: pointer;
-            transition: all 0.25s var(--ios-spring);
+            transition: all 0.2s ease;
             margin-top: 4px;
         }
         .btn-today:hover { background: rgba(107, 29, 47, 0.05); transform: translateY(-0.5px); }
-        .btn-today:active { transform: translateY(0) scale(0.95); }
+        .btn-today:active { transform: translateY(0.5px); }
 
-        /* Vistas y Flujo de Navegación Suave (iOS-like) */
+        /* Vistas e Intercalación con Transiciones de Deslizamiento y Fundido */
         .view {
             display: flex;
             flex-direction: column;
             gap: 20px;
             width: 100%;
             opacity: 1;
-            transform: translateY(0) scale(1);
-            transition: opacity 0.3s var(--fade-bezier), transform 0.35s var(--ios-spring);
+            transform: translateY(0);
+            transition: opacity 0.3s var(--fade-bezier), transform 0.3s var(--fade-bezier);
         }
 
         .view.hidden {
             display: none !important;
             opacity: 0;
-            transform: translateY(12px) scale(0.98);
+            transform: translateY(8px);
         }
 
         .brand-header {
@@ -181,17 +180,15 @@
             letter-spacing: -0.5px;
         }
         
-        /* Corregido base a la imagen image_84dfaf.png: Removida la línea punteada exagerada */
+        /* Modificación basada en image_84dfaf.png: Se removió la línea cortada/punteada */
         .welcome-title span {
             color: var(--accent-brand);
             font-weight: 700;
             cursor: pointer;
-            text-decoration: none; /* Adiós a la línea entrecortada */
-            position: relative;
             transition: opacity 0.2s ease;
         }
         .welcome-title span:hover {
-            opacity: 0.85;
+            opacity: 0.8;
         }
 
         /* Menú Principal */
@@ -212,14 +209,14 @@
             gap: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.01);
             border: 1px solid var(--border-color);
-            transition: all 0.35s var(--aura-bezier);
+            transition: all 0.3s var(--aura-bezier);
         }
         .menu-item:hover {
             transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
             border-color: var(--accent-brand);
         }
-        .menu-item:active { transform: scale(0.94); }
+        .menu-item:active { transform: scale(0.96); }
 
         .menu-item .icon {
             width: 46px;
@@ -229,19 +226,19 @@
             align-items: center;
             justify-content: center;
             color: white;
-            transition: transform 0.4s var(--aura-bezier);
+            transition: transform 0.35s var(--aura-bezier);
         }
         .menu-item:hover .icon { transform: scale(1.1) rotate(3deg); }
         .menu-item span { font-size: 13px; font-weight: 600; color: var(--text-main); text-align: center; }
 
-        /* Listas y Filas de Tareas Animadas */
+        /* Listas y Filas de Tareas */
         .list-preview { list-style: none; display: flex; flex-direction: column; gap: 14px; }
         .list-preview li {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 15px;
-            transition: all 0.25s ease;
+            animation: fadeIn 0.35s var(--fade-bezier);
         }
 
         .time-badge {
@@ -262,53 +259,45 @@
             padding: 14px 0;
             border-bottom: 1px solid var(--border-color);
             gap: 12px;
-            animation: rowIn 0.35s var(--ios-spring);
-            transition: all 0.3s ease;
+            animation: rowIn 0.35s var(--fade-bezier) backwards;
         }
-        @keyframes rowIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes rowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
 
         .task-text { cursor: pointer; display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
-        .task-text span { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: all 0.3s ease; }
-        
-        .task-text.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; transform: translateX(4px); }
-        .task-text input[type="checkbox"] { 
-            width: 20px; 
-            height: 20px; 
-            accent-color: var(--accent-brand); 
-            cursor: pointer; 
-            transition: transform 0.2s var(--aura-bezier);
-        }
-        .task-text:hover input[type="checkbox"] { transform: scale(1.08); }
+        .task-text span { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.25s ease, opacity 0.25s ease; }
+        .task-text.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
+        .task-text input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--accent-brand); cursor: pointer; transition: transform 0.15s ease; }
+        .task-text:hover input[type="checkbox"] { transform: scale(1.05); }
 
         .btn-delete {
             background: transparent; color: var(--text-muted); border: none; font-size: 18px; cursor: pointer;
-            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.25s ease;
+            width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
         }
         .btn-delete:hover { background: #FCE8E6; color: #C5221F; transform: scale(1.05); }
-        .btn-delete:active { transform: scale(0.9); }
+        .btn-delete:active { transform: scale(0.95); }
 
         .task-input-container { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
         .input-row-bottom { display: flex; gap: 10px; }
 
         .input-flat {
             flex: 1; background: var(--input-bg); border: 1px solid var(--border-color); padding: 14px 16px; border-radius: 14px;
-            font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s var(--fade-bezier);
+            font-size: 15px; color: var(--text-main); outline: none; transition: all 0.25s var(--fade-bezier);
         }
         .input-flat:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
         .btn-add {
             background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
-            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.3s var(--ios-spring);
+            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.25s var(--fade-bezier);
         }
         .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
-        .btn-add:active { transform: translateY(0) scale(0.96); }
+        .btn-add:active { transform: translateY(1px); }
 
         /* Editor de Notas Avanzado */
         .format-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; background: var(--bg-color); padding: 6px; border-radius: 14px; }
         .format-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.2s ease; }
         .format-btn:hover { background: var(--accent-brand); color: #FFFFFF; border-color: var(--accent-brand); }
 
-        .rich-editor { width: 100%; height: 220px; background: var(--bg-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; transition: all 0.3s ease; }
+        .rich-editor { width: 100%; height: 220px; background: var(--bg-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 16px; font-size: 15px; color: var(--text-main); outline: none; overflow-y: auto; text-align: left; transition: all 0.25s ease; }
         .rich-editor:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
         /* Calendario */
@@ -321,52 +310,37 @@
         .calendar-day {
             background: transparent; color: var(--text-main); aspect-ratio: 1; border-radius: 12px;
             display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500;
-            cursor: pointer; border: 1px solid transparent; transition: all 0.25s var(--ios-spring);
+            cursor: pointer; border: 1px solid transparent; transition: all 0.2s var(--fade-bezier);
         }
-        .calendar-day:hover:not(.empty) { background: rgba(0,0,0,0.04); transform: scale(1.05); }
+        .calendar-day:hover:not(.empty) { background: rgba(0,0,0,0.04); transform: scale(1.03); }
         [data-theme="dark"] .calendar-day:hover:not(.empty) { background: rgba(255,255,255,0.04); }
         .calendar-day.empty { background: transparent; cursor: default; }
         .calendar-day.selected { border-color: var(--accent-brand) !important; color: var(--accent-brand) !important; font-weight: 700; transform: scale(1.05); }
         .calendar-day.current-today { background: var(--accent-brand) !important; color: white !important; font-weight: 700; }
 
-        /* Modales Estándar e Inmersivos */
-        .modal-overlay { 
-            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
-            background: rgba(11, 12, 14, 0.2); backdrop-filter: blur(0px); z-index: 99; 
-            transition: all 0.35s var(--fade-bezier); 
-        }
-        .modal-overlay.active {
-            backdrop-filter: blur(8px);
-            background: rgba(11, 12, 14, 0.4);
-        }
-        .modal { 
-            display: none; position: fixed; top: 50%; left: 50%; 
-            transform: translate(-50%, -45%) scale(0.96); background: var(--card-bg); 
-            border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06); opacity: 0; 
-            transition: opacity 0.3s var(--fade-bezier), transform 0.35s var(--ios-spring); 
-            max-height: 90vh; overflow-y: auto; 
-        }
+        /* Modales Estándar con Micro-Animación Completa */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(17, 18, 20, 0.35); backdrop-filter: blur(4px); z-index: 99; opacity: 0; transition: opacity 0.3s ease; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.97); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); opacity: 0; transition: transform 0.3s var(--aura-bezier), opacity 0.3s var(--fade-bezier); max-height: 90vh; overflow-y: auto; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        /* CAJONES Y PANALES DESPLEGABLES (Drawers) CSS Pro */
+        /* Cajones Desplegables con Curvas Pro */
         .cajon-drawer {
             position: fixed; left: 0; right: 0; bottom: 0; background: var(--blur-bg); backdrop-filter: blur(20px);
             border-top-left-radius: 28px; border-top-right-radius: 28px; border-top: 1px solid var(--border-color);
-            box-shadow: 0 -8px 32px rgba(0,0,0,0.06); z-index: 110; padding: 24px;
-            transform: translateY(105%); transition: transform 0.45s var(--drawer-bezier);
+            box-shadow: 0 -8px 32px rgba(0,0,0,0.05); z-index: 110; padding: 24px;
+            transform: translateY(105%); transition: transform 0.4s var(--drawer-bezier);
             max-height: 85vh; overflow-y: auto;
         }
         .cajon-drawer.active { transform: translateY(0); }
         
-        .drawer-handle { width: 40px; height: 5px; background: var(--border-color); border-radius: 10px; margin: -10px auto 16px auto; cursor: pointer; }
+        .drawer-handle { width: 40px; height: 5px; background: var(--border-color); border-radius: 10px; margin: -10px auto 16px auto; cursor: pointer; transition: background-color 0.2s; }
+        .drawer-handle:hover { background: var(--text-muted); }
 
-        .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; width: 100%; padding: 14px; border-radius: 14px; margin-bottom: 8px; transition: all 0.25s var(--ios-spring); }
-        .note-item-btn:hover { border-color: var(--accent-brand); transform: translateY(-1px); }
-        .note-item-btn:active { transform: scale(0.98); }
+        .note-item-btn { text-align: left; font-weight: 500; cursor: pointer; background: var(--card-bg); border: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; width: 100%; padding: 14px; border-radius: 14px; margin-bottom: 8px; transition: all 0.2s var(--fade-bezier); animation: fadeIn 0.3s ease; }
+        .note-item-btn:hover { border-color: var(--accent-brand); transform: translateX(3px); }
         
         .color-picker { display: flex; gap: 12px; margin: 14px 0; }
-        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.2s var(--aura-bezier); }
+        .color-opt { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .color-opt:hover { transform: scale(1.1); }
         .color-opt.active { border-color: var(--text-main); transform: scale(1.15); }
 
@@ -375,7 +349,7 @@
         
         .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; }
         .config-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
-        .custom-select { width: 100%; padding: 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s; }
+        .custom-select { width: 100%; padding: 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s ease; }
         .custom-select:focus { border-color: var(--accent-brand); }
         
         /* Switch iOS */
@@ -383,19 +357,24 @@
         .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s var(--aura-bezier); border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-brand); }
         input:checked + .slider:before { transform: translateX(20px); }
 
         /* Estilos Novedades Parseadas */
-        .log-version-block { margin-bottom: 16px; border-left: 3px solid var(--accent-brand); padding-left: 12px; animation: rowIn 0.3s ease; }
+        .log-version-block { margin-bottom: 16px; border-left: 3px solid var(--accent-brand); padding-left: 12px; animation: rowIn 0.4s ease; }
         .log-version-tag { font-weight: 700; color: var(--accent-brand); font-size: 14px; margin-bottom: 4px; }
         .log-changes-list { list-style: none; padding-left: 4px; font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
         
         /* Guía de Ayuda Interactiva */
-        .guide-step { display: none; flex-direction: column; gap: 10px; }
-        .guide-step.active { display: flex; animation: cardEntrance 0.4s var(--ios-spring); }
+        .guide-step { display: none; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease; }
+        .guide-step.active { display: flex; opacity: 1; transform: translateY(0); }
         .guide-nav { display: flex; justify-content: space-between; margin-top: 16px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -415,7 +394,7 @@
                     <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openDrawer('drawer-help')">
                         <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5c0-2.21-1.79-4-4-4z"/></svg>
                     </button>
-                    <!-- Botón Novedades (upd.txt) -->
+                    <!-- Botón Novedades (upd.txt real) -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%;" onclick="openDrawer('drawer-news')">
                         <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-3 11H7v-2h10v2zm3-4H7V9h13v2z"/></svg>
                     </button>
@@ -467,9 +446,9 @@
                 <div class="weekdays-grid" id="calendar-weekdays"></div>
                 <div class="calendar-grid" id="calendar-grid-box"></div>
                 
-                <div id="calendar-detail-box" style="display:none; border-top:1px solid var(--border-color); padding-top:16px; margin-top:14px; cubic-bezier(0.25, 1, 0.2, 1)">
+                <div id="calendar-detail-box" style="display:none; border-top:1px solid var(--border-color); padding-top:16px; margin-top:14px;">
                     <h3 id="txt-cal-detail" style="color:var(--accent-brand); font-size:15px; margin-bottom: 4px;">Detalles del día</h3>
-                    <p id="cal-detail-text" style="margin-bottom: 14px; font-size:14px; color:var(--text-muted); padding-left: 8px; transition: all 0.3s ease;"></p>
+                    <p id="cal-detail-text" style="margin-bottom: 14px; font-size:14px; color:var(--text-muted);"></p>
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-back" id="btn-edit-cal" style="background:var(--accent-brand); color:white; border:none; flex: 1;">Asignar</button>
                         <button class="btn-back" id="btn-delete-cal" style="color:red; border-color:rgba(255,0,0,0.2);">Remover</button>
@@ -598,7 +577,7 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
-    <!-- CAJÓN (DRAWER) DE GUÍA DE AYUDA INTERACTIVA -->
+    <!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA -->
     <div class="cajon-drawer" id="drawer-help">
         <div class="drawer-handle" onclick="closeDrawer('drawer-help')"></div>
         <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-help-title">Manual de Uso del Espacio</h3>
@@ -606,7 +585,7 @@
         <div id="help-steps-container">
             <div class="guide-step active" data-step="1">
                 <h4 style="color: var(--accent-brand);">1. Centro de Control Doméstico</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Desde la pantalla de inicio puedes ver un resumen ejecutivo en tiempo real de tu agenda diaria ("Cronograma del Día") y acceder rápidamente a los tres bloques integrados a través de la grilla minimalista.</p>
+                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Desde la pantalla de inicio puedes ver un resumen ejecutivo en tiempo real de tu agenda diaria ("Cronograma del Día") y acceder rápidamente a los tres bloques de la grilla minimalista.</p>
             </div>
             <div class="guide-step" data-step="2">
                 <h4 style="color: var(--accent-green);">2. Agenda de Eventos Mensuales</h4>
@@ -614,11 +593,11 @@
             </div>
             <div class="guide-step" data-step="3">
                 <h4 style="color: var(--accent-yellow);">3. Actividades con Horarios</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Al añadir pendientes en la sección de Actividades, puedes include una hora fija (formato 24h). El sistema se encargará de realizar un seguimiento cíclico automático en segundo plano para alertarte en el minuto exacto.</p>
+                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Al añadir pendientes en la sección de Actividades, puedes incluir una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
             </div>
             <div class="guide-step" data-step="4">
                 <h4 style="color: #1A73E8;">4. Notas Estilo iOS Enriquecidas</h4>
-                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Crea bloques de notas fijas y ábrelas para editarlas con comandos WYSIWYG interactivos (Títulos H1/H2, negritas, itálicas) guardando el formato HTML de manera interna.</p>
+                <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">Crea bloques de notas fijas y ábrelas para editarlas con comandos WYSIWYG interactivos (Títulos H1/H2, negritas, itálicas) guardando el formato de manera interna.</p>
             </div>
         </div>
 
@@ -628,12 +607,12 @@
         </div>
     </div>
 
-    <!-- CAJÓN (DRAWER) DE NOVEDADES Y REGISTROS (upd.txt Parse) -->
+    <!-- CAJÓN DE NOVEDADES Y REGISTROS (Carga Real de upd.txt) -->
     <div class="cajon-drawer" id="drawer-news">
         <div class="drawer-handle" onclick="closeDrawer('drawer-news')"></div>
         <h3 style="margin-bottom: 16px; font-size: 18px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
         <div id="parsed-logs-box" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;">
-            <!-- Contenido generado dinámicamente -->
+            <p style="text-align: center; color: var(--text-muted); font-size: 14px; padding: 20px 0;">Cargando registro de actualizaciones...</p>
         </div>
         <button class="btn-add" style="width: 100%; padding: 12px;" onclick="closeDrawer('drawer-news')">Entendido</button>
     </div>
@@ -649,18 +628,6 @@
             notes: [],
             calendar: {}
         };
-
-        const mockUpdFileContent = `
-        V2.6.4
-        - Implementado sistema de Cajones Desplegables (Drawers) CSS Pro con curvas Bézier fluidas.
-        - Agregado diccionario completo sin omisiones para 10 idiomas globales simultáneos.
-        - Añadido Manual de Instrucciones interactivo por pasos integrado en la interfaz.
-        
-        V2.4.0
-        - Soporte nativo para White Flash Protection mediante inyección síncrona en cabecera.
-        - Editor WYSIWYG enriquecido implementado en el bloque de notas fijas.
-        - Optimización de almacenamiento en búfer local continuo.
-        `;
 
         // DICCIONARIO INTERNACIONAL TOTALMENTE EXPANDIDO (10 Idiomas Completos)
         const translations = {
@@ -737,7 +704,7 @@
                 noCalEvt: "Frei von Verpflichtungen.", calAsignar: "Zuweisen", calRemover: "Entfernen", btnVolver: "Zurück", helpTitle: "Benutzerhandbuch",
                 newsTitle: "Update-Verlaufsprotokoll",
                 weekdays: ["S", "M", "D", "M", "D", "F", "S"],
-                months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+                months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "October", "November", "Dezember"]
             },
             it: {
                 homeTitle: "Controllo di ", install: "Installa app", menuEvents: "Eventi", menuTasks: "Attività", menuNotes: "Note Fisse",
@@ -757,7 +724,7 @@
             ja: {
                 homeTitle: "空間コントロール: ", install: "アプリをインストール", menuEvents: "イベント", menuTasks: "タスク", menuNotes: "固定メモ",
                 cronogramaTitle: "本日のスケジュール", calHeader: "月間予定表", calToday: "今日", calDetail: "一日の詳細",
-                tasksHeader: "アクティ比ティリスト", notesHeader: "メモ帳", configTitle: "設定", lblLang: "言語 / Language",
+                tasksHeader: "アクティビティリスト", notesHeader: "メモ帳", configTitle: "設定", lblLang: "言語 / Language",
                 lblTheme: "インターフェーステーマ", themeLight: "ライト", themeDark: "ダーク", themeSystem: "システムデフォルト",
                 lblNotifyTitle: "システムアラート", lblNotifyDesc: "ネイティブ通知を有効にする", btnClose: "閉じる", btnSave: "保存",
                 btnDelete: "削除", idTitle: "空間のアイデンティティ", planTitle: "計画する: ", calColor: "識別色:",
@@ -767,7 +734,7 @@
                 noCalEvt: "予定はありません。", calAsignar: "割り当て", calRemover: "削除", btnVolver: "戻る", helpTitle: "ユーザーマニュアル",
                 newsTitle: "更新履歴のログ",
                 weekdays: ["日", "月", "火", "水", "木", "金", "土"],
-                months: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"]
+                months: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"]
             },
             zh: {
                 homeTitle: "空间控制: ", install: "安装应用", menuEvents: "事件中心", menuTasks: "待办列表", menuNotes: "便签便条",
@@ -778,9 +745,9 @@
                 btnDelete: "彻底删除", idTitle: "空间核心归属权", planTitle: "排程日期: ", calColor: "色彩视觉标记:",
                 calFix: "确立并固定事件", placeholderTask: "输入活动任务名称...", placeholderTime: "时间点 (例如 17:30)", btnAdd: "添加进表",
                 placeholderNote: "输入便签主题...", btnCreate: "创建新项", placeholderCalEvt: "今天有什么精彩的计划安排？",
-                noTasks: "该周期内无任何排程任务。", noTasksBox: "当下没有需要处理的任务。", noNotes: "没有任何思想归档记录。",
+                noTasks: "该周期内无 any 排程任务。", noTasksBox: "当下没有需要处理的任务。", noNotes: "没有任何思想归档记录。",
                 noCalEvt: "日程处于无事轻松状态。", calAsignar: "确立分配", calRemover: "移出表单", btnVolver: "返回主页", helpTitle: "空间交互操作手册",
-                newsTitle: "版本更迭迭代日志",
+                newsTitle: "版本更迭日志",
                 weekdays: ["日", "一", "二", "三", "四", "五", "六"],
                 months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"]
             },
@@ -816,6 +783,7 @@
             }
         };
 
+        // VARIABLES DE ESTADO CALENDARIO Y RECORRIDO
         let currentYear, currentMonth;
         let daySelectedStr = "";
         let noteSelectedId = null;
@@ -823,45 +791,72 @@
         const totalGuideSteps = 4;
         let tareasNotificadas = new Set();
 
-        // MOTOR DE PARSEO DINÁMICO DE ARCHIVOS TEXTO (upd.txt Parser Engine)
-        function parseUpdLogs(textData) {
+        // PETICIÓN ASÍNCRONA REAL Y MOTOR DE PARSEO DE ARCHIVOS TEXTO (upd.txt)
+        async function fetchAndParseUpdLogs() {
             const container = document.getElementById('parsed-logs-box');
-            container.innerHTML = "";
             
-            const lines = textData.split('\n');
-            let currentBlock = null;
-            let currentUl = null;
-
-            lines.forEach(line => {
-                let trimmed = line.trim();
-                if(!trimmed) return;
-
-                if(/^V\d/i.test(trimmed)) {
-                    if(currentBlock) container.appendChild(currentBlock);
-
-                    currentBlock = document.createElement('div');
-                    currentBlock.className = 'log-version-block';
-
-                    let versionTag = document.createElement('div');
-                    versionTag.className = 'log-version-tag';
-                    versionTag.innerText = trimmed;
-                    currentBlock.appendChild(versionTag);
-
-                    currentUl = document.createElement('ul');
-                    currentUl.className = 'log-changes-list';
-                    currentBlock.appendChild(currentUl);
-                } 
-                else if(trimmed.startsWith('-') && currentUl) {
-                    let li = document.createElement('li');
-                    li.innerText = trimmed.substring(1).trim();
-                    currentUl.appendChild(li);
+            try {
+                // Petición HTTP Fetch real al archivo upd.txt del servidor local o remoto
+                const response = await fetch('./upd.txt');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            });
+                const textData = await response.text();
+                
+                container.innerHTML = "";
+                const lines = textData.split('\n');
+                let currentBlock = null;
+                let currentUl = null;
+                let blocksCount = 0;
 
-            if(currentBlock) container.appendChild(currentBlock);
+                lines.forEach(line => {
+                    let trimmed = line.trim();
+                    if(!trimmed) return;
+
+                    // Detectar tag de versión (Inicia con V o v seguido de número)
+                    if(/^V\d/i.test(trimmed)) {
+                        if(currentBlock) container.appendChild(currentBlock);
+
+                        currentBlock = document.createElement('div');
+                        currentBlock.className = 'log-version-block';
+                        currentBlock.style.animationDelay = `${blocksCount * 0.05}s`;
+
+                        let versionTag = document.createElement('div');
+                        versionTag.className = 'log-version-tag';
+                        versionTag.innerText = trimmed;
+                        currentBlock.appendChild(versionTag);
+
+                        currentUl = document.createElement('ul');
+                        currentUl.className = 'log-changes-list';
+                        currentBlock.appendChild(currentUl);
+                        blocksCount++;
+                    } 
+                    // Detectar líneas de cambios listados
+                    else if(trimmed.startsWith('-') && currentUl) {
+                        let li = document.createElement('li');
+                        li.innerText = trimmed.substring(1).trim();
+                        currentUl.appendChild(li);
+                    }
+                });
+
+                if(currentBlock) container.appendChild(currentBlock);
+                
+                if(blocksCount === 0) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--text-muted); font-size: 13px;">El archivo upd.txt está vacío o no tiene el formato correcto (ej: V2.6.4).</p>`;
+                }
+
+            } catch (error) {
+                console.error("Error cargando upd.txt de forma asíncrona:", error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 14px; border-radius:14px; background: rgba(255,0,0,0.05); border: 1px solid rgba(255,0,0,0.15);">
+                        <p style="color: #C5221F; font-size: 14px; font-weight: 600; margin-bottom:4px;">No se detectó el archivo 'upd.txt'</p>
+                        <p style="color: var(--text-muted); font-size: 12px; line-height: 1.4;">Asegúrate de colocar el archivo <strong>upd.txt</strong> exactamente en la raíz de tu proyecto web al lado del index.html y levantar un servidor HTTP.</p>
+                    </div>
+                `;
+            }
         }
 
-        // MOTOR DE TRADUCCIÓN GLOBAL 
+        // MOTOR DE TRADUCCIÓN GLOBAL
         function changeLanguage(langCode) {
             data.lang = langCode;
             const t = translations[langCode] || translations.es;
@@ -909,20 +904,25 @@
             saveToLocalStorage();
         }
 
-        // CONTROL DE DRAWERS 
+        // CONTROL DE DRAWERS CON ANIMACIÓN SUAVE
         function openDrawer(id) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
-            setTimeout(() => overlay.classList.add('active'), 10);
+            setTimeout(() => overlay.style.opacity = '1', 10);
             document.getElementById(id).classList.add('active');
+            
+            // Si abren el panel de novedades, ejecutar fetch en tiempo real
+            if(id === 'drawer-news') {
+                fetchAndParseUpdLogs();
+            }
         }
 
         function closeDrawer(id) {
             document.getElementById(id).classList.remove('active');
             if(!document.querySelector('.modal.active')) {
                 const overlay = document.getElementById('overlay');
-                overlay.classList.remove('active');
-                setTimeout(() => overlay.style.display = 'none', 300);
+                overlay.style.opacity = '0';
+                setTimeout(() => { if(overlay.style.opacity === '0') overlay.style.display = 'none'; }, 300);
             }
         }
 
@@ -933,7 +933,9 @@
             if(currentGuideStep > totalGuideSteps) currentGuideStep = totalGuideSteps;
 
             document.querySelectorAll('.guide-step').forEach(step => step.classList.remove('active'));
-            document.querySelector(`.guide-step[data-step="${currentGuideStep}"]`).classList.add('active');
+            
+            const targetStep = document.querySelector(`.guide-step[data-step="${currentGuideStep}"]`);
+            targetStep.classList.add('active');
 
             document.getElementById('btn-guide-prev').disabled = (currentGuideStep === 1);
             document.getElementById('btn-guide-next').innerText = (currentGuideStep === totalGuideSteps) ? "Finalizar" : "Siguiente";
@@ -949,28 +951,23 @@
             }
         });
 
-        // NAVEGACIÓN ENTRE VISTAS PRINCIPALES (Soft fade out/in effect)
+        // NAVEGACIÓN ENTRE VISTAS PRINCIPALES (Suave deslizamiento)
         function changeView(viewId) {
-            const currentActive = document.querySelector('.view:not(.hidden)');
-            if (currentActive) {
-                currentActive.style.opacity = '0';
-                currentActive.style.transform = 'scale(0.98) translateY(-4px)';
-                
+            const activeView = document.querySelector('.view:not(.hidden)');
+            if (activeView) {
+                activeView.style.opacity = '0';
+                activeView.style.transform = 'translateY(6px)';
                 setTimeout(() => {
-                    currentActive.classList.add('hidden');
-                    const targetView = document.getElementById(viewId);
-                    targetView.classList.remove('hidden');
-                    
-                    // Trigger reflow
-                    targetView.offsetHeight;
-                    
-                    targetView.style.opacity = '1';
-                    targetView.style.transform = 'scale(1) translateY(0)';
-                }, 200);
+                    activeView.classList.add('hidden');
+                    const nextView = document.getElementById(viewId);
+                    nextView.classList.remove('hidden');
+                    // Forzar reflow
+                    nextView.offsetHeight;
+                    nextView.style.opacity = '1';
+                    nextView.style.transform = 'translateY(0)';
+                }, 150);
             } else {
-                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-                const targetView = document.getElementById(viewId);
-                targetView.classList.remove('hidden');
+                document.getElementById(viewId).classList.remove('hidden');
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -979,11 +976,11 @@
         function openModal(modalId) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
-            setTimeout(() => overlay.classList.add('active'), 10);
+            setTimeout(() => overlay.style.opacity = '1', 10);
             
             const modal = document.getElementById(modalId);
             modal.style.display = 'block';
-            setTimeout(() => modal.classList.add('active'), 10);
+            setTimeout(() => modal.classList.add('active'), 20);
 
             if(modalId === 'username-modal') {
                 document.getElementById('username-input').value = data.username;
@@ -998,11 +995,11 @@
             document.querySelectorAll('.cajon-drawer').forEach(d => d.classList.remove('active'));
             
             const overlay = document.getElementById('overlay');
-            overlay.classList.remove('active');
-            setTimeout(() => overlay.style.display = 'none', 300);
+            overlay.style.opacity = '0';
+            setTimeout(() => { if(overlay.style.opacity === '0') overlay.style.display = 'none'; }, 300);
         }
 
-        // SISTEMA DE INTERFAZ Y TEMAS
+        // CONFIGURACIÓN DE TEMAS
         function changeTheme(themeMode) {
             data.theme = themeMode;
             let targetTheme = themeMode;
@@ -1022,7 +1019,7 @@
             }
         }
 
-        // COMPONENTE: GESTIÓN DE ACTIVIDADES/PENDIENTES
+        // COMPONENTE: GESTIÓN DE ACTIVIDADES
         function addTask() {
             const txt = document.getElementById('task-input').value.trim();
             const timeVal = document.getElementById('task-time').value.trim();
@@ -1048,10 +1045,10 @@
         }
 
         function deleteTask(id) {
-            const row = document.querySelector(`[data-task-id="${id}"]`);
-            if(row) {
-                row.style.opacity = '0';
-                row.style.transform = 'translateX(15px)';
+            const element = document.querySelector(`[data-task-id="${id}"]`);
+            if(element) {
+                element.style.opacity = '0';
+                element.style.transform = 'translateX(15px)';
                 setTimeout(() => {
                     data.tasks = data.tasks.filter(t => t.id !== id);
                     renderEverything();
@@ -1064,7 +1061,7 @@
             }
         }
 
-        // COMPONENTE: BLOQUE DE NOTAS 
+        // COMPONENTE: BLOQUE DE NOTAS
         function addNote() {
             const title = document.getElementById('note-title-input').value.trim();
             if(!title) return;
@@ -1072,7 +1069,7 @@
             const newNote = {
                 id: Date.now(),
                 title: title,
-                body: "<div>Comienza a escribir...</div>"
+                body: "<div>Comienza a escribir tu nota enriquecida...</div>"
             };
 
             data.notes.push(newNote);
@@ -1113,7 +1110,7 @@
             }
         }
 
-        // COMPONENTE: AGENDA MENSUAL (Calendario)
+        // COMPONENTE: AGENDA MENSUAL
         function initCalendar() {
             const hoy = new Date();
             currentYear = hoy.getFullYear();
@@ -1122,27 +1119,17 @@
         }
 
         function changeMonth(dir) {
-            const gridBox = document.getElementById('calendar-grid-box');
-            gridBox.style.opacity = '0';
-            gridBox.style.transform = dir > 0 ? 'translateX(10px)' : 'translateX(-10px)';
-            
-            setTimeout(() => {
-                currentMonth += dir;
-                if(currentMonth < 0) { currentMonth = 11; currentYear--; }
-                if(currentMonth > 11) { currentMonth = 0; currentYear++; }
-                renderCalendar();
-                gridBox.style.opacity = '1';
-                gridBox.style.transform = 'translateX(0)';
-            }, 200);
+            currentMonth += dir;
+            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
         }
 
         function goToCurrentMonth() {
             const hoy = new Date();
-            if(currentYear !== hoy.getFullYear() || currentMonth !== hoy.getMonth()) {
-                currentYear = hoy.getFullYear();
-                currentMonth = hoy.getMonth();
-                renderCalendar();
-            }
+            currentYear = hoy.getFullYear();
+            currentMonth = hoy.getMonth();
+            renderCalendar();
         }
 
         function renderCalendar() {
@@ -1175,6 +1162,8 @@
                 let cell = document.createElement('div');
                 cell.className = 'calendar-day';
                 cell.innerText = day;
+                cell.style.animation = `fadeIn 0.3s ease backwards`;
+                cell.style.animationDelay = `${(day % 7) * 0.01}s`;
 
                 let dateKey = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 
@@ -1207,21 +1196,19 @@
             
             document.getElementById('modal-day-num').innerText = dateKey;
             
-            // Efecto sutil de contenido al actualizar datos de día
-            const textElement = document.getElementById('cal-detail-text');
-            textElement.style.opacity = '0';
-            
+            detailBox.style.opacity = '0';
             setTimeout(() => {
                 detailBox.style.display = 'block';
                 if(data.calendar[dateKey]) {
-                    textElement.innerText = data.calendar[dateKey].title;
-                    textElement.style.borderLeft = `4px solid ${data.calendar[dateKey].color}`;
+                    document.getElementById('cal-detail-text').innerText = data.calendar[dateKey].title;
+                    document.getElementById('cal-detail-text').style.borderLeft = `4px solid ${data.calendar[dateKey].color}`;
                 } else {
-                    textElement.innerText = t.noCalEvt;
-                    textElement.style.borderLeft = `4px solid transparent`;
+                    document.getElementById('cal-detail-text').innerText = t.noCalEvt;
+                    document.getElementById('cal-detail-text').style.borderLeft = `4px solid transparent`;
                 }
-                textElement.style.opacity = '1';
-            }, 150);
+                detailBox.style.transition = 'opacity 0.25s ease';
+                detailBox.style.opacity = '1';
+            }, 100);
 
             document.getElementById('btn-edit-cal').onclick = function() {
                 document.getElementById('cal-input-title').value = data.calendar[dateKey] ? data.calendar[dateKey].title : "";
@@ -1236,6 +1223,7 @@
             };
         }
 
+        // Manejo de Colores en Configuración del Evento
         document.querySelectorAll('.color-opt').forEach(opt => {
             opt.addEventListener('click', function() {
                 document.querySelectorAll('.color-opt').forEach(o => o.classList.remove('active'));
@@ -1261,7 +1249,7 @@
             saveToLocalStorage();
         }
 
-        // CORE RENDERER ENGINE
+        // CORE RENDERER ENGINE: Sincronización Absoluta de Listas y UI
         function renderEverything() {
             const t = translations[data.lang] || translations.es;
             
@@ -1272,11 +1260,12 @@
             const timedTasks = data.tasks.filter(t => t.time);
             
             if(timedTasks.length === 0) {
-                homeList.innerHTML = `<li style="color:var(--text-muted); font-size:13px; font-style:italic;">${t.noTasks}</li>`;
+                homeList.innerHTML = `<li style="color:var(--text-muted); font-size:13px; font-style:italic; animation: fadeIn 0.3s ease;">${t.noTasks}</li>`;
             } else {
-                timedTasks.forEach(task => {
+                timedTasks.forEach((task, index) => {
                     let li = document.createElement('li');
                     li.style.opacity = task.completed ? '0.5' : '1';
+                    li.style.animationDelay = `${index * 0.04}s`;
                     li.innerHTML = `
                         <span style="${task.completed ? 'text-decoration: line-through;' : ''}">${task.text}</span>
                         <span class="time-badge">${task.time}</span>
@@ -1285,38 +1274,40 @@
                 });
             }
 
-            // 2. RENDER VISTA PENDIENTES Complete
+            // 2. RENDER VISTA PENDIENTES
             const tasksContainer = document.getElementById('tasks-container');
             tasksContainer.innerHTML = "";
             
             if(data.tasks.length === 0) {
-                tasksContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px 0; font-size:14px;">${t.noTasksBox}</p>`;
+                tasksContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px 0; font-size:14px; animation: fadeIn 0.3s ease;">${t.noTasksBox}</p>`;
             } else {
-                data.tasks.forEach(task => {
+                data.tasks.forEach((task, index) => {
                     let div = document.createElement('div');
                     div.className = 'task-row';
                     div.setAttribute('data-task-id', task.id);
+                    div.style.animationDelay = `${index * 0.03}s`;
                     div.innerHTML = `
                         <div class="task-text ${task.completed ? 'completed' : ''}" onclick="toggleTask(${task.id})">
                             <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="event.stopPropagation(); toggleTask(${task.id});">
                             <span>${task.text} ${task.time ? `(${task.time})` : ''}</span>
                         </div>
-                        <button class="btn-delete" onclick="event.stopPropagation(); deleteTask(${task.id})">×</button>
+                        <button class="btn-delete" onclick="deleteTask(${task.id})">×</button>
                     `;
                     tasksContainer.appendChild(div);
                 });
             }
 
-            // 3. RENDER VISTA NOTAS FIJAS Complete
+            // 3. RENDER VISTA NOTAS FIJAS
             const notesContainer = document.getElementById('notes-container');
             notesContainer.innerHTML = "";
             
             if(data.notes.length === 0) {
-                notesContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px 0; font-size:14px;">${t.noNotes}</p>`;
+                notesContainer.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:30px 0; font-size:14px; animation: fadeIn 0.3s ease;">${t.noNotes}</p>`;
             } else {
-                data.notes.forEach(note => {
+                data.notes.forEach((note, index) => {
                     let btn = document.createElement('button');
                     btn.className = 'note-item-btn';
+                    btn.style.animationDelay = `${index * 0.03}s`;
                     btn.onclick = () => openNoteModal(note.id);
                     btn.innerHTML = `
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
@@ -1327,6 +1318,7 @@
             }
         }
 
+        // MOTOR DE PERSISTENCIA LOCAL
         function saveToLocalStorage() {
             localStorage.setItem('aura_studio_data', JSON.stringify(data));
         }
@@ -1376,19 +1368,19 @@
                     
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(880, audioContext.currentTime); 
-                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.12);
                     
                     osc.connect(gain);
                     gain.connect(audioContext.destination);
                     
                     osc.start();
-                    osc.stop(audioContext.currentTime + 0.15);
-                } catch(e) { console.log("Audio contextual en espera."); }
+                    osc.stop(audioContext.currentTime + 0.12);
+                } catch(e) { console.log("Audio contextual listo."); }
             }
         }
 
-        // Bucle de Verificación Cíclica Activa (Intervalo de Precisión)
+        // Bucle de Verificación Cíclica Activa (Intervalo de Precisión cada 25 segundos)
         setInterval(() => {
             const ahora = new Date();
             const hrs = String(ahora.getHours()).padStart(2, '0');
@@ -1406,9 +1398,9 @@
             });
 
             if(horaActualStr === "00:00") tareasNotificadas.clear();
-        }, 30000);
+        }, 25000);
 
-        // INSTALACIÓN ASÍNCRONA PWA 
+        // INSTALACIÓN ASÍNCRONA PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1438,7 +1430,6 @@
             
             changeTheme(data.theme);
             initCalendar();
-            parseUpdLogs(mockUpdFileContent);
             changeLanguage(data.lang);
         });
     </script>
