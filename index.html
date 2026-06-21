@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Organizador Personal</title>
+    <title>Organizador Personal Pro</title>
     
-    <!-- Favicons y Apple Touch Icon -->
     <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
     <link class="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
 
@@ -236,6 +235,7 @@
             justify-content: space-between;
             align-items: center;
             font-size: 15px;
+            color: var(--text-main);
             animation: fadeIn 0.35s var(--fade-bezier);
         }
 
@@ -262,8 +262,8 @@
         @keyframes rowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
 
         .task-text { cursor: pointer; display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
-        .task-text span { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.25s ease, opacity 0.25s ease; }
-        .task-text.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
+        .task-text span { font-size: 15px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.25s ease, opacity 0.25s ease; }
+        .task-text.completed span { text-decoration: line-through; color: var(--text-muted) !important; opacity: 0.5; }
         
         .task-text input[type="checkbox"] { 
             appearance: none; 
@@ -311,13 +311,6 @@
             font-size: 15px; color: var(--text-main); outline: none; transition: all 0.25s var(--fade-bezier);
         }
         .input-flat:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
-
-        .btn-add {
-            background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
-            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.25s var(--fade-bezier);
-        }
-        .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
-        .btn-add:active { transform: translateY(1px); }
 
         .format-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; background: var(--bg-color); padding: 6px; border-radius: 14px; }
         .format-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.2s ease; }
@@ -384,6 +377,13 @@
         input:checked + .slider { background-color: var(--accent-brand); }
         input:checked + .slider:before { transform: translateX(20px); }
 
+        .btn-add {
+            background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
+            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.25s var(--fade-bezier);
+        }
+        .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
+        .btn-add:active { transform: translateY(1px); }
+
         .guide-step { display: none; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease; }
         .guide-step.active { display: flex; opacity: 1; transform: translateY(0); }
         .guide-nav { display: flex; justify-content: space-between; margin-top: 16px; }
@@ -395,7 +395,6 @@
 
     <div class="phone-container">
         
-        <!-- VISTA HOME -->
         <div id="view-home" class="view">
             <div class="card brand-header">
                 <div class="welcome-title" id="txt-home-title">Control de <span id="username-display" onclick="openModal('username-modal')">Espacio</span></div>
@@ -416,7 +415,6 @@
                 </div>
             </div>
 
-            <!-- Menú Grid -->
             <div class="grid-menu">
                 <div class="menu-item" onclick="changeView('view-calendar')">
                     <div class="icon" style="background-color: var(--accent-brand);"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg></div>
@@ -432,14 +430,12 @@
                 </div>
             </div>
 
-            <!-- Preview Agenda del Día -->
             <div class="card">
                 <h3 id="txt-cronograma-title" style="margin-bottom: 16px;">Cronograma del Día</h3>
                 <ul id="home-tasks-list" class="list-preview"></ul>
             </div>
         </div>
 
-        <!-- VISTA CALENDARIO -->
         <div id="view-calendar" class="view hidden">
             <div class="card header-box">
                 <span id="txt-cal-header">Agenda Mensual</span>
@@ -468,7 +464,6 @@
             </div>
         </div>
 
-        <!-- VISTA PENDIENTES -->
         <div id="view-tasks" class="view hidden">
             <div class="card header-box">
                 <span id="txt-tasks-header">Lista de Actividades</span>
@@ -486,7 +481,6 @@
             </div>
         </div>
 
-        <!-- VISTA NOTAS FIJAS -->
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
                 <span id="txt-notes-header">Bloque de Notas</span>
@@ -503,10 +497,8 @@
 
     </div>
 
-    <!-- OVERLAY DE MODALES -->
     <div class="modal-overlay" id="overlay" onclick="closeModals()"></div>
 
-    <!-- MODAL AJUSTES -->
     <div class="modal" id="config-modal">
         <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
         
@@ -515,14 +507,6 @@
             <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
                 <option value="es">Español</option>
                 <option value="en">English</option>
-                <option value="pt">Português</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-                <option value="it">Italiano</option>
-                <option value="ja">日本語</option>
-                <option value="zh">中文</option>
-                <option value="ru">Русский</option>
-                <option value="ko">한국어</option>
             </select>
         </div>
 
@@ -549,14 +533,12 @@
         <button class="btn-add btn-lbl-close" style="width:100%; padding:14px; margin-top:14px;" onclick="closeModals()">Cerrar</button>
     </div>
 
-    <!-- MODAL DE IDENTIDAD -->
     <div class="modal" id="username-modal">
         <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14" autocomplete="off">
         <button class="btn-add btn-lbl-save" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
     </div>
 
-    <!-- MODAL DETALLE/EDICIÓN NOTA -->
     <div class="modal" id="note-modal">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
             <h3 id="modal-note-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"></h3>
@@ -574,7 +556,6 @@
         <button class="btn-add btn-lbl-save" style="width:100%; padding:14px; margin-top:16px;" onclick="saveNoteBody()">Guardar Nota</button>
     </div>
 
-    <!-- MODAL PLANIFICAR EVENTO CALENDARIO -->
     <div class="modal" id="calendar-modal">
         <h3 id="txt-modal-plan-title" style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
         <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?" autocomplete="off">
@@ -588,7 +569,6 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
-    <!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA -->
     <div class="cajon-drawer" id="drawer-help">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
             <button onclick="closeDrawer('drawer-help')" class="btn-close-x">&times;</button>
@@ -618,7 +598,6 @@
         </div>
     </div>
 
-    <!-- CAJÓN DE NOVEDADES -->
     <div class="cajon-drawer" id="drawer-news">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
             <button onclick="closeDrawer('drawer-news')" class="btn-close-x">&times;</button>
@@ -628,7 +607,7 @@
     </div>
 
     <script>
-        // CORE DATA STRUCTURE (Asegurando inicialización limpia)
+        // CORE DATA STRUCTURE
         let data = {
             username: "Espacio",
             lang: "es",
@@ -679,7 +658,6 @@
             localStorage.setItem('aura_studio_data', JSON.stringify(data));
         }
 
-        // CONTROL EXTREMO DE CARGA: Si el JSON viene corrupto o sin array de notas, lo reescribimos
         function loadFromLocalStorage() {
             let raw = localStorage.getItem('aura_studio_data');
             if(raw) {
@@ -690,7 +668,6 @@
                     console.error("Error cargando localStorage, reiniciando objeto.");
                 }
             }
-            // Blindaje absoluto de arrays
             if(!Array.isArray(data.tasks)) data.tasks = [];
             if(!Array.isArray(data.notes)) data.notes = [];
             if(!data.events || typeof data.events !== 'object') data.events = {};
@@ -932,13 +909,12 @@
             renderTasks();
         }
 
-        // SISTEMA DE NOTAS COMPLETAMENTE COMPROBADO Y BLINDADO ANTIFALLOS
+        // SISTEMA DE NOTAS
         function renderNotes() {
             const container = document.getElementById('notes-container');
             if (!container) return;
             container.innerHTML = "";
             
-            // Re-verificación interna por si mutó el tipo de dato
             if (!data.notes || !Array.isArray(data.notes)) {
                 data.notes = [];
             }
@@ -967,20 +943,18 @@
             const title = input.value.trim();
             if(!title) return;
             
-            // Si por algún bug externo data.notes se convirtió en otra cosa, lo forzamos a Array
             if (!data.notes || !Array.isArray(data.notes)) {
                 data.notes = [];
             }
             
-            // Inserción directa limpia
             data.notes.push({ 
                 title: title, 
                 body: "<div>Empieza a escribir...</div>" 
             });
             
             saveToLocalStorage();
-            input.value = ""; // Limpiar input
-            renderNotes();    // Forzar actualización inmediata de la interfaz
+            input.value = "";
+            renderNotes();
         }
 
         function openNoteEditor(index) {
@@ -1231,7 +1205,7 @@
             changeTheme(data.theme);
             initCalendar();
             changeLanguage(data.lang);
-            renderNotes(); // Forzado inicial blindado
+            renderNotes();
         });
     </script>
 </body>
