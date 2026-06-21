@@ -41,12 +41,12 @@
             --accent-yellow: #C67B00;
             --border-color: #E2E4E7;
             --input-bg: #F4F5F6;
-            --blur-bg: rgba(255, 255, 255, 0.9);
-            --icon-filter: brightness(0);
+            --blur-bg: rgba(255, 255, 255, 0.85);
             
             --aura-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
             --fade-bezier: cubic-bezier(0.25, 1, 0.5, 1);
             --drawer-bezier: cubic-bezier(0.32, 0.94, 0.6, 1);
+            --icon-filter: brightness(0) invert(0); /* Iconos oscuros para modo claro */
         }
 
         [data-theme="dark"] {
@@ -56,8 +56,8 @@
             --text-muted: #9AA0A6;
             --border-color: #2D3135;
             --input-bg: #212327;
-            --blur-bg: rgba(22, 24, 27, 0.9);
-            --icon-filter: brightness(0) invert(1);
+            --blur-bg: rgba(22, 24, 27, 0.85);
+            --icon-filter: brightness(0) invert(1); /* Iconos blancos para modo oscuro */
         }
 
         * {
@@ -112,26 +112,12 @@
             letter-spacing: -0.4px;
         }
 
-        .btn-icon-nav img {
-            width: 18px; 
-            height: 18px; 
-            object-fit: contain; 
-            filter: var(--icon-filter);
-        }
-
-        .btn-icon-nav svg {
-            width: 18px;
-            height: 18px;
-            color: var(--text-main);
-        }
-
-        /* ESTILOS INTERNOS PANEL DESPLEGABLE (DRAWER) */
-        .log-h1 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; margin: 18px 0 10px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
-        .log-h2 { font-size: 17px; font-weight: 600; color: var(--accent-brand); letter-spacing: -0.3px; margin: 14px 0 6px 0; }
-        .log-h3 { font-size: 15px; font-weight: 600; color: var(--text-main); margin: 10px 0 4px 0; }
-        .log-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
-        .log-p { font-size: 14px; line-height: 1.6; color: var(--text-muted); margin-bottom: 8px; }
-        .log-code { font-family: monospace; background: var(--input-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; color: var(--accent-brand); font-weight: 600; }
+        .log-h1 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.6px; margin: 16px 0 10px 0; }
+        .log-h2 { font-size: 19px; font-weight: 600; color: var(--text-main); letter-spacing: -0.4px; margin: 14px 0 6px 0; }
+        .log-h3 { font-size: 16px; font-weight: 600; color: var(--text-main); margin: 10px 0 4px 0; }
+        .log-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-style: italic; }
+        .log-p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); margin-bottom: 8px; }
+        .log-code { font-family: monospace; background: var(--input-bg); padding: 2px 6px; border-radius: 6px; font-size: 13px; color: var(--accent-brand); }
 
         h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
 
@@ -251,7 +237,6 @@
             justify-content: space-between;
             align-items: center;
             font-size: 15px;
-            color: var(--text-main);
             animation: fadeIn 0.35s var(--fade-bezier);
         }
 
@@ -266,11 +251,10 @@
             transition: all 0.2s ease;
         }
 
-        /* COMPONENTE ACTIVIDADES REAJUSTADO Y CORREGIDO */
         .task-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center; /* Centrado vertical completo del elemento */
             padding: 14px 0;
             border-bottom: 1px solid var(--border-color);
             gap: 12px;
@@ -280,21 +264,21 @@
 
         .task-text { 
             cursor: pointer; 
-            display: inline-flex; 
-            align-items: center; 
+            display: flex; 
+            align-items: center; /* Asegura la alineación vertical central del checkbox y texto */
             gap: 12px; 
             flex: 1; 
             overflow: hidden; 
         }
         .task-text span { 
             font-size: 15px; 
-            color: var(--text-main); 
             white-space: nowrap; 
             overflow: hidden; 
             text-overflow: ellipsis; 
             transition: color 0.25s ease, opacity 0.25s ease; 
+            color: var(--text-main); /* Corregido: Color dinámico adaptable al modo oscuro */
         }
-        .task-text.completed span { text-decoration: line-through; color: var(--text-muted) !important; opacity: 0.5; }
+        .task-text.completed span { text-decoration: line-through; color: var(--text-muted); opacity: 0.5; }
         
         .task-text input[type="checkbox"] { 
             appearance: none; 
@@ -306,7 +290,8 @@
             cursor: pointer; 
             transition: background 0.25s var(--fade-bezier), border-color 0.25s var(--fade-bezier), transform 0.15s ease; 
             position: relative; 
-            flex-shrink: 0;
+            display: inline-block; 
+            flex-shrink: 0; /* Evita que el circulo se deforme */
             background: var(--card-bg);
         }
         .task-text input[type="checkbox"]:checked { 
@@ -342,6 +327,13 @@
         }
         .input-flat:focus { border-color: var(--accent-brand); background: var(--card-bg); box-shadow: 0 4px 12px rgba(107,29,47,0.04); }
 
+        .btn-add {
+            background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
+            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.25s var(--fade-bezier);
+        }
+        .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
+        .btn-add:active { transform: translateY(1px); }
+
         .format-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; background: var(--bg-color); padding: 6px; border-radius: 14px; }
         .format-btn { background: var(--card-bg); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-main); transition: all 0.2s ease; }
         .format-btn:hover { background: var(--accent-brand); color: #FFFFFF; border-color: var(--accent-brand); }
@@ -370,7 +362,6 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.97); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); opacity: 0; transition: transform 0.3s var(--aura-bezier), opacity 0.3s var(--fade-bezier); max-height: 90vh; overflow-y: auto; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-        /* ESTILOS DEL PANEL DESPLEGABLE */
         .cajon-drawer {
             position: fixed; left: 0; right: 0; bottom: 0; background: var(--blur-bg); backdrop-filter: blur(20px);
             border-top-left-radius: 28px; border-top-right-radius: 28px; border-top: 1px solid var(--border-color);
@@ -395,11 +386,87 @@
 
         .icon svg { width: 22px; height: 22px; fill: currentColor; color: white; }
         
-        .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; }
+        .config-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; text-align: left; position: relative; }
         .config-group label { font-size: 13px; font-weight: 600; color: var(--text-muted); }
         .custom-select { width: 100%; padding: 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border-color); color: var(--text-main); font-size: 14px; outline: none; transition: border-color 0.2s ease; }
         .custom-select:focus { border-color: var(--accent-brand); }
         
+        /* ==========================================================================
+           COMPONENTE: DROPDOWN DE IDIOMA TOTALMENTE CUSTOMIZADO
+           ========================================================================== */
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-trigger {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 14px;
+            text-align: left;
+            cursor: pointer;
+            outline: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        .dropdown-trigger:focus, .dropdown-container.active .dropdown-trigger {
+            border-color: var(--accent-brand);
+            background: var(--card-bg);
+        }
+        .dropdown-trigger::after {
+            content: "";
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--text-muted);
+            transition: transform 0.2s ease;
+        }
+        .dropdown-container.active .dropdown-trigger::after {
+            transform: rotate(180deg);
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            z-index: 150;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            list-style: none;
+            padding: 6px 0;
+            animation: fadeIn 0.2s ease;
+        }
+        .dropdown-container.active .dropdown-menu {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background: var(--input-bg);
+            color: var(--accent-brand);
+        }
+        .dropdown-item.selected {
+            background: var(--input-bg);
+            font-weight: 600;
+            color: var(--accent-brand);
+        }
+
         .toggle-container { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; width: 100%; }
         .switch { position: relative; display: inline-block; width: 46px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -407,13 +474,6 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent-brand); }
         input:checked + .slider:before { transform: translateX(20px); }
-
-        .btn-add {
-            background: var(--text-main); color: var(--card-bg); border: none; padding: 0 22px; border-radius: 14px;
-            font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.25s var(--fade-bezier);
-        }
-        .btn-add:hover { background: var(--accent-brand); color: white; transform: translateY(-1px); }
-        .btn-add:active { transform: translateY(1px); }
 
         .guide-step { display: none; flex-direction: column; gap: 10px; opacity: 0; transform: translateY(4px); transition: opacity 0.3s ease, transform 0.3s ease; }
         .guide-step.active { display: flex; opacity: 1; transform: translateY(0); }
@@ -434,14 +494,14 @@
                         <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                         <span id="txt-install">Instalar app</span>
                     </button>
-                    <button class="btn-back btn-icon-nav" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-help')">
-                        <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" alt="Guía">
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-help')">
+                        <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain; filter: var(--icon-filter);" alt="Guía">
                     </button>
-                    <button class="btn-back btn-icon-nav" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
-                        <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" alt="Novedades">
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
+                        <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain; filter: var(--icon-filter);" alt="Novedades">
                     </button>
-                    <button class="btn-back btn-icon-nav" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
-                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
+                        <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
                     </button>
                 </div>
             </div>
@@ -503,9 +563,9 @@
             <div class="card">
                 <div id="tasks-container" style="display:flex; flex-direction:column;"></div>
                 <div class="task-input-container">
-                    <input type="text" id="task-input" class="input-flat" maxlength="50" autocomplete="off" placeholder="Nombre de la actividad...">
+                    <input type="text" id="task-input" class="input-flat" maxlength="50" placeholder="Nombre de la actividad...">
                     <div class="input-row-bottom">
-                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" autocomplete="off" placeholder="Hora (ej. 17:30)">
+                        <input type="text" id="task-time" class="input-flat" style="text-align:center;" maxlength="5" placeholder="Hora (ej. 17:30)">
                         <button class="btn-add" id="btn-task-add" style="flex: 1;" onclick="addTask()">Añadir</button>
                     </div>
                 </div>
@@ -520,7 +580,7 @@
             <div class="card">
                 <div id="notes-container" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;"></div>
                 <div class="input-group" style="display:flex; gap:10px;">
-                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" autocomplete="off" placeholder="Título de la nota...">
+                    <input type="text" id="note-title-input" class="input-flat" maxlength="30" placeholder="Título de la nota...">
                     <button class="btn-add" id="btn-note-create" onclick="addNote()">Crear</button>
                 </div>
             </div>
@@ -534,13 +594,16 @@
         <h3 id="txt-modal-config-title" style="margin-bottom:20px;">Configuración</h3>
         
         <div class="config-group">
-            <label id="lbl-lang" for="lang-select">Idioma / Language</label>
-            <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-                <option value="pt">Português</option>
-                <option value="fr">Français</option>
-            </select>
+            <label id="lbl-lang">Idioma / Language</label>
+            <div class="dropdown-container" id="lang-dropdown-box">
+                <button class="dropdown-trigger" id="lang-dropdown-trigger">Español</button>
+                <ul class="dropdown-menu" id="lang-dropdown-menu">
+                    <li class="dropdown-item selected" data-value="es">Español</li>
+                    <li class="dropdown-item" data-value="en">English</li>
+                    <li class="dropdown-item" data-value="pt">Português</li>
+                    <li class="dropdown-item" data-value="fr">Français</li>
+                </ul>
+            </div>
         </div>
 
         <div class="config-group">
@@ -568,7 +631,7 @@
 
     <div class="modal" id="username-modal">
         <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
-        <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14" autocomplete="off">
+        <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14">
         <button class="btn-add btn-lbl-save" style="width:100%; padding:14px;" onclick="saveUsername()">Guardar</button>
     </div>
 
@@ -591,7 +654,7 @@
 
     <div class="modal" id="calendar-modal">
         <h3 id="txt-modal-plan-title" style="margin-bottom:14px;">Planificar: <span id="modal-day-num"></span></h3>
-        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?" autocomplete="off">
+        <input type="text" id="cal-input-title" class="input-flat" style="width:100%; margin-bottom:18px;" placeholder="¿Qué hay planeado para hoy?">
         <label id="lbl-cal-color" style="font-size:12px; font-weight:600; color:var(--text-muted)">Color identificador:</label>
         <div class="color-picker">
             <div class="color-opt active" style="background:var(--accent-brand);" data-color="#6B1D2F"></div>
@@ -610,19 +673,19 @@
         <div id="help-steps-container">
             <div class="guide-step active" data-step="1">
                 <h4 style="color: var(--accent-brand); margin-bottom: 6px;">1. Centro de Control Doméstico</h4>
-                <p class="log-p">Desde la pantalla de inicio puedes ver un resumen en tiempo real de tu agenda diaria y acceder a los tres bloques principales.</p>
+                <p>Desde la pantalla de inicio puedes ver un resumen ejecutivo en tiempo real de tu agenda diaria ("Cronograma del Día") y acceder rápidamente a los tres bloques de la grilla minimalista.</p>
             </div>
             <div class="guide-step" data-step="2">
                 <h4 style="color: var(--accent-green); margin-bottom: 6px;">2. Agenda de Eventos Mensuales</h4>
-                <p class="log-p">Navega por el calendario y presiona cualquier día para planificar eventos con colores personalizados.</p>
+                <p>Accede al calendario, navega usando las flechas y presiona cualquier día para planificar eventos. Podrás asignarles colores de categorización personalizados para un rápido impacto visual.</p>
             </div>
             <div class="guide-step" data-step="3">
                 <h4 style="color: var(--accent-yellow); margin-bottom: 6px;">3. Actividades con Horarios</h4>
-                <p class="log-p">Añade pendientes con hora fija (formato 24h). El sistema te alertará de forma nativa en el minuto exacto.</p>
+                <p>Al añadir pendientes en la sección de Actividades, puedes include una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
             </div>
             <div class="guide-step" data-step="4">
                 <h4 style="color: #1A73E8; margin-bottom: 6px;">4. Notas Estilo iOS Enriquecidas</h4>
-                <p class="log-p">Crea bloques de notas fijas y edítalas en un completo entorno de texto enriquecido (H1, H2, negrita, cursiva).</p>
+                <p>Crea bloques de notas fijas y ábrelas para editarlas con comandos WYSIWYG interactivos (Títulos H1/H2, negritas, itálicas) guardando el formato de manera interna.</p>
             </div>
         </div>
         <div class="guide-nav">
@@ -636,7 +699,8 @@
             <button onclick="closeDrawer('drawer-news')" class="btn-close-x">&times;</button>
         </div>
         <h3 style="margin-bottom: 18px; font-size: 19px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
-        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; padding-right: 4px;"></div>
+        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; padding-right: 4px;">
+            </div>
     </div>
 
     <script>
@@ -651,6 +715,7 @@
             events: {}
         };
 
+        // DICCIONARIO DE TRADUCCIONES AMPLIADO (ESPAÑOL, INGLÉS, PORTUGUÉS, FRANCÉS)
         const locales = {
             es: {
                 homeTitle: "Control de ", calHeader: "Agenda Mensual", tasksHeader: "Lista de Actividades",
@@ -695,11 +760,11 @@
                 alertNotifySuccess: "Alertas nativos configurados com sucesso!"
             },
             fr: {
-                homeTitle: "Contrôle de ", calHeader: "Agenda Mensuel", tasksHeader: "Liste des Activités",
-                notesHeader: "Bloc de Notes", cronograma: "Planning du Jour", lblBack: "Retour",
+                homeTitle: "Contrôle de ", calHeader: "Agenda Mensuel", tasksHeader: "Liste d'Activités",
+                notesHeader: "Bloc-notes", cronograma: "Programme du Jour", lblBack: "Retour",
                 lblClose: "Fermer", lblSave: "Enregistrer", lblDelete: "Supprimer", modalConfigTitle: "Configuration",
                 modalIdTitle: "Identité de l'Espace", modalPlanTitle: "Planifier: ", lblCalColor: "Couleur d'identification:",
-                lblLang: "Langue / Language", lblTheme: "Thème de l'interface", lblNotifyTitle: "Alertes Système",
+                lblLang: "Langue / Language", lblTheme: "Thème de l'interface", lblNotifyTitle: "Alertes du Système",
                 lblNotifyDesc: "Activer les notifications natives", optLight: "Clair", optDark: "Sombre",
                 optSystem: "Par défaut du système", txtInstall: "Installer l'app", helpTitle: "Manuel d'Utilisation de l'Espace",
                 newsTitle: "Historique des Mises à Jour", menuEvents: "Événements", menuTasks: "En attente", menuNotes: "Notes fixes",
@@ -715,6 +780,7 @@
         let currentGuideStep = 1;
         let selectedColor = "#85243A";
 
+        // LOCALSTORAGE MANAGMENT
         function saveToLocalStorage() {
             localStorage.setItem('aura_studio_data', JSON.stringify(data));
         }
@@ -725,19 +791,18 @@
                 try {
                     let parsed = JSON.parse(raw);
                     data = Object.assign({}, data, parsed);
-                } catch(e) {
-                    console.error("Error cargando localStorage, reiniciando objeto.");
-                }
+                } catch(e) {}
             }
-            if(!Array.isArray(data.tasks)) data.tasks = [];
-            if(!Array.isArray(data.notes)) data.notes = [];
-            if(!data.events || typeof data.events !== 'object') data.events = {};
+            if(!data.tasks) data.tasks = [];
+            if(!data.notes) data.notes = [];
+            if(!data.events) data.events = {};
             if(!data.username) data.username = "Espacio";
             
             document.getElementById('username-display').innerText = data.username;
             document.getElementById('username-input').value = data.username;
         }
 
+        // VIEW CONTROLLER
         function changeView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
@@ -746,11 +811,13 @@
             if(viewId === 'view-notes') renderNotes();
         }
 
+        // DRAWER CONTROLLER
         function openDrawer(id) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
             setTimeout(() => overlay.style.opacity = '1', 10);
             overlay.onclick = null;
+
             document.getElementById(id).classList.add('active');
             if(id === 'drawer-news') loadUpdatesLog();
         }
@@ -760,11 +827,12 @@
             const overlay = document.getElementById('overlay');
             overlay.style.opacity = '0';
             setTimeout(() => {
-                document.getElementById('overlay').style.display = 'none';
+                overlay.style.display = 'none';
                 overlay.onclick = closeModals;
             }, 300);
         }
 
+        // MODALES ESTÁNDAR
         function openModal(id) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
@@ -778,12 +846,15 @@
         function closeModals() {
             document.getElementById('overlay').style.opacity = '0';
             document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            // También colapsamos el dropdown customizado si estuviera abierto
+            document.getElementById('lang-dropdown-box').classList.remove('active');
             setTimeout(() => {
                 document.getElementById('overlay').style.display = 'none';
                 document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
             }, 300);
         }
 
+        // CONFIGURACIONES: TEMA E IDIOMA
         function changeTheme(themeValue) {
             data.theme = themeValue;
             saveToLocalStorage();
@@ -794,19 +865,48 @@
             document.documentElement.setAttribute('data-theme', actualTheme);
         }
 
+        // CONTROLADOR DEL DESPLEGABLE DE IDIOMA PERSONALIZADO
+        const dropBox = document.getElementById('lang-dropdown-box');
+        const dropTrigger = document.getElementById('lang-dropdown-trigger');
+        const dropMenu = document.getElementById('lang-dropdown-menu');
+
+        dropTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropBox.classList.toggle('active');
+        });
+
+        dropMenu.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const selectedLang = item.getAttribute('data-value');
+                
+                dropMenu.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                dropTrigger.textContent = item.textContent;
+                dropBox.classList.remove('active');
+                
+                changeLanguage(selectedLang);
+            });
+        });
+
         function changeLanguage(langCode) {
             if(!locales[langCode]) langCode = 'es';
             data.lang = langCode;
             saveToLocalStorage();
             
+            // Actualizar visualmente la opción del dropdown
+            const activeItem = dropMenu.querySelector(`.dropdown-item[data-value="${langCode}"]`);
+            if (activeItem) {
+                dropMenu.querySelectorAll('.dropdown-item').forEach(i => i.classList.remove('selected'));
+                activeItem.classList.add('selected');
+                dropTrigger.textContent = activeItem.textContent;
+            }
+
             const l = locales[langCode];
             document.getElementById('txt-home-title').innerHTML = l.homeTitle + `<span id="username-display" onclick="openModal('username-modal')">${data.username}</span>`;
             document.getElementById('txt-cal-header').innerText = l.calHeader;
             document.getElementById('txt-tasks-header').innerText = l.tasksHeader;
-            
-            const notesHeaderNode = document.getElementById('txt-notes-header');
-            if (notesHeaderNode) notesHeaderNode.innerText = l.notesHeader;
-            
+            document.getElementById('txt-notes-header').innerText = l.notesHeader;
             document.getElementById('txt-cronograma-title').innerText = l.cronograma;
             
             document.querySelectorAll('.btn-lbl-back').forEach(b => b.innerText = l.lblBack);
@@ -855,6 +955,7 @@
             }
         }
 
+        // MANUAL INTERACTIVO
         function moveGuideStep(dir) {
             currentGuideStep += dir;
             if(currentGuideStep < 1) currentGuideStep = 1;
@@ -873,6 +974,7 @@
             }
         }
 
+        // MOTOR PARSER PARA UPD.TXT
         async function loadUpdatesLog() {
             const container = document.getElementById('news-content-box');
             container.innerHTML = `<p style="text-align:center; padding:20px;">...</p>`;
@@ -880,6 +982,7 @@
                 const response = await fetch('./upd.txt');
                 if(!response.ok) throw new Error();
                 let text = await response.text();
+                
                 let htmlOutput = "";
                 const lines = text.split('\n');
                 
@@ -894,13 +997,25 @@
                         let tagType = "";
 
                         if (innerContent.startsWith('# ')) {
-                            targetClass = "log-h1"; innerContent = innerContent.substring(2); isHeader = true; tagType = "div";
+                            targetClass = "log-h1";
+                            innerContent = innerContent.substring(2);
+                            isHeader = true;
+                            tagType = "div";
                         } else if (innerContent.startsWith('## ')) {
-                            targetClass = "log-h2"; innerContent = innerContent.substring(3); isHeader = true; tagType = "div";
+                            targetClass = "log-h2";
+                            innerContent = innerContent.substring(3);
+                            isHeader = true;
+                            tagType = "div";
                         } else if (innerContent.startsWith('### ')) {
-                            targetClass = "log-h3"; innerContent = innerContent.substring(4); isHeader = true; tagType = "div";
+                            targetClass = "log-h3";
+                            innerContent = innerContent.substring(4);
+                            isHeader = true;
+                            tagType = "div";
                         } else if (innerContent.startsWith('-# ')) {
-                            targetClass = "log-sub"; innerContent = innerContent.substring(3); isHeader = true; tagType = "p";
+                            targetClass = "log-sub";
+                            innerContent = innerContent.substring(3);
+                            isHeader = true;
+                            tagType = "p";
                         }
 
                         innerContent = innerContent.replace(/_\*(.*?)\*_/g, '<strong><em>$1</em></strong>');
@@ -917,13 +1032,14 @@
                         htmlOutput += `<p class="log-p">${cleaned}</p>`;
                     }
                 });
+
                 container.innerHTML = htmlOutput || "<p>No hay registros de actualización disponibles.</p>";
             } catch(e) {
                 container.innerHTML = `<p style="text-align:center; color:red; font-size:13px; padding:20px;">Error al procesar o localizar el archivo 'upd.txt'.</p>`;
             }
         }
 
-        // PENDIENTES
+        // GESTIÓN DE CHECKLIST (PENDIENTES)
         function renderTasks() {
             const container = document.getElementById('tasks-container');
             container.innerHTML = "";
@@ -950,9 +1066,11 @@
             const timeInput = document.getElementById('task-time');
             const text = txtInput.value.trim();
             const time = timeInput.value.trim();
+            
             if(!text) return;
             data.tasks.push({ text: text, time: time, done: false });
             saveToLocalStorage();
+            
             txtInput.value = "";
             timeInput.value = "";
             renderTasks();
@@ -970,27 +1088,20 @@
             renderTasks();
         }
 
-        // SISTEMA DE NOTAS
+        // BLOQUE DE NOTAS FIJAS
         function renderNotes() {
             const container = document.getElementById('notes-container');
-            if (!container) return;
             container.innerHTML = "";
-            
-            if (!data.notes || !Array.isArray(data.notes)) {
-                data.notes = [];
-            }
-            
             if(data.notes.length === 0) {
                 container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:14px; padding:30px 0;">${data.lang === 'en' ? 'No notes stored.' : 'No hay notas almacenadas.'}</p>`;
                 return;
             }
-            
             data.notes.forEach((n, index) => {
                 const btn = document.createElement('button');
                 btn.className = "note-item-btn";
                 btn.innerHTML = `
                     <div style="width:10px; height:10px; border-radius:50%; background:var(--accent-yellow);"></div>
-                    <div style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.title || 'Nota sin título'}</div>
+                    <div style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.title}</div>
                 `;
                 btn.onclick = () => openNoteEditor(index);
                 container.appendChild(btn);
@@ -1000,30 +1111,20 @@
         let editingNoteIndex = null;
         function addNote() {
             const input = document.getElementById('note-title-input');
-            if (!input) return;
             const title = input.value.trim();
             if(!title) return;
             
-            if (!data.notes || !Array.isArray(data.notes)) {
-                data.notes = [];
-            }
-            
-            data.notes.push({ 
-                title: title, 
-                body: "<div>Empieza a escribir...</div>" 
-            });
-            
+            data.notes.push({ title: title, body: "<div>Empieza a escribir...</div>" });
             saveToLocalStorage();
             input.value = "";
             renderNotes();
         }
 
         function openNoteEditor(index) {
-            if (!data.notes[index]) return;
             editingNoteIndex = index;
             const note = data.notes[index];
             document.getElementById('modal-note-title').innerText = note.title;
-            document.getElementById('modal-note-body').innerHTML = note.body || "";
+            document.getElementById('modal-note-body').innerHTML = note.body;
             
             document.getElementById('btn-delete-note-trigger').onclick = () => {
                 data.notes.splice(editingNoteIndex, 1);
@@ -1039,7 +1140,7 @@
         }
 
         function saveNoteBody() {
-            if(editingNoteIndex !== null && data.notes[editingNoteIndex]) {
+            if(editingNoteIndex !== null) {
                 data.notes[editingNoteIndex].body = document.getElementById('modal-note-body').innerHTML;
                 saveToLocalStorage();
                 closeModals();
@@ -1047,7 +1148,7 @@
             }
         }
 
-        // CALENDARIO
+        // CALENDARIO MENSUAL
         function initCalendar() {
             const today = new Date();
             if (currentYear === undefined) currentYear = today.getFullYear();
@@ -1056,25 +1157,21 @@
         }
 
         function renderCalendarMesh() {
-            let monthNames = [];
-            if(data.lang === 'en') {
-                monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            } else if(data.lang === 'pt') {
-                monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            } else if(data.lang === 'fr') {
-                monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-            } else {
-                monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-            }
+            const monthNames = (data.lang === 'en') ? 
+                ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] :
+                (data.lang === 'pt') ?
+                ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"] :
+                (data.lang === 'fr') ?
+                ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"] :
+                ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
             
             document.getElementById('calendar-month-year').innerText = `${monthNames[currentMonth]} ${currentYear}`;
             
             const weekdaysContainer = document.getElementById('calendar-weekdays');
-            let daysLetters = ["D", "L", "M", "M", "J", "V", "S"];
-            if(data.lang === 'en') daysLetters = ["S", "M", "T", "W", "T", "F", "S"];
-            if(data.lang === 'pt') daysLetters = ["D", "S", "T", "Q", "Q", "S", "S"];
-            if(data.lang === 'fr') daysLetters = ["D", "L", "M", "M", "J", "V", "S"];
-            
+            const daysLetters = (data.lang === 'en') ? ["S", "M", "T", "W", "T", "F", "S"] : 
+                                (data.lang === 'fr') ? ["D", "L", "M", "M", "J", "V", "S"] :
+                                (data.lang === 'pt') ? ["D", "S", "T", "Q", "Q", "S", "S"] :
+                                ["D", "L", "M", "M", "J", "V", "S"];
             weekdaysContainer.innerHTML = daysLetters.map(l => `<div>${l}</div>`).join('');
             
             const gridBox = document.getElementById('calendar-grid-box');
@@ -1137,6 +1234,7 @@
             document.getElementById('modal-day-num').innerText = dateStr;
             const detailBox = document.getElementById('calendar-detail-box');
             const txtDetail = document.getElementById('cal-detail-text');
+            
             detailBox.style.display = "block";
             
             if(data.events[dateStr]) {
@@ -1162,20 +1260,18 @@
         }
 
         function saveCalendarEvent() {
-            const titleInput = document.getElementById('cal-input-title').value.trim();
-            if(!titleInput || !selectedDayStr) return;
-            data.events[selectedDayStr] = {
-                title: titleInput,
-                color: selectedColor
-            };
+            const title = document.getElementById('cal-input-title').value.trim();
+            if(!title) return;
+            
+            data.events[selectedDayStr] = { title: title, color: selectedColor };
             saveToLocalStorage();
             closeModals();
-            if(selectedDayStr) {
-                const parts = selectedDayStr.split('-');
-                selectCalendarDay(parseInt(parts[2]), selectedDayStr);
-            }
+            
+            const parts = selectedDayStr.split('-');
+            selectCalendarDay(parts[2] ? parseInt(parts[2]) : 1, selectedDayStr);
         }
 
+        // COLOR PICKER INTERFACE
         document.querySelectorAll('.color-picker .color-opt').forEach(opt => {
             opt.onclick = (e) => {
                 document.querySelectorAll('.color-picker .color-opt').forEach(o => o.classList.remove('active'));
@@ -1184,9 +1280,9 @@
             };
         });
 
+        // PREVIEW CRONOGRAMA HOME
         function renderHomePreview() {
             const list = document.getElementById('home-tasks-list');
-            if(!list) return;
             list.innerHTML = "";
             const activeTasks = data.tasks.filter(t => !t.done);
             
@@ -1205,6 +1301,7 @@
             });
         }
 
+        // NOTIFICACIONES
         function toggleNotifications(val) {
             if(val) {
                 if (!("Notification" in window)) {
@@ -1244,9 +1341,11 @@
                     }
                 }
             });
+
             if(horaActualStr === "00:00") tareasNotificadas.clear();
         }, 25000);
 
+        // INSTALACIÓN ASÍNCRONA PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1266,18 +1365,21 @@
             }
         });
 
+        // Clic global para colapsar menús si se pulsa fuera
+        window.addEventListener('click', () => {
+            dropBox.classList.remove('active');
+        });
+
         // INITIALIZATION
         window.addEventListener('DOMContentLoaded', () => {
             loadFromLocalStorage();
             
-            document.getElementById('lang-select').value = data.lang;
             document.getElementById('notify-toggle').checked = data.notify;
             document.getElementById('theme-select').value = data.theme;
             
             changeTheme(data.theme);
             initCalendar();
             changeLanguage(data.lang);
-            renderNotes();
         });
     </script>
 </body>
