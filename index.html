@@ -2,11 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kronos</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
@@ -14,75 +13,109 @@
 
     <div id="screen-loading" class="screen active">
         <div class="loading-content">
-            <p class="loading-text">Estamos cargando:</p>
-            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-loading">
+            <p>Estamos cargando:</p>
+            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos">
+            <div class="spinner"></div>
         </div>
     </div>
 
-    <div id="screen-welcome" class="screen">
-        <div class="card info-card">
+    <div id="screen-first-time" class="screen">
+        <div class="welcome-box">
             <p>Te recomendamos instalar la aplicación para recibir notificaciones con nuestro ícono, lo que te ayudará a evitar confusiones y a disfrutar de más funciones.</p>
         </div>
-        
-        <button class="btn btn-download" id="btn-install">
+        <button class="btn-app install-btn">
             <span>Descargar la APP</span>
-            <div class="icon-circle">⬇</div>
+            <i class="fa-solid fa-circle-arrow-down"></i>
         </button>
-
-        <button class="btn btn-continue" id="btn-skip">
-            <div class="btn-continue-text">
-                <span>Continuar sin la APP</span>
-                <span class="subtext">Obtendrá algunas funciones, con limitaciones</span>
+        <button class="btn-app skip-btn" onclick="goToHome()">
+            <div class="skip-text">
+                <strong>Continuar sin la APP</strong>
+                <span>Obtendrá algunas funciones, con limitaciones</span>
             </div>
-            <div class="icon-cross">✕</div>
+            <i class="fa-solid fa-xmark"></i>
         </button>
     </div>
 
     <div id="screen-home" class="screen">
-        <header class="app-header">
-            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-header">
-            <div class="header-actions">
-                <button class="icon-btn info-btn">ℹ</button>
-                <button class="icon-btn settings-btn">⚙</button>
+        <header class="main-header">
+            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-small">
+            <div class="header-icons">
+                <i class="fa-solid fa-circle-info"></i>
+                <i class="fa-solid fa-gear"></i>
             </div>
         </header>
 
-        <div class="quick-menu">
-            <button class="menu-item" onclick="openSection('calendar')">
-                <div class="menu-icon calendar-icon">📅</div>
+        <nav class="grid-menu">
+            <div class="menu-item" onclick="showSection('calendar')">
+                <div class="icon-bg icon-cal"><i class="fa-solid fa-calendar-days"></i></div>
                 <span>Calendario</span>
-            </button>
-            <button class="menu-item" onclick="openSection('tasks')">
-                <div class="menu-icon tasks-icon">📋</div>
+            </div>
+            <div class="menu-item" onclick="showSection('tasks')">
+                <div class="icon-bg icon-task"><i class="fa-solid fa-list-check"></i></div>
                 <span>Tareas</span>
-            </button>
-            <button class="menu-item" onclick="openSection('notes')">
-                <div class="menu-icon notes-icon">✏</div>
+            </div>
+            <div class="menu-item" onclick="showSection('notes')">
+                <div class="icon-bg icon-note"><i class="fa-solid fa-pen-nib"></i></div>
                 <span>Notas</span>
-            </button>
-        </div>
-
-        <div class="dashboard-row">
-            <div class="card date-card">
-                <span class="hoy-label">Hoy es:</span>
-                <span class="day-number">23</span>
-                <span class="month-label">de agosto</span>
             </div>
-            <div class="card pending-card">
-                <h3>Tienes los siguientes pendientes:</h3>
-                <ul id="mini-task-list">
-                    <li>• Ir a la tienda.</li>
-                    <li>• Buscar a Javier.</li>
-                    <li>• Hacer la cena.</li>
+        </nav>
+
+        <section class="status-row">
+            <div class="date-card">
+                <span class="lbl-hoy">Hoy es:</span>
+                <span id="current-day-num" class="big-day">--</span>
+                <span id="current-month" class="month-name">---</span>
+            </div>
+            <div class="pending-card">
+                <p class="title-pending">Tienes los siguientes pendientes:</p>
+                <ul id="home-tasks-list">
+                    <li class="empty-msg">No tienes tareas para hoy.</li>
                 </ul>
-                <a href="#" class="tomorrow-link">¿Quieres ver los pendientes de mañana?</a>
             </div>
-        </div>
+        </section>
 
-        <div class="card updates-card">
-            <div class="updates-header">kronos | 0.1.2</div>
-            <div id="updates-content">
+        <section class="update-card">
+            <div class="version-tag">kronos | 0.1.2</div>
+            <div id="update-container">
                 </div>
+        </section>
+    </div>
+
+    <div id="screen-calendar" class="screen section-view">
+        <div class="back-nav">
+            <i class="fa-solid fa-arrow-left" onclick="showSection('home')"></i>
+            <h1>CALENDARIO</h1>
+        </div>
+        <div class="calendar-widget">
+            <p>Calendario vacío</p>
+        </div>
+    </div>
+
+    <div id="screen-tasks" class="screen section-view">
+        <div class="back-nav">
+            <i class="fa-solid fa-arrow-left" onclick="showSection('home')"></i>
+            <h1>TAREAS</h1>
+        </div>
+        <div class="list-container" id="tasks-container">
+            <p class="empty-msg">No hay tareas aún.</p>
+        </div>
+        <div class="input-bar">
+            <input type="text" placeholder="Titulo de tarea">
+            <i class="fa-solid fa-circle-plus"></i>
+        </div>
+    </div>
+
+    <div id="screen-notes" class="screen section-view">
+        <div class="back-nav">
+            <i class="fa-solid fa-arrow-left" onclick="showSection('home')"></i>
+            <h1>NOTAS</h1>
+        </div>
+        <div class="list-container" id="notes-container">
+            <p class="empty-msg">No hay notas aún.</p>
+        </div>
+        <div class="input-bar">
+            <input type="text" placeholder="Titulo de nota">
+            <i class="fa-solid fa-circle-plus"></i>
         </div>
     </div>
 
