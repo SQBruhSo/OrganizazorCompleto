@@ -1,84 +1,60 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Simular tiempo de carga (Loading de 2.5 segundos)
+    // 1. Simular Carga
     setTimeout(() => {
-        document.getElementById("screen-loading").classList.remove("active");
-        
-        // Verificamos si entra por primera vez (usando localStorage)
-        if (!localStorage.getItem("kronos_initialized")) {
-            document.getElementById("screen-welcome").classList.add("active");
+        document.getElementById('screen-loading').classList.remove('active');
+        // Si es primera vez (usando localStorage para saber)
+        if(!localStorage.getItem('visited')) {
+            document.getElementById('screen-first-time').classList.add('active');
         } else {
-            document.getElementById("screen-home").classList.add("active");
+            showSection('home');
         }
-    }, 2500);
+    }, 2000);
 
-    // Eventos de la pantalla de Bienvenida
-    document.getElementById("btn-skip").addEventListener("click", () => {
-        localStorage.setItem("kronos_initialized", "true");
-        document.getElementById("screen-welcome").classList.remove("active");
-        document.getElementById("screen-home").classList.add("active");
-    });
+    // 2. Setear Fecha Actual
+    const now = new Date();
+    const days = now.getDate();
+    const months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+    document.getElementById('current-day-num').innerText = days;
+    document.getElementById('current-month').innerText = `de ${months[now.getMonth()]}`;
 
-    // Cargar y Parsear las novedades desde update.txt
-    fetchUpdates();
+    // 3. Cargar Updates
+    fetch('update.txt')
+        .then(res => res.text())
+        .then(data => parseUpdates(data));
 });
 
-// Función para abrir secciones (Redirecciones o cambios de vista futuros)
-function openSection(section) {
-    console.log(`Abriendo sección: ${section}`);
-    // Aquí puedes manejar la lógica para mostrar tus pantallas de Calendario, Tareas o Notas
+function goToHome() {
+    localStorage.setItem('visited', 'true');
+    document.getElementById('screen-first-time').classList.remove('active');
+    showSection('home');
 }
 
-// PARSER DE TEXTO PERSONALIZADO PARA UPDATE.TXT
-async function fetchUpdates() {
-    try {
-        const response = await fetch('update.txt');
-        if (!response.ok) throw new Error('No se pudo cargar update.txt');
-        const text = await response.text();
-        
-        const container = document.getElementById("updates-content");
-        container.innerHTML = parseKronosFormat(text);
-    } catch (error) {
-        console.error(error);
-        document.getElementById("updates-content").innerHTML = "<p>No se pudieron cargar las novedades.</p>";
-    }
+function showSection(sectionId) {
+    // Ocultar todas las pantallas
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    // Mostrar la elegida
+    document.getElementById(`screen-${sectionId}`).classList.add('active');
 }
 
-function parseKronosFormat(rawText) {
-    // Dividir por líneas
-    const lines = rawText.split('\n');
-    let htmlOutput = "";
+// PARSER PERSONALIZADO
+function parseUpdates(text) {
+    const container = document.getElementById('update-container');
+    const lines = text.split('\n');
+    let html = "";
 
     lines.forEach(line => {
-        let trimmed = line.trim();
-        if (!trimmed) return;
-
-        // Detectar etiquetas principales H1>, H2>, H3> sacando el cierre "<"
-        let tag = "";
-        let content = "";
-
-        if (trimmed.startsWith("H1>")) {
-            tag = "h1";
-            content = trimmed.replace("H1>", "").replace(/<$/, "");
-        } else if (trimmed.startsWith("H2>")) {
-            tag = "h2";
-            content = trimmed.replace("H2>", "").replace(/<$/, "");
-        } else if (trimmed.startsWith("H3>")) {
-            tag = "p"; // Estilizamos el H3 como párrafo cómodo según el diseño de UI
-            content = trimmed.replace("H3>", "").replace(/<$/, "");
-        } else {
-            // Si no tiene etiqueta definida por defecto es un párrafo
-            tag = "p";
-            content = trimmed;
+        let clean = line.trim();
+        if(clean.startsWith('H1>')) {
+            html += `<h1 class="upd-h1">${clean.slice(3, -1)}</h1>`;
+        } else if(clean.startsWith('H2>')) {
+            html += `<h2 class="upd-h2">${clean.slice(3, -1)}</h2>`;
+        } else if(clean.startsWith('H3>')) {
+            let content = clean.slice(3, -1);
+            // Negrita * y Cursiva _
+            content = content.replace(/\*(.*?)\*/g, "<strong>$1</strong>");
+            content = content.replace(/_(.*?)_/g, "<em>$1</em>");
+            html += `<p class="upd-h3">${content}</p>`;
         }
-
-        // Reemplazar decoradores de formato interno de forma cruzada y segura:
-        // Soporta tanto *Texto* como _Texto_ para Negritas y Cursivas dinámicamente
-        content = content
-            .replace(/\*(.*?)\*/g, "<strong>$1</strong>") // Convierte *texto* en Negrita
-            .replace(/_(.*?)_/g, "<em>$1</em>");         // Convierte _texto_ en Cursiva
-
-        htmlOutput += `<${tag}>${content}</${tag}>`;
     });
-
-    return htmlOutput;
+    container.innerHTML = html;
 }
