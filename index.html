@@ -3,41 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kronos</title>
+    <title>Kronos Pro</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
-<body>
+<body class="theme-light font-jakarta size-medium">
 
+    <!-- 1. PANTALLA LOADING -->
     <div id="screen-loading" class="screen active">
         <div class="loading-content">
-            <p>Estamos cargando:</p>
+            <p class="load-lbl">Cargando ecosistema</p>
             <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos">
             <div class="spinner"></div>
         </div>
     </div>
 
+    <!-- 2. PANTALLA PRIMERA VEZ (REDISEÑO ESTILO PREMIUM) -->
     <div id="screen-welcome" class="screen">
-        <div class="welcome-box">
+        <div class="welcome-hero">
+            <div class="brand-badge">KRONOS OS</div>
+            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="welcome-logo">
+            <p class="welcome-tagline">Tu tiempo, optimizado al milisegundo.</p>
+        </div>
+        
+        <div class="welcome-card-ui">
             <p>Te recomendamos instalar la aplicación para recibir notificaciones con nuestro ícono, lo que te ayudará a evitar confusiones y a disfrutar de más funciones.</p>
         </div>
-        <button class="btn-app install-btn" id="btn-install-pwa">
-            <span>Descargar la APP</span>
-            <i class="fa-solid fa-circle-arrow-down"></i>
-        </button>
-        <button class="btn-app skip-btn" onclick="skipWelcome()">
-            <div class="skip-text">
-                <strong>Continuar sin la APP</strong>
-                <span>Obtendrá algunas funciones, con limitaciones</span>
-            </div>
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+
+        <div class="welcome-actions">
+            <button class="btn-premium primary-btn" id="btn-install-pwa">
+                <div class="btn-inner">
+                    <span>Descargar la APP</span>
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                </div>
+            </button>
+            
+            <button class="btn-premium secondary-btn" onclick="skipWelcome()">
+                <div class="btn-inner">
+                    <div class="btn-txt-block">
+                        <strong>Continuar en navegador</strong>
+                        <span>Funciones estándar con limitaciones</span>
+                    </div>
+                    <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
+            </button>
+        </div>
     </div>
 
+    <!-- 3. PANTALLA INICIO (DASHBOARD) -->
     <div id="screen-home" class="screen">
         <header class="main-header">
             <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-small">
@@ -64,27 +81,29 @@
 
         <section class="status-row">
             <div class="date-card">
-                <span class="lbl-hoy">Hoy es:</span>
+                <span class="lbl-hoy">Hoy es</span>
                 <span id="current-day-num" class="big-day">--</span>
                 <span id="current-month" class="month-name">---</span>
             </div>
             <div class="pending-card">
-                <p class="title-pending">Pendientes de hoy:</p>
+                <p class="title-pending">Agenda de Hoy:</p>
                 <ul id="home-tasks-preview"></ul>
             </div>
         </section>
 
         <section class="update-card">
-            <div class="version-tag">kronos | 0.1.2</div>
+            <div class="version-tag">SISTEMA LOG // v0.1.2</div>
             <div id="update-container"></div>
         </section>
     </div>
 
+    <!-- 4. PANTALLA CALENDARIO (PLANIFICADOR) -->
     <div id="screen-calendar" class="screen">
         <div class="back-nav">
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
-            <h1>CALENDARIO</h1>
+            <h1>PLANIFICADOR</h1>
         </div>
+        
         <div class="calendar-container card-inside">
             <div class="calendar-controls">
                 <button onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -96,21 +115,36 @@
             </div>
             <div class="calendar-days" id="calendar-days-grid"></div>
         </div>
+
+        <div id="cal-selected-box" class="cal-selected-tasks-container" style="display:none;">
+            <h3 id="cal-selected-date-lbl">Tareas para este día:</h3>
+            <div id="cal-day-tasks-list"></div>
+            <div class="input-bar small-bar">
+                <input type="text" id="cal-task-input" placeholder="Añadir tarea a este día...">
+                <input type="time" id="cal-task-time">
+                <i class="fa-solid fa-plus" onclick="addCalendarDayTask()"></i>
+            </div>
+        </div>
     </div>
 
+    <!-- 5. PANTALLA TAREAS -->
     <div id="screen-tasks" class="screen">
         <div class="back-nav">
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
-            <h1>TAREAS</h1>
+            <h1>MIS TAREAS</h1>
         </div>
         <div class="list-container" id="tasks-list"></div>
         
+        <!-- UI limpia idéntica a image_037f67.png -->
         <div class="task-options-bar">
             <label class="toggle-schedule">
                 <input type="checkbox" id="task-has-time" onchange="toggleTimeInput()">
                 <span><i class="fa-solid fa-clock"></i> Definir Horario</span>
             </label>
-            <input type="time" id="task-time-input">
+            <div class="time-input-wrapper" id="time-wrapper">
+                <input type="time" id="task-time-input" value="12:30">
+                <i class="fa-regular fa-clock clock-inside-icon"></i>
+            </div>
         </div>
 
         <div class="input-bar">
@@ -119,72 +153,109 @@
         </div>
     </div>
 
+    <!-- 6. PANTALLA NOTAS (CON EDICIÓN INTEGRADA) -->
     <div id="screen-notes" class="screen">
         <div class="back-nav">
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
-            <h1>NOTAS</h1>
+            <h1>MIS NOTAS</h1>
         </div>
         <div class="list-container" id="notes-list"></div>
-        <div class="input-bar">
-            <input type="text" id="note-input" placeholder="Escribir una nota rápida...">
-            <i class="fa-solid fa-circle-plus" onclick="addNote()"></i>
+        
+        <div class="input-bar" id="note-input-container">
+            <input type="text" id="note-input" placeholder="Escribir nota...">
+            <i class="fa-solid fa-circle-plus" id="note-submit-icon" onclick="addNote()"></i>
         </div>
     </div>
 
+    <!-- 7. PANTALLA CONFIGURACIÓN AVANZADA -->
     <div id="screen-settings" class="screen">
         <div class="back-nav">
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
-            <h1>CONFIGURACIÓN</h1>
+            <h1>PREFERENCIAS</h1>
         </div>
-        <div class="settings-container card-inside">
-            <h3>Preferencias Generales</h3>
-            <div class="setting-item">
-                <span class="setting-text">Almacenamiento Local</span>
-                <span class="setting-status active-status">Activo (JSON)</span>
+        <div class="settings-scroll-area">
+            <div class="settings-block card-inside">
+                <h3>Visualización</h3>
+                
+                <div class="setting-row">
+                    <label><i class="fa-solid fa-palette"></i> Tema de Interfaz</label>
+                    <select id="cfg-theme" onchange="updateSettings()">
+                        <option value="theme-light">Modo Claro Refinado</option>
+                        <option value="theme-dark">Modo Oscuro Absoluto</option>
+                    </select>
+                </div>
+
+                <div class="setting-row">
+                    <label><i class="fa-solid fa-text-height"></i> Tamaño de Letra</label>
+                    <select id="cfg-size" onchange="updateSettings()">
+                        <option value="size-small">Chica</option>
+                        <option value="size-medium">Mediana</option>
+                        <option value="size-large">Grande</option>
+                    </select>
+                </div>
+
+                <div class="setting-row">
+                    <label><i class="fa-solid fa-font"></i> Fuente Tipográfica</label>
+                    <select id="cfg-font" onchange="updateSettings()">
+                        <option value="font-jakarta">Plus Jakarta Sans</option>
+                        <option value="font-inter">Inter Tech</option>
+                        <option value="font-system">Sistema Monospace</option>
+                    </select>
+                </div>
             </div>
-            <div class="setting-item">
-                <span class="setting-text">Fuente Base</span>
-                <span class="setting-status">Jakarta Sans 500</span>
+
+            <div class="settings-block card-inside">
+                <h3>Sistema y Alertas</h3>
+                
+                <div class="setting-row toggle-row">
+                    <span><i class="fa-solid fa-bell"></i> Activar Notificaciones</span>
+                    <label class="switch">
+                        <input type="checkbox" id="cfg-notif" onchange="updateSettings()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row toggle-row">
+                    <span><i class="fa-solid fa-volume-high"></i> Sonidos de Interacción</span>
+                    <label class="switch">
+                        <input type="checkbox" id="cfg-sound" onchange="updateSettings()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
             </div>
-            <hr class="separator">
-            <h3>Zona de Peligro</h3>
-            <button class="btn-danger" onclick="resetApp()">
-                <i class="fa-solid fa-trash-arrow-up"></i> Restablecer datos de Kronos
-            </button>
+
+            <div class="settings-block card-inside">
+                <h3>Mantenimiento</h3>
+                <button class="btn-danger-ui" onclick="resetApp()">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Borrar datos de fábrica
+                </button>
+            </div>
         </div>
     </div>
 
+    <!-- 8. PANTALLA AYUDA -->
     <div id="screen-help" class="screen">
         <div class="back-nav">
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
-            <h1>AYUDA & MANUAL</h1>
+            <h1>CENTRO DE AYUDA</h1>
         </div>
         <div class="help-container">
             <div class="help-accordion" onclick="toggleAccordion(this)">
                 <div class="accordion-header">
-                    <span>¿Cómo organizar tareas?</span>
+                    <span>¿Cómo asignar tareas a fechas futuras?</span>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="accordion-content">
-                    <p>Entrá a la sección Tareas, escribe lo que tienes que hacer. Si necesitas ponerle hora exacta, activa el interruptor "Definir Horario" antes de presionar el botón (+).</p>
+                    <p>Entra a "Calendario" y pulsa sobre cualquier día. Se desplegará automáticamente un módulo inferior exclusivo para ese día donde podrás registrar actividades específicas.</p>
                 </div>
             </div>
             <div class="help-accordion" onclick="toggleAccordion(this)">
                 <div class="accordion-header">
-                    <span>¿El calendario se actualiza solo?</span>
+                    <span>¿Cómo editar mis notas guardadas?</span>
                     <i class="fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="accordion-content">
-                    <p>Sí, Kronos calcula automáticamente el año, los meses y marca en color naranja fuerte tu día actual para que nunca te pierdas.</p>
-                </div>
-            </div>
-            <div class="help-accordion" onclick="toggleAccordion(this)">
-                <div class="accordion-header">
-                    <span>¿Cómo funciona el guardado?</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </div>
-                <div class="accordion-content">
-                    <p>Todo se almacena en memoria JSON encriptada nativa de tu dispositivo, garantizando velocidad inmediata y privacidad total.</p>
+                    <p>En el panel de Notas, simplemente toca sobre el cuerpo de cualquier nota. El texto subirá al campo inferior permitiéndote modificarlo. El botón (+) cambiará a un icono de check para guardar tus cambios en tiempo real.</p>
                 </div>
             </div>
         </div>
