@@ -1,5 +1,4 @@
-H1>ECO UPD:<
-H2>Novedades Parches Oficiales v0.1.2<
-H3>Se ha completado el desarrollo del ecosistema nativo. Se implementaron los controladores dinámicos para *Tareas Avanzadas* y el *Módulo de Notas Rápidas* de forma cruzada.<
-H3>El calendario ahora permite _navegación mensual infinita_ utilizando los selectores superiores.<
-H3>Para restaurar el estado inicial en limpio de Kronos para pruebas de desarrollo, diríjase al panel de *Configuración*.<
+H1>KRONOS CORE:<
+H2>Actualización del Sistema v0.1.2<
+H3>Hemos rediseñado la interfaz de *Bienvenida* haciéndola más elegante y minimalista. Se aplicó la grilla interactiva en el *Planificador de Fechas* para agendar tareas en cualquier día del mes.<
+H3>Se corrigió el comportamiento de las notas de la _Imagen 7_. Ahora al tocarlas puedes editarlas inmediatamente en la barra de texto inferior.<
