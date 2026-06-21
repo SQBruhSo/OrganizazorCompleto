@@ -111,7 +111,6 @@
             letter-spacing: -0.4px;
         }
 
-        /* Tipografías dinámicas para el log de novedades */
         .log-h1 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.6px; margin: 16px 0 10px 0; }
         .log-h2 { font-size: 19px; font-weight: 600; color: var(--text-main); letter-spacing: -0.4px; margin: 14px 0 6px 0; }
         .log-h3 { font-size: 16px; font-weight: 600; color: var(--text-main); margin: 10px 0 4px 0; }
@@ -405,15 +404,12 @@
                         <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                         <span id="txt-install">Instalar app</span>
                     </button>
-                    <!-- Botón Guía Manual -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-help')">
                         <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Guía">
                     </button>
-                    <!-- Botón Novedades -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
                         <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
                     </button>
-                    <!-- Botón Ajustes -->
                     <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
                         <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
                     </button>
@@ -553,7 +549,7 @@
         <button class="btn-add btn-lbl-close" style="width:100%; padding:14px; margin-top:14px;" onclick="closeModals()">Cerrar</button>
     </div>
 
-    <!-- MODAL DE IDENTIDAD (Username) -->
+    <!-- MODAL DE IDENTIDAD -->
     <div class="modal" id="username-modal">
         <h3 id="txt-modal-id-title" style="margin-bottom:14px;">Identidad del Espacio</h3>
         <input type="text" id="username-input" class="input-flat" style="width:100%; margin-bottom:18px;" maxlength="14" autocomplete="off">
@@ -592,7 +588,7 @@
         <button class="btn-add" id="btn-cal-save-evt" style="width:100%; padding:14px;" onclick="saveCalendarEvent()">Fijar Evento</button>
     </div>
 
-    <!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA (MODAL BLINDADO) -->
+    <!-- CAJÓN DE GUÍA DE AYUDA INTERACTIVA -->
     <div class="cajon-drawer" id="drawer-help">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
             <button onclick="closeDrawer('drawer-help')" class="btn-close-x">&times;</button>
@@ -601,19 +597,19 @@
         <div id="help-steps-container">
             <div class="guide-step active" data-step="1">
                 <h4 style="color: var(--accent-brand); margin-bottom: 6px;">1. Centro de Control Doméstico</h4>
-                <p>Desde la pantalla de inicio puedes ver un resumen ejecutivo en tiempo real de tu agenda diaria ("Cronograma del Día") y acceder rápidamente a los tres bloques de la grilla minimalista.</p>
+                <p>Desde la pantalla de inicio puedes ver un resumen en tiempo real de tu agenda diaria y acceder a los tres bloques principales.</p>
             </div>
             <div class="guide-step" data-step="2">
                 <h4 style="color: var(--accent-green); margin-bottom: 6px;">2. Agenda de Eventos Mensuales</h4>
-                <p>Accede al calendario, navega usando las flechas y presiona cualquier día para planificar eventos. Podrás asignarles colores de categorización personalizados para un rápido impacto visual.</p>
+                <p>Navega por el calendario y presiona cualquier día para planificar eventos con colores personalizados.</p>
             </div>
             <div class="guide-step" data-step="3">
                 <h4 style="color: var(--accent-yellow); margin-bottom: 6px;">3. Actividades con Horarios</h4>
-                <p>Al añadir pendientes en la sección de Actividades, puedes include una hora fija (formato 24h). El sistema realizará un seguimiento en segundo plano para alertarte en el minuto exacto.</p>
+                <p>Añade pendientes con hora fija (formato 24h). El sistema te alertará de forma nativa en el minuto exacto.</p>
             </div>
             <div class="guide-step" data-step="4">
                 <h4 style="color: #1A73E8; margin-bottom: 6px;">4. Notas Estilo iOS Enriquecidas</h4>
-                <p>Crea bloques de notas fijas y ábrelas para editarlas con comandos WYSIWYG interactivos (Títulos H1/H2, negritas, itálicas) guardando el formato de manera interna.</p>
+                <p>Crea bloques de notas fijas y edítalas en un completo entorno de texto enriquecido (H1, H2, negrita, cursiva).</p>
             </div>
         </div>
         <div class="guide-nav">
@@ -622,19 +618,17 @@
         </div>
     </div>
 
-    <!-- CAJÓN DE NOVEDADES Y ACTUALIZACIONES (MODAL BLINDADO) -->
+    <!-- CAJÓN DE NOVEDADES -->
     <div class="cajon-drawer" id="drawer-news">
         <div style="display: flex; justify-content: flex-end; margin-bottom: 2px;">
             <button onclick="closeDrawer('drawer-news')" class="btn-close-x">&times;</button>
         </div>
         <h3 style="margin-bottom: 18px; font-size: 19px; text-align: center;" id="txt-news-title">Historial de Actualizaciones</h3>
-        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; padding-right: 4px;">
-            <!-- Render dinámico mediante JS -->
-        </div>
+        <div id="news-content-box" style="display: flex; flex-direction: column; gap: 4px; overflow-y: auto; max-height: 55vh; padding-right: 4px;"></div>
     </div>
 
     <script>
-        // CORE DATA STRUCTURE
+        // CORE DATA STRUCTURE (Asegurando inicialización limpia)
         let data = {
             username: "Espacio",
             lang: "es",
@@ -681,29 +675,31 @@
         let currentGuideStep = 1;
         let selectedColor = "#85243A";
 
-        // LOCALSTORAGE MANAGMENT
         function saveToLocalStorage() {
             localStorage.setItem('aura_studio_data', JSON.stringify(data));
         }
 
+        // CONTROL EXTREMO DE CARGA: Si el JSON viene corrupto o sin array de notas, lo reescribimos
         function loadFromLocalStorage() {
             let raw = localStorage.getItem('aura_studio_data');
             if(raw) {
                 try {
                     let parsed = JSON.parse(raw);
                     data = Object.assign({}, data, parsed);
-                } catch(e) {}
+                } catch(e) {
+                    console.error("Error cargando localStorage, reiniciando objeto.");
+                }
             }
-            if(!data.tasks) data.tasks = [];
-            if(!data.notes) data.notes = [];
-            if(!data.events) data.events = {};
+            // Blindaje absoluto de arrays
+            if(!Array.isArray(data.tasks)) data.tasks = [];
+            if(!Array.isArray(data.notes)) data.notes = [];
+            if(!data.events || typeof data.events !== 'object') data.events = {};
             if(!data.username) data.username = "Espacio";
             
             document.getElementById('username-display').innerText = data.username;
             document.getElementById('username-input').value = data.username;
         }
 
-        // VIEW CONTROLLER
         function changeView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.getElementById(viewId).classList.remove('hidden');
@@ -712,13 +708,11 @@
             if(viewId === 'view-notes') renderNotes();
         }
 
-        // DRAWER CONTROLLER
         function openDrawer(id) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
             setTimeout(() => overlay.style.opacity = '1', 10);
             overlay.onclick = null;
-
             document.getElementById(id).classList.add('active');
             if(id === 'drawer-news') loadUpdatesLog();
         }
@@ -728,12 +722,11 @@
             const overlay = document.getElementById('overlay');
             overlay.style.opacity = '0';
             setTimeout(() => {
-                overlay.style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
                 overlay.onclick = closeModals;
             }, 300);
         }
 
-        // MODALES ESTÁNDAR
         function openModal(id) {
             const overlay = document.getElementById('overlay');
             overlay.style.display = 'block';
@@ -753,7 +746,6 @@
             }, 300);
         }
 
-        // CONFIGURACIONES: TEMA E IDIOMA
         function changeTheme(themeValue) {
             data.theme = themeValue;
             saveToLocalStorage();
@@ -774,7 +766,6 @@
             document.getElementById('txt-cal-header').innerText = l.calHeader;
             document.getElementById('txt-tasks-header').innerText = l.tasksHeader;
             
-            // Reparación del nodo de traducción para no corromper la jerarquía de la vista de notas
             const notesHeaderNode = document.getElementById('txt-notes-header');
             if (notesHeaderNode) notesHeaderNode.innerText = l.notesHeader;
             
@@ -826,7 +817,6 @@
             }
         }
 
-        // MANUAL INTERACTIVO
         function moveGuideStep(dir) {
             currentGuideStep += dir;
             if(currentGuideStep < 1) currentGuideStep = 1;
@@ -845,7 +835,6 @@
             }
         }
 
-        // NUEVO MOTOR PARSER <SINTAXIS_AVANZADA> PARA UPD.TXT
         async function loadUpdatesLog() {
             const container = document.getElementById('news-content-box');
             container.innerHTML = `<p style="text-align:center; padding:20px;">...</p>`;
@@ -853,7 +842,6 @@
                 const response = await fetch('./upd.txt');
                 if(!response.ok) throw new Error();
                 let text = await response.text();
-                
                 let htmlOutput = "";
                 const lines = text.split('\n');
                 
@@ -863,31 +851,18 @@
 
                     if (cleaned.startsWith('<') && cleaned.endsWith('>')) {
                         let innerContent = cleaned.substring(1, cleaned.length - 1).trim();
-
                         let targetClass = "log-p"; 
                         let isHeader = false;
                         let tagType = "";
 
                         if (innerContent.startsWith('# ')) {
-                            targetClass = "log-h1";
-                            innerContent = innerContent.substring(2);
-                            isHeader = true;
-                            tagType = "div";
+                            targetClass = "log-h1"; innerContent = innerContent.substring(2); isHeader = true; tagType = "div";
                         } else if (innerContent.startsWith('## ')) {
-                            targetClass = "log-h2";
-                            innerContent = innerContent.substring(3);
-                            isHeader = true;
-                            tagType = "div";
+                            targetClass = "log-h2"; innerContent = innerContent.substring(3); isHeader = true; tagType = "div";
                         } else if (innerContent.startsWith('### ')) {
-                            targetClass = "log-h3";
-                            innerContent = innerContent.substring(4);
-                            isHeader = true;
-                            tagType = "div";
+                            targetClass = "log-h3"; innerContent = innerContent.substring(4); isHeader = true; tagType = "div";
                         } else if (innerContent.startsWith('-# ')) {
-                            targetClass = "log-sub";
-                            innerContent = innerContent.substring(3);
-                            isHeader = true;
-                            tagType = "p";
+                            targetClass = "log-sub"; innerContent = innerContent.substring(3); isHeader = true; tagType = "p";
                         }
 
                         innerContent = innerContent.replace(/_\*(.*?)\*_/g, '<strong><em>$1</em></strong>');
@@ -904,14 +879,13 @@
                         htmlOutput += `<p class="log-p">${cleaned}</p>`;
                     }
                 });
-
                 container.innerHTML = htmlOutput || "<p>No hay registros de actualización disponibles.</p>";
             } catch(e) {
                 container.innerHTML = `<p style="text-align:center; color:red; font-size:13px; padding:20px;">Error al procesar o localizar el archivo 'upd.txt'.</p>`;
             }
         }
 
-        // GESTIÓN DE CHECKLIST (PENDIENTES)
+        // PENDIENTES
         function renderTasks() {
             const container = document.getElementById('tasks-container');
             container.innerHTML = "";
@@ -938,11 +912,9 @@
             const timeInput = document.getElementById('task-time');
             const text = txtInput.value.trim();
             const time = timeInput.value.trim();
-            
             if(!text) return;
             data.tasks.push({ text: text, time: time, done: false });
             saveToLocalStorage();
-            
             txtInput.value = "";
             timeInput.value = "";
             renderTasks();
@@ -960,22 +932,28 @@
             renderTasks();
         }
 
-        // BLOQUE DE NOTAS FIJAS (REPARADO Y BLINDADO COGNITIVAMENTE)
+        // SISTEMA DE NOTAS COMPLETAMENTE COMPROBADO Y BLINDADO ANTIFALLOS
         function renderNotes() {
             const container = document.getElementById('notes-container');
             if (!container) return;
             container.innerHTML = "";
             
-            if(!data.notes || data.notes.length === 0) {
+            // Re-verificación interna por si mutó el tipo de dato
+            if (!data.notes || !Array.isArray(data.notes)) {
+                data.notes = [];
+            }
+            
+            if(data.notes.length === 0) {
                 container.innerHTML = `<p style="text-align:center; color:var(--text-muted); font-size:14px; padding:30px 0;">${data.lang === 'en' ? 'No notes stored.' : 'No hay notas almacenadas.'}</p>`;
                 return;
             }
+            
             data.notes.forEach((n, index) => {
                 const btn = document.createElement('button');
                 btn.className = "note-item-btn";
                 btn.innerHTML = `
                     <div style="width:10px; height:10px; border-radius:50%; background:var(--accent-yellow);"></div>
-                    <div style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.title}</div>
+                    <div style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${n.title || 'Nota sin título'}</div>
                 `;
                 btn.onclick = () => openNoteEditor(index);
                 container.appendChild(btn);
@@ -989,19 +967,28 @@
             const title = input.value.trim();
             if(!title) return;
             
-            if (!data.notes) data.notes = [];
+            // Si por algún bug externo data.notes se convirtió en otra cosa, lo forzamos a Array
+            if (!data.notes || !Array.isArray(data.notes)) {
+                data.notes = [];
+            }
             
-            data.notes.push({ title: title, body: "<div>Empieza a escribir...</div>" });
+            // Inserción directa limpia
+            data.notes.push({ 
+                title: title, 
+                body: "<div>Empieza a escribir...</div>" 
+            });
+            
             saveToLocalStorage();
-            input.value = "";
-            renderNotes();
+            input.value = ""; // Limpiar input
+            renderNotes();    // Forzar actualización inmediata de la interfaz
         }
 
         function openNoteEditor(index) {
+            if (!data.notes[index]) return;
             editingNoteIndex = index;
             const note = data.notes[index];
             document.getElementById('modal-note-title').innerText = note.title;
-            document.getElementById('modal-note-body').innerHTML = note.body;
+            document.getElementById('modal-note-body').innerHTML = note.body || "";
             
             document.getElementById('btn-delete-note-trigger').onclick = () => {
                 data.notes.splice(editingNoteIndex, 1);
@@ -1017,7 +1004,7 @@
         }
 
         function saveNoteBody() {
-            if(editingNoteIndex !== null) {
+            if(editingNoteIndex !== null && data.notes[editingNoteIndex]) {
                 data.notes[editingNoteIndex].body = document.getElementById('modal-note-body').innerHTML;
                 saveToLocalStorage();
                 closeModals();
@@ -1025,7 +1012,7 @@
             }
         }
 
-        // CALENDARIO MENSUAL
+        // CALENDARIO
         function initCalendar() {
             const today = new Date();
             if (currentYear === undefined) currentYear = today.getFullYear();
@@ -1104,7 +1091,6 @@
             document.getElementById('modal-day-num').innerText = dateStr;
             const detailBox = document.getElementById('calendar-detail-box');
             const txtDetail = document.getElementById('cal-detail-text');
-            
             detailBox.style.display = "block";
             
             if(data.events[dateStr]) {
@@ -1129,7 +1115,21 @@
             };
         }
 
-        // COLOR PICKER INTERFACE
+        function saveCalendarEvent() {
+            const titleInput = document.getElementById('cal-input-title').value.trim();
+            if(!titleInput || !selectedDayStr) return;
+            data.events[selectedDayStr] = {
+                title: titleInput,
+                color: selectedColor
+            };
+            saveToLocalStorage();
+            closeModals();
+            if(selectedDayStr) {
+                const parts = selectedDayStr.split('-');
+                selectCalendarDay(parseInt(parts[2]), selectedDayStr);
+            }
+        }
+
         document.querySelectorAll('.color-picker .color-opt').forEach(opt => {
             opt.onclick = (e) => {
                 document.querySelectorAll('.color-picker .color-opt').forEach(o => o.classList.remove('active'));
@@ -1138,9 +1138,9 @@
             };
         });
 
-        // PREVIEW CRONOGRAMA HOME
         function renderHomePreview() {
             const list = document.getElementById('home-tasks-list');
+            if(!list) return;
             list.innerHTML = "";
             const activeTasks = data.tasks.filter(t => !t.done);
             
@@ -1159,7 +1159,6 @@
             });
         }
 
-        // NOTIFICACIONES
         function toggleNotifications(val) {
             if(val) {
                 if (!("Notification" in window)) {
@@ -1199,11 +1198,9 @@
                     }
                 }
             });
-
             if(horaActualStr === "00:00") tareasNotificadas.clear();
         }, 25000);
 
-        // INSTALACIÓN ASÍNCRONA PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -1234,7 +1231,7 @@
             changeTheme(data.theme);
             initCalendar();
             changeLanguage(data.lang);
-            renderNotes(); // Forzamos renderizado inicial de seguridad
+            renderNotes(); // Forzado inicial blindado
         });
     </script>
 </body>
