@@ -1,353 +1,339 @@
-// Base de datos reactiva persistente
-let tasks = JSON.parse(localStorage.getItem('k_tasks')) || [];
-let notes = JSON.parse(localStorage.getItem('k_notes')) || [];
-let appSettings = JSON.parse(localStorage.getItem('k_settings')) || {
+// Memoria local de la aplicación
+let appTasks = JSON.parse(localStorage.getItem('kronos_tasks')) || [];
+let appNotes = JSON.parse(localStorage.getItem('kronos_notes')) || [];
+let appSettings = JSON.parse(localStorage.getItem('kronos_settings')) || {
     theme: 'theme-light',
     size: 'size-medium',
     font: 'font-jakarta',
     notif: true,
-    sound: true
+    sounds: true
 };
 
-let currentCalendarDate = new Date();
-let activeCalendarDayStr = null; // Guardará la fecha seleccionada YYYY-MM-DD
-let editingNoteId = null; // Si está editando, guarda el ID de la nota aquí
-let deferredPrompt;
+let selectedDateStr = null; // Almacena el día bajo foco en el calendario (YYYY-MM-DD)
+let activeEditingNoteId = null; // Almacena el ID de la nota que se está editando
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Inicializar Configuración Visual guardada
-    applySettingsEngine();
-
-    setTimeout(() => {
-        document.getElementById('screen-loading').classList.remove('active');
-        if (!localStorage.getItem('k_init')) {
-            document.getElementById('screen-welcome').classList.add('active');
-        } else {
-            navigateTo('home');
-        }
-    }, 2000);
-
-    // Arrancar motores gráficos y lógicos
-    syncLiveClock();
-    fetchUpdatesLog();
-    renderTasksEngine();
-    renderNotesEngine();
-    buildCalendarGrid();
-
-    // Sincronizar inputs del panel de opciones con los datos reales
-    document.getElementById('cfg-theme').value = appSettings.theme;
-    document.getElementById('cfg-size').value = appSettings.size;
-    document.getElementById('cfg-font').value = appSettings.font;
-    document.getElementById('cfg-notif').checked = appSettings.notif;
-    document.getElementById('cfg-sound').checked = appSettings.sound;
-
-    // Escucha de descarga PWA
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-    
-    const installBtn = document.getElementById('btn-install-pwa');
-    if(installBtn) {
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') skipWelcome();
-                deferredPrompt = null;
-            } else {
-                alert("Para instalar Kronos como app nativa sin barras, dale a 'Compartir' o 'Tres puntos' en tu navegador y elige 'Añadir a pantalla de inicio'.");
-                skipWelcome();
-            }
-        });
-    }
+// Inicialización de la App
+window.addEventListener('DOMContentLoaded', () => {
+    applyConfigPreferences();
+    loadInputStateFromSettings();
+    renderAllViews();
+    parseChangeLogFile();
 });
 
-// Enrutamiento SPA
-function navigateTo(screenId) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(`screen-${screenId}`).classList.add('active');
-}
-
-function skipWelcome() {
-    localStorage.setItem('k_init', 'true');
-    navigateTo('home');
-}
-
-// Reloj y Fechas
-function syncLiveClock() {
-    const d = new Date();
-    const months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
-    document.getElementById('current-day-num').innerText = d.getDate();
-    document.getElementById('current-month').innerText = `de ${months[d.getMonth()]}`;
-}
-
-// Configuración Interactiva
-function updateSettings() {
-    appSettings.theme = document.getElementById('cfg-theme').value;
-    appSettings.size = document.getElementById('cfg-size').value;
-    appSettings.font = document.getElementById('cfg-font').value;
-    appSettings.notif = document.getElementById('cfg-notif').checked;
-    appSettings.sound = document.getElementById('cfg-sound').checked;
-
-    localStorage.setItem('k_settings', JSON.stringify(appSettings));
-    applySettingsEngine();
+function changeScreen(screenId) {
+    document.querySelectorAll('.app-screen').forEach(scr => scr.classList.remove('active'));
+    document.getElementById(`scr-${screenId}`).classList.add('active');
     
-    if(appSettings.sound) {
-        // Sonido táctil sutil nativo del navegador si se permite
-        try { window.navigator.vibrate(10); } catch(e){}
+    if(screenId === 'calendar') {
+        buildCalendarView();
     }
 }
 
-function applySettingsEngine() {
-    const body = document.body;
-    body.className = ""; // Limpiar clases tipográficas y de color
-    body.classList.add(appSettings.theme, appSettings.size, appSettings.font);
+// LÓGICA DE PREFERENCIAS (CONFIGURACIONES)
+function loadInputStateFromSettings() {
+    document.getElementById('set-theme').value = appSettings.theme;
+    document.getElementById('set-size').value = appSettings.size;
+    document.getElementById('set-font').value = appSettings.font;
+    document.getElementById('set-notif').checked = appSettings.notif;
+    document.getElementById('set-sounds').checked = appSettings.sounds;
 }
 
-// PARSER LOG: update.txt
-async function fetchUpdatesLog() {
-    const box = document.getElementById('update-container');
-    try {
-        const r = await fetch('update.txt');
-        if(!r.ok) throw new Error();
-        const raw = await r.text();
-        const lines = raw.split('\n');
-        let html = "";
-        lines.forEach(l => {
-            let cl = l.trim();
-            if(cl.startsWith('H1>')) html += `<h1 class="upd-h1">${cl.slice(3,-1)}</h1>`;
-            else if(cl.startsWith('H2>')) html += `<h2 class="upd-h2">${cl.slice(3,-1)}</h2>`;
-            else if(cl.startsWith('H3>')) {
-                let txt = cl.slice(3,-1).replace(/\*(.*?)\*/g, "<strong>$1</strong>").replace(/_(.*?)_/g, "<em>$1</em>");
-                html += `<p class="upd-h3">${txt}</p>`;
-            }
-        });
-        box.innerHTML = html;
-    } catch(e) {
-        box.innerHTML = `<p class="empty-msg">No hay logs de actualización cargados.</p>`;
+function saveAndApplySettings() {
+    appSettings.theme = document.getElementById('set-theme').value;
+    appSettings.size = document.getElementById('set-size').value;
+    appSettings.font = document.getElementById('set-font').value;
+    appSettings.notif = document.getElementById('set-notif').checked;
+    appSettings.sounds = document.getElementById('set-sounds').checked;
+
+    localStorage.setItem('kronos_settings', JSON.stringify(appSettings));
+    applyConfigPreferences();
+}
+
+function applyConfigPreferences() {
+    document.body.className = "";
+    document.body.classList.add(appSettings.theme, appSettings.size, appSettings.font);
+}
+
+function clearSystemData() {
+    if(confirm("¿Eliminar todos los datos guardados de forma permanente?")) {
+        localStorage.clear();
+        window.location.reload();
     }
 }
 
-// GESTIÓN: TAREAS (image_037f67.png Sync)
-function toggleTimeInput() {
-    const checked = document.getElementById('task-has-time').checked;
-    document.getElementById('time-wrapper').style.display = checked ? 'flex' : 'none';
+// LÓGICA DE TAREAS (VISTA GENERAL)
+function toggleTimeVisibility() {
+    const isChecked = document.getElementById('chk-use-time').checked;
+    document.getElementById('time-input-container').style.display = isChecked ? 'flex' : 'none';
 }
 
-function addTask() {
-    const input = document.getElementById('task-input');
-    const hasTime = document.getElementById('task-has-time').checked;
-    const timeVal = document.getElementById('task-time-input').value;
+function createGeneralTask() {
+    const inputElement = document.getElementById('main-task-input');
+    const textValue = inputElement.value.trim();
+    if(!textValue) return;
+
+    const useTime = document.getElementById('chk-use-time').checked;
+    const timeValue = useTime ? document.getElementById('task-time-value').value : null;
     
-    if(!input.value.trim()) return;
+    // Si no tiene fecha específica se asume hoy en formato local YYYY-MM-DD
+    const dateToday = new Date().toISOString().split('T')[0];
 
-    // Obtener string de fecha de hoy local YYYY-MM-DD
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    const item = {
+    const newTask = {
         id: Date.now(),
-        title: input.value.trim(),
-        time: hasTime ? timeVal : null,
-        date: todayStr
+        text: textValue,
+        time: timeValue,
+        date: dateToday
     };
 
-    tasks.push(item);
-    localStorage.setItem('k_tasks', JSON.stringify(tasks));
-    input.value = "";
-    document.getElementById('task-has-time').checked = false;
-    toggleTimeInput();
+    appTasks.push(newTask);
+    localStorage.setItem('kronos_tasks', JSON.stringify(appTasks));
     
-    renderTasksEngine();
+    inputElement.value = "";
+    document.getElementById('chk-use-time').checked = false;
+    toggleTimeVisibility();
+    
+    renderAllViews();
 }
 
-function deleteTask(id) {
-    tasks = tasks.filter(t => t.id !== id);
-    localStorage.setItem('k_tasks', JSON.stringify(tasks));
-    renderTasksEngine();
-    if(activeCalendarDayStr) renderCalendarDayTasks(activeCalendarDayStr);
+function removeTask(id) {
+    appTasks = appTasks.filter(task => task.id !== id);
+    localStorage.setItem('kronos_tasks', JSON.stringify(appTasks));
+    renderAllViews();
+    if(selectedDateStr) updatePlannerPanelForDate(selectedDateStr);
 }
 
-function renderTasksEngine() {
-    const area = document.getElementById('tasks-list');
-    const preview = document.getElementById('home-tasks-preview');
-    const todayStr = new Date().toISOString().split('T')[0];
+// LÓGICA DE NOTAS (EDICIÓN INTEGRADA EXCLUSIVA)
+function handleNoteSubmission() {
+    const inputField = document.getElementById('note-input-field');
+    const text = inputField.value.trim();
+    if(!text) return;
 
-    // Filtrar tareas generales del día de hoy para el panel home
-    const todayTasks = tasks.filter(t => t.date === todayStr);
-
-    if (tasks.length === 0) {
-        area.innerHTML = `<p class="empty-msg">No hay tareas creadas.</p>`;
+    if (activeEditingNoteId !== null) {
+        // Modo Edición: Actualizar la nota existente
+        appNotes = appNotes.map(note => {
+            if(note.id === activeEditingNoteId) {
+                return { ...note, text: text };
+            }
+            return note;
+        });
+        activeEditingNoteId = null;
+        document.getElementById('note-action-btn').innerText = "Añadir";
+        inputField.placeholder = "Escribe una nota...";
     } else {
-        area.innerHTML = tasks.map(t => `
-            <div class="item-card">
-                <div class="item-card-left">
-                    <span class="item-title">${t.title}</span>
-                    <span class="item-time-badge"><i class="fa-solid fa-calendar-day"></i> ${t.date} ${t.time ? `| ${t.time} hs` : ''}</span>
-                </div>
-                <i class="fa-solid fa-trash-can item-delete-btn" onclick="deleteTask(${t.id}); event.stopPropagation();"></i>
+        // Modo Creación: Añadir nueva nota
+        const newNote = { id: Date.now(), text: text };
+        appNotes.push(newNote);
+    }
+
+    localStorage.setItem('kronos_notes', JSON.stringify(appNotes));
+    inputField.value = "";
+    renderNotesView();
+}
+
+function triggerEditNoteMode(id, text) {
+    activeEditingNoteId = id;
+    const inputField = document.getElementById('note-input-field');
+    inputField.value = text;
+    inputField.focus();
+    
+    // Cambiamos el comportamiento y el diseño visual del botón para indicar edición
+    document.getElementById('note-action-btn').innerText = "Guardar";
+    inputField.placeholder = "Editando nota seleccionada...";
+}
+
+function removeNote(id, event) {
+    event.stopPropagation(); // Evita activar el modo edición al querer borrar
+    appNotes = appNotes.filter(note => note.id !== id);
+    localStorage.setItem('kronos_notes', JSON.stringify(appNotes));
+    
+    if(activeEditingNoteId === id) {
+        activeEditingNoteId = null;
+        document.getElementById('note-action-btn').innerText = "Añadir";
+        document.getElementById('note-input-field').value = "";
+    }
+    renderNotesView();
+}
+
+// LÓGICA DEL CALENDARIO DINÁMICO
+let currentPivotDate = new Date();
+
+function buildCalendarView() {
+    const grid = document.getElementById('calendar-grid');
+    const label = document.getElementById('cal-month-year');
+    grid.innerHTML = "";
+
+    const year = currentPivotDate.getFullYear();
+    const month = currentPivotDate.getMonth();
+
+    const monthsNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+    label.innerText = `${monthsNames[month]} ${year}`;
+
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    // Rellenar días vacíos del mes anterior
+    for(let i = 0; i < firstDayIndex; i++) {
+        const spacer = document.createElement('div');
+        spacer.className = "empty-day";
+        grid.appendChild(spacer);
+    }
+
+    // Dibujar días activos
+    for(let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = "active-day";
+        dayCell.innerText = day;
+        
+        const formatMonth = String(month + 1).padStart(2, '0');
+        const formatDay = String(day).padStart(2, '0');
+        const internalDateStr = `${year}-${formatMonth}-${formatDay}`;
+        
+        if(selectedDateStr === internalDateStr) {
+            dayCell.classList.add('day-selected');
+        }
+
+        dayCell.onclick = () => {
+            document.querySelectorAll('.calendar-grid div').forEach(c => c.classList.remove('day-selected'));
+            dayCell.classList.add('day-selected');
+            openPlannerPanelForDate(internalDateStr);
+        };
+
+        grid.appendChild(dayCell);
+    }
+}
+
+function shiftMonth(direction) {
+    currentPivotDate.setMonth(currentPivotDate.getMonth() + direction);
+    buildCalendarView();
+}
+
+function openPlannerPanelForDate(dateStr) {
+    selectedDateStr = dateStr;
+    const parts = dateStr.split('-');
+    document.getElementById('planner-date-title').innerText = `Actividades: ${parts[2]}/${parts[1]}/${parts[0]}`;
+    updatePlannerPanelForDate(dateStr);
+}
+
+function updatePlannerPanelForDate(dateStr) {
+    const container = document.getElementById('planner-tasks-container');
+    const targetedTasks = appTasks.filter(t => t.date === dateStr);
+
+    if(targetedTasks.length === 0) {
+        container.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary);">No hay planes agendados.</p>`;
+    } else {
+        container.innerHTML = targetedTasks.map(t => `
+            <div style="display:flex; justify-content:space-between; background:var(--bg-app); padding:8px; border-radius:8px; margin-bottom:6px;">
+                <span>${t.text} ${t.time ? `[${t.time}]` : ''}</span>
+                <span style="color:red; cursor:pointer;" onclick="removeTask(${t.id})">✕</span>
             </div>
         `).join('');
     }
-
-    if(todayTasks.length === 0) {
-        preview.innerHTML = `<li class="empty-msg">Agenda libre para hoy.</li>`;
-    } else {
-        preview.innerHTML = todayTasks.slice(0,3).map(t => `<li>• ${t.title} ${t.time ? `(${t.time})`:''}</li>`).join('');
-    }
 }
 
-// GESTIÓN: NOTAS (Edición de la 7ma imagen solicitada)
-function addNote() {
-    const input = document.getElementById('note-input');
-    if(!input.value.trim()) return;
+function saveTaskToSelectedDate() {
+    const textInput = document.getElementById('planner-input-text');
+    const timeInput = document.getElementById('planner-input-time');
+    
+    if(!textInput.value.trim() || !selectedDateStr) return;
 
-    if(editingNoteId !== null) {
-        // Modo Edición activo
-        notes = notes.map(n => n.id === editingNoteId ? { ...n, text: input.value.trim() } : n);
-        editingNoteId = null;
-        document.getElementById('note-submit-icon').className = "fa-solid fa-circle-plus";
-        input.placeholder = "Escribir nota...";
-    } else {
-        // Modo Creación estándar
-        notes.push({ id: Date.now(), text: input.value.trim() });
-    }
+    const taskObj = {
+        id: Date.now(),
+        text: textInput.value.trim(),
+        time: timeInput.value ? timeInput.value : null,
+        date: selectedDateStr
+    };
 
-    localStorage.setItem('k_notes', JSON.stringify(notes));
-    input.value = "";
-    renderNotesEngine();
+    appTasks.push(taskObj);
+    localStorage.setItem('kronos_tasks', JSON.stringify(appTasks));
+    
+    textInput.value = "";
+    timeInput.value = "";
+    
+    updatePlannerPanelForDate(selectedDateStr);
+    renderAllViews();
 }
 
-function enterEditNoteMode(id, currentText) {
-    editingNoteId = id;
-    const input = document.getElementById('note-input');
-    input.value = currentText;
-    input.focus();
-    // Cambiar ícono a Guardar Check
-    document.getElementById('note-submit-icon').className = "fa-solid fa-circle-check";
-    input.placeholder = "Modificando nota...";
+// MOTORES DE RENDERIZADO GENERAL
+function renderAllViews() {
+    renderTasksView();
+    renderNotesView();
+    renderHomeDashboardView();
 }
 
-function deleteNote(id) {
-    notes = notes.filter(n => n.id !== id);
-    localStorage.setItem('k_notes', JSON.stringify(notes));
-    if(editingNoteId === id) {
-        editingNoteId = null;
-        document.getElementById('note-submit-icon').className = "fa-solid fa-circle-plus";
-        document.getElementById('note-input').value = "";
-    }
-    renderNotesEngine();
-}
-
-function renderNotesEngine() {
-    const area = document.getElementById('notes-list');
-    if(notes.length === 0) {
-        area.innerHTML = `<p class="empty-msg">No hay notas guardadas.</p>`;
+function renderTasksView() {
+    const container = document.getElementById('tasks-root-list');
+    if(appTasks.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-secondary); text-align:center; padding:20px;">Tu lista de tareas está vacía.</p>`;
         return;
     }
-    area.innerHTML = notes.map(n => `
-        <div class="item-card" onclick="enterEditNoteMode(${n.id}, '${n.text}')">
-            <div class="item-card-left">
-                <span class="item-title">${n.text}</span>
+    container.innerHTML = appTasks.map(t => `
+        <div class="list-item">
+            <div>
+                <p style="font-weight:500;">${t.text}</p>
+                <span style="font-size:0.8rem; color:var(--text-secondary);">${t.date} ${t.time ? `• ${t.time} hs` : ''}</span>
             </div>
-            <i class="fa-solid fa-trash-can item-delete-btn" onclick="deleteNote(${n.id}); event.stopPropagation();"></i>
+            <button class="delete-action-btn" onclick="removeTask(${t.id})">✕</button>
         </div>
     `).join('');
 }
 
-// GESTIÓN: CALENDARIO CON ASIGNACIÓN DE FECHAS SELECCIONABLES
-function buildCalendarGrid() {
-    const grid = document.getElementById('calendar-days-grid');
-    const header = document.getElementById('calendar-month-year');
-    const realDate = new Date();
-    
-    const y = currentCalendarDate.getFullYear();
-    const m = currentCalendarDate.getMonth();
-
-    const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-    header.innerText = `${months[m]} ${y}`;
-
-    const firstDayIndex = new Date(y, m, 1).getDay();
-    const totalDays = new Date(y, m + 1, 0).getDate();
-
-    grid.innerHTML = "";
-
-    for (let i = 0; i < firstDayIndex; i++) {
-        grid.innerHTML += `<div></div>`;
+function renderNotesView() {
+    const container = document.getElementById('notes-root-list');
+    if(appNotes.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-secondary); text-align:center; padding:20px;">No has tomado ninguna nota todavía.</p>`;
+        return;
     }
-
-    for (let d = 1; d <= totalDays; d++) {
-        const isToday = (d === realDate.getDate() && m === realDate.getMonth() && y === realDate.getFullYear()) ? 'current-real-day' : '';
-        
-        // Crear string identificador único de fecha YYYY-MM-DD para mapeo de datos
-        const dayString = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        
-        grid.innerHTML += `<div class="${isToday}" data-date="${dayString}" onclick="selectCalendarDay(this, '${dayString}')">${d}</div>`;
-    }
+    // Al presionar la nota, llama directamente a triggerEditNoteMode
+    container.innerHTML = appNotes.map(n => `
+        <div class="list-item" onclick="triggerEditNoteMode(${n.id}, '${n.text.replace(/'/g, "\\'")}')">
+            <span style="flex:1; font-weight:500;">${n.text}</span>
+            <button class="delete-action-btn" onclick="removeNote(${n.id}, event)">✕</button>
+        </div>
+    `).join('');
 }
 
-function changeMonth(dir) {
-    currentCalendarDate.setMonth(currentCalendarDate.getMonth() + dir);
-    buildCalendarGrid();
-    document.getElementById('cal-selected-box').style.display = "none";
-}
+function renderHomeDashboardView() {
+    const listContainer = document.getElementById('home-preview-list');
+    const todayFormatted = new Date().toISOString().split('T')[0];
+    const todayTasks = appTasks.filter(t => t.date === todayFormatted);
 
-function selectCalendarDay(element, dateStr) {
-    document.querySelectorAll('#calendar-days-grid div').forEach(div => div.classList.remove('selected-day-focus'));
-    element.classList.add('selected-day-focus');
-    
-    activeCalendarDayStr = dateStr;
-    document.getElementById('cal-selected-box').style.display = "flex";
-    
-    // Parsear fecha linda para el encabezado
-    const parts = dateStr.split('-');
-    document.getElementById('cal-selected-date-lbl').innerText = `Tareas del ${parts[2]}/${parts[1]}/${parts[0]}:`;
-    
-    renderCalendarDayTasks(dateStr);
-}
-
-function renderCalendarDayTasks(dateStr) {
-    const targetArea = document.getElementById('cal-day-tasks-list');
-    const dayTasks = tasks.filter(t => t.date === dateStr);
-
-    if(dayTasks.length === 0) {
-        targetArea.innerHTML = `<p class="empty-msg" style="font-size:0.8rem;">Sin tareas asignadas en esta fecha.</p>`;
+    if(todayTasks.length === 0) {
+        listContainer.innerHTML = `<p style="color:var(--text-secondary); font-size:0.95rem;">Todo despejado para hoy.</p>`;
     } else {
-        targetArea.innerHTML = dayTasks.map(t => `
-            <div class="item-card" style="padding: 8px 12px; margin-bottom:4px;">
-                <span class="item-title" style="font-size:0.85rem;">${t.title} ${t.time ? `[${t.time} hs]` : ''}</span>
-                <i class="fa-solid fa-xmark item-delete-btn" style="font-size:0.9rem;" onclick="deleteTask(${t.id})"></i>
+        listContainer.innerHTML = todayTasks.map(t => `
+            <div style="padding: 6px 0; border-bottom:1px solid var(--border); font-size:0.95rem;">
+                <strong>${t.time ? `[${t.time}]` : '•'}</strong> ${t.text}
             </div>
         `).join('');
     }
 }
 
-function addCalendarDayTask() {
-    const input = document.getElementById('cal-task-input');
-    const time = document.getElementById('cal-task-time').value;
-
-    if(!input.value.trim() || !activeCalendarDayStr) return;
-
-    tasks.push({
-        id: Date.now(),
-        title: input.value.trim(),
-        time: time || null,
-        date: activeCalendarDayStr
-    });
-
-    localStorage.setItem('k_tasks', JSON.stringify(tasks));
-    input.value = "";
-    document.getElementById('cal-task-time').value = "";
-    
-    renderCalendarDayTasks(activeCalendarDayStr);
-    renderTasksEngine();
-}
-
-// Auxiliares
-function toggleAccordion(el) { el.classList.toggle('open'); }
-function resetApp() {
-    if(confirm("¿Restablecer el ecosistema de Kronos a valores nulos de fábrica? Se borrarán todas las notas, configuraciones y tareas asignadas.")){
-        localStorage.clear();
-        window.location.reload();
+// PARSER DE ARCHIVO DE ACTUALIZACIÓN (update.txt)
+async function parseChangeLogFile() {
+    const box = document.getElementById('log-content');
+    try {
+        const response = await fetch('update.txt');
+        if(!response.ok) throw new Error();
+        const rawText = await response.text();
+        
+        const lines = rawText.split('\n');
+        let formattedHtml = "";
+        
+        lines.forEach(line => {
+            let cleanLine = line.trim();
+            if(cleanLine.startsWith('H1>')) {
+                formattedHtml += `<h1 class="log-item-h1">${cleanLine.slice(3, -1)}</h1>`;
+            } else if(cleanLine.startsWith('H2>')) {
+                formattedHtml += `<h2 class="log-item-h2">${cleanLine.slice(3, -1)}</h2>`;
+            } else if(cleanLine.startsWith('H3>')) {
+                let text = cleanLine.slice(3, -1)
+                    .replace(/\*(.*?)\*/g, "<strong>$1</strong>")
+                    .replace(/_(.*?)_/g, "<em>$1</em>");
+                formattedHtml += `<p class="log-item-p">${text}</p>`;
+            }
+        });
+        box.innerHTML = formattedHtml;
+    } catch (err) {
+        box.innerHTML = `<p style="color:var(--text-secondary); font-size:0.85rem;">No se encontraron registros de logs.</p>`;
     }
 }
