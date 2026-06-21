@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Organizador Personal</title>
+    <title>Organizador Personal Pro</title>
     
     <link class="fav-icon-tag" rel="icon" type="image/png" href="https://i.ibb.co/pBwLqf1v/Dise-o-sin-t-tulo.png">
     <link class="apple-touch-icon" href="https://i.ibb.co/5h1j0fr3/Dise-o-sin-t-tulo.png">
@@ -41,7 +41,8 @@
             --accent-yellow: #C67B00;
             --border-color: #E2E4E7;
             --input-bg: #F4F5F6;
-            --blur-bg: rgba(255, 255, 255, 0.85);
+            --blur-bg: rgba(255, 255, 255, 0.9);
+            --icon-filter: brightness(0);
             
             --aura-bezier: cubic-bezier(0.34, 1.56, 0.64, 1);
             --fade-bezier: cubic-bezier(0.25, 1, 0.5, 1);
@@ -55,7 +56,8 @@
             --text-muted: #9AA0A6;
             --border-color: #2D3135;
             --input-bg: #212327;
-            --blur-bg: rgba(22, 24, 27, 0.85);
+            --blur-bg: rgba(22, 24, 27, 0.9);
+            --icon-filter: brightness(0) invert(1);
         }
 
         * {
@@ -110,12 +112,26 @@
             letter-spacing: -0.4px;
         }
 
-        .log-h1 { font-size: 24px; font-weight: 700; color: var(--text-main); letter-spacing: -0.6px; margin: 16px 0 10px 0; }
-        .log-h2 { font-size: 19px; font-weight: 600; color: var(--text-main); letter-spacing: -0.4px; margin: 14px 0 6px 0; }
-        .log-h3 { font-size: 16px; font-weight: 600; color: var(--text-main); margin: 10px 0 4px 0; }
-        .log-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-style: italic; }
-        .log-p { font-size: 14.5px; line-height: 1.6; color: var(--text-muted); margin-bottom: 8px; }
-        .log-code { font-family: monospace; background: var(--input-bg); padding: 2px 6px; border-radius: 6px; font-size: 13px; color: var(--accent-brand); }
+        .btn-icon-nav img {
+            width: 18px; 
+            height: 18px; 
+            object-fit: contain; 
+            filter: var(--icon-filter);
+        }
+
+        .btn-icon-nav svg {
+            width: 18px;
+            height: 18px;
+            color: var(--text-main);
+        }
+
+        /* ESTILOS INTERNOS PANEL DESPLEGABLE (DRAWER) */
+        .log-h1 { font-size: 22px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; margin: 18px 0 10px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; }
+        .log-h2 { font-size: 17px; font-weight: 600; color: var(--accent-brand); letter-spacing: -0.3px; margin: 14px 0 6px 0; }
+        .log-h3 { font-size: 15px; font-weight: 600; color: var(--text-main); margin: 10px 0 4px 0; }
+        .log-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
+        .log-p { font-size: 14px; line-height: 1.6; color: var(--text-muted); margin-bottom: 8px; }
+        .log-code { font-family: monospace; background: var(--input-bg); padding: 2px 6px; border-radius: 6px; font-size: 12px; color: var(--accent-brand); font-weight: 600; }
 
         h3 { font-size: 17px; font-weight: 600; color: var(--text-main); }
 
@@ -250,6 +266,7 @@
             transition: all 0.2s ease;
         }
 
+        /* COMPONENTE ACTIVIDADES REAJUSTADO Y CORREGIDO */
         .task-row {
             display: flex;
             justify-content: space-between;
@@ -261,8 +278,22 @@
         }
         @keyframes rowIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
 
-        .task-text { cursor: pointer; display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
-        .task-text span { font-size: 15px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color 0.25s ease, opacity 0.25s ease; }
+        .task-text { 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 12px; 
+            flex: 1; 
+            overflow: hidden; 
+        }
+        .task-text span { 
+            font-size: 15px; 
+            color: var(--text-main); 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+            transition: color 0.25s ease, opacity 0.25s ease; 
+        }
         .task-text.completed span { text-decoration: line-through; color: var(--text-muted) !important; opacity: 0.5; }
         
         .task-text input[type="checkbox"] { 
@@ -275,8 +306,7 @@
             cursor: pointer; 
             transition: background 0.25s var(--fade-bezier), border-color 0.25s var(--fade-bezier), transform 0.15s ease; 
             position: relative; 
-            display: inline-block; 
-            vertical-align: middle; 
+            flex-shrink: 0;
             background: var(--card-bg);
         }
         .task-text input[type="checkbox"]:checked { 
@@ -340,6 +370,7 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -46%) scale(0.97); background: var(--card-bg); border-radius: 24px; padding: 24px; z-index: 100; width: 90%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); opacity: 0; transition: transform 0.3s var(--aura-bezier), opacity 0.3s var(--fade-bezier); max-height: 90vh; overflow-y: auto; }
         .modal.active { display: block; opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
+        /* ESTILOS DEL PANEL DESPLEGABLE */
         .cajon-drawer {
             position: fixed; left: 0; right: 0; bottom: 0; background: var(--blur-bg); backdrop-filter: blur(20px);
             border-top-left-radius: 28px; border-top-right-radius: 28px; border-top: 1px solid var(--border-color);
@@ -403,14 +434,14 @@
                         <svg style="width:14px; height:14px;" viewBox="0 0 24 24"><path fill="currentColor" d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
                         <span id="txt-install">Instalar app</span>
                     </button>
-                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-help')">
-                        <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Guía">
+                    <button class="btn-back btn-icon-nav" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-help')">
+                        <img src="https://cdn-icons-png.magnific.com/512/471/471715.png" alt="Guía">
                     </button>
-                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
-                        <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" style="width: 18px; height: 18px; object-fit: contain; filter: brightness(0) invert(1);" alt="Novedades">
+                    <button class="btn-back btn-icon-nav" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openDrawer('drawer-news')">
+                        <img src="https://cdn-icons-png.magnific.com/512/5962/5962661.png" alt="Novedades">
                     </button>
-                    <button class="btn-back" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
-                        <svg style="width:18px; height:18px;" viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
+                    <button class="btn-back btn-icon-nav" style="padding: 8px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent;" onclick="openModal('config-modal')">
+                        <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5A3.5 3.5 0 0 1 15.5 12A3.5 3.5 0 0 1 12 15.5M19.43 12.97c.04-.32.07-.65.07-.97c0-.32-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.39-1.09-.73-1.71-.98l-.37-2.65A.506.506 0 0 0 14 3h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .32.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.39 1.09.73 1.71.98l.37 2.65c.04.24.25.42.49.42h4c.25 0 .46-.18.49-.42l.37-2.65c.61-.25 1.17-.59 1.71-.98l2.49 1c.22.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.63Z"/></svg>
                     </button>
                 </div>
             </div>
@@ -483,7 +514,7 @@
 
         <div id="view-notes" class="view hidden">
             <div class="card header-box">
-                <span id="txt-notes-header">Bloc de Notas</span>
+                <span id="txt-notes-header">Bloque de Notas</span>
                 <button class="btn-back btn-lbl-back" onclick="changeView('view-home')">Volver</button>
             </div>
             <div class="card">
@@ -507,6 +538,8 @@
             <select id="lang-select" class="custom-select" onchange="changeLanguage(this.value)">
                 <option value="es">Español</option>
                 <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
             </select>
         </div>
 
@@ -577,19 +610,19 @@
         <div id="help-steps-container">
             <div class="guide-step active" data-step="1">
                 <h4 style="color: var(--accent-brand); margin-bottom: 6px;">1. Centro de Control Doméstico</h4>
-                <p>Desde la pantalla de inicio puedes ver un resumen en tiempo real de tu agenda diaria y acceder a los tres bloques principales.</p>
+                <p class="log-p">Desde la pantalla de inicio puedes ver un resumen en tiempo real de tu agenda diaria y acceder a los tres bloques principales.</p>
             </div>
             <div class="guide-step" data-step="2">
                 <h4 style="color: var(--accent-green); margin-bottom: 6px;">2. Agenda de Eventos Mensuales</h4>
-                <p>Navega por el calendario y presiona cualquier día para planificar eventos con colores personalizados.</p>
+                <p class="log-p">Navega por el calendario y presiona cualquier día para planificar eventos con colores personalizados.</p>
             </div>
             <div class="guide-step" data-step="3">
                 <h4 style="color: var(--accent-yellow); margin-bottom: 6px;">3. Actividades con Horarios</h4>
-                <p>Añade pendientes con hora fija (formato 24h). El sistema te alertará de forma nativa en el minuto exacto.</p>
+                <p class="log-p">Añade pendientes con hora fija (formato 24h). El sistema te alertará de forma nativa en el minuto exacto.</p>
             </div>
             <div class="guide-step" data-step="4">
                 <h4 style="color: #1A73E8; margin-bottom: 6px;">4. Notas Estilo iOS Enriquecidas</h4>
-                <p>Crea bloques de notas fijas y edítalas en un completo entorno de texto enriquecido (H1, H2, negrita, cursiva).</p>
+                <p class="log-p">Crea bloques de notas fijas y edítalas en un completo entorno de texto enriquecido (H1, H2, negrita, cursiva).</p>
             </div>
         </div>
         <div class="guide-nav">
@@ -646,6 +679,34 @@
                 placeholderTask: "Activity name...", placeholderTime: "Time (e.g. 17:30)", placeholderNote: "Note title...",
                 msgEmptyCronograma: "No pending tasks for today.", alertNotifyBlock: "Please enable notification permissions in your browser.",
                 alertNotifySuccess: "Native alerts configured successfully!"
+            },
+            pt: {
+                homeTitle: "Controle de ", calHeader: "Agenda Mensal", tasksHeader: "Lista de Atividades",
+                notesHeader: "Bloco de Notas", cronograma: "Cronograma do Dia", lblBack: "Voltar",
+                lblClose: "Fechar", lblSave: "Salvar", lblDelete: "Excluir", modalConfigTitle: "Configurações",
+                modalIdTitle: "Identidade do Espaço", modalPlanTitle: "Planejar: ", lblCalColor: "Cor identificadora:",
+                lblLang: "Idioma / Language", lblTheme: "Tema da interface", lblNotifyTitle: "Alertas do Sistema",
+                lblNotifyDesc: "Ativar notificações nativas", optLight: "Claro", optDark: "Escuro",
+                optSystem: "Padrão do sistema", txtInstall: "Instalar app", helpTitle: "Manual do Usuário do Espaço",
+                newsTitle: "Histórico de Atualizações", menuEvents: "Eventos", menuTasks: "Pendentes", menuNotes: "Notas fixas",
+                calToday: "Hoje", calDetail: "Detalhes do dia", calNoEvt: "Nenhum evento planejado para este dia.",
+                placeholderTask: "Nome da atividade...", placeholderTime: "Hora (ex: 17:30)", placeholderNote: "Título da nota...",
+                msgEmptyCronograma: "Nenhuma atividade pendente para hoje.", alertNotifyBlock: "Por favor, habilite as permissões de notificação no seu navegador.",
+                alertNotifySuccess: "Alertas nativos configurados com sucesso!"
+            },
+            fr: {
+                homeTitle: "Contrôle de ", calHeader: "Agenda Mensuel", tasksHeader: "Liste des Activités",
+                notesHeader: "Bloc de Notes", cronograma: "Planning du Jour", lblBack: "Retour",
+                lblClose: "Fermer", lblSave: "Enregistrer", lblDelete: "Supprimer", modalConfigTitle: "Configuration",
+                modalIdTitle: "Identité de l'Espace", modalPlanTitle: "Planifier: ", lblCalColor: "Couleur d'identification:",
+                lblLang: "Langue / Language", lblTheme: "Thème de l'interface", lblNotifyTitle: "Alertes Système",
+                lblNotifyDesc: "Activer les notifications natives", optLight: "Clair", optDark: "Sombre",
+                optSystem: "Par défaut du système", txtInstall: "Installer l'app", helpTitle: "Manuel d'Utilisation de l'Espace",
+                newsTitle: "Historique des Mises à Jour", menuEvents: "Événements", menuTasks: "En attente", menuNotes: "Notes fixes",
+                calToday: "Aujourd'hui", calDetail: "Détails de la journée", calNoEvt: "Aucun événement prévu pour ce jour.",
+                placeholderTask: "Nom de l'activité...", placeholderTime: "Heure (ex: 17:30)", placeholderNote: "Titre de la note...",
+                msgEmptyCronograma: "Aucune activité en attente pour aujourd'hui.", alertNotifyBlock: "Veuillez activer les autorisations de notification dans votre navigateur.",
+                alertNotifySuccess: "Alertes natives configurées avec succès!"
             }
         };
 
@@ -995,14 +1056,25 @@
         }
 
         function renderCalendarMesh() {
-            const monthNames = data.lang === 'en' ? 
-                ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] :
-                ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            let monthNames = [];
+            if(data.lang === 'en') {
+                monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            } else if(data.lang === 'pt') {
+                monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            } else if(data.lang === 'fr') {
+                monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            } else {
+                monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+            }
             
             document.getElementById('calendar-month-year').innerText = `${monthNames[currentMonth]} ${currentYear}`;
             
             const weekdaysContainer = document.getElementById('calendar-weekdays');
-            const daysLetters = data.lang === 'en' ? ["S", "M", "T", "W", "T", "F", "S"] : ["D", "L", "M", "M", "J", "V", "S"];
+            let daysLetters = ["D", "L", "M", "M", "J", "V", "S"];
+            if(data.lang === 'en') daysLetters = ["S", "M", "T", "W", "T", "F", "S"];
+            if(data.lang === 'pt') daysLetters = ["D", "S", "T", "Q", "Q", "S", "S"];
+            if(data.lang === 'fr') daysLetters = ["D", "L", "M", "M", "J", "V", "S"];
+            
             weekdaysContainer.innerHTML = daysLetters.map(l => `<div>${l}</div>`).join('');
             
             const gridBox = document.getElementById('calendar-grid-box');
