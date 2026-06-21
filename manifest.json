@@ -1,0 +1,16 @@
+{
+  "short_name": "Kronos",
+  "name": "Kronos Organizador",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/4ZJ4h7jL/Logo-Color.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/index.html",
+  "background_color": "#FFF7E3",
+  "theme_color": "#E17615",
+  "display": "standalone",
+  "orientation": "portrait"
+}

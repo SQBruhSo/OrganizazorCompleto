@@ -1,0 +1,6 @@
+H1>ECO UPD:<
+H2>Colores nuevos:<
+H3>Los nuevos colores de kronos mejoran tanto la experiencia para el usuario como la calidad gráfica.<
+H3>*1. Rojo Bordo*<
+H3>_2. Rosa Jamón_<
+H3>_Negrita_ y *Cursiva* combinados en la app.<

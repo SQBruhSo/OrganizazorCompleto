@@ -1,0 +1,194 @@
+:root {
+    --color-primary: #E17615;
+    --color-secondary: #FCAD17;
+    --color-accent: #FFD23D;
+    --color-lime: #CCD22F;
+    --bg-gradient: linear-gradient(180deg, #FAD6B4 0%, #FFF7E3 40%, #EFF5D4 100%);
+    --font-main: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    font-weight: 500;
+}
+
+body {
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    color: #111;
+    overflow-x: hidden;
+}
+
+/* Control de Pantallas */
+.screen {
+    display: none;
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    flex-direction: column;
+    gap: 15px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.screen.active {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Loading Screen */
+#screen-loading {
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+.loading-content {
+    text-align: center;
+}
+.loading-text {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+}
+.logo-loading {
+    max-width: 220px;
+}
+
+/* Tarjetas (Cards Modernas) */
+.card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Botones Estilo iOS */
+.btn {
+    border: none;
+    border-radius: 24px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.btn-download { color: #111; }
+.btn-continue { 
+    color: #111; 
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+}
+.btn-continue-text {
+    display: flex;
+    flex-direction: column;
+}
+.btn-continue-text .subtext {
+    font-size: 0.85rem;
+    color: #555;
+    background: #EFF5D4;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-top: 5px;
+}
+
+.icon-circle, .icon-cross {
+    font-size: 1.5rem;
+    background: #222;
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Home / Dashboard */
+.app-header {
+    background: white;
+    border-radius: 20px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.logo-header { height: 35px; }
+.header-actions { display: flex; gap: 10px; }
+.icon-btn {
+    background: #f0f0f0;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Menú de Accesos Rápidos */
+.quick-menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.menu-item {
+    background: white;
+    border: none;
+    border-radius: 20px;
+    padding: 15px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+.menu-icon {
+    font-size: 2rem;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+}
+.calendar-icon { background: #FFEFE2; color: var(--color-primary); }
+.tasks-icon { background: #FFF9E6; color: var(--color-secondary); }
+.notes-icon { background: #FFF5CC; color: var(--color-accent); }
+
+/* Fila de Agenda */
+.dashboard-row {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 12px;
+}
+.date-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.day-number { font-size: 4rem; font-weight: 700; line-height: 1; }
+.pending-card h3 { font-size: 0.95rem; margin-bottom: 8px; font-weight: 700;}
+.pending-card ul { list-style: none; font-size: 0.9rem; }
+.tomorrow-link { font-size: 0.75rem; color: #666; display: block; margin-top: 10px; }
+
+/* Estilos para el parseo del update.txt */
+.updates-card h1 { font-size: 1.5rem; color: var(--color-primary); margin-bottom: 8px; font-weight: 700; }
+.updates-card h2 { font-size: 1.1rem; color: #333; margin-top: 6px; font-weight: 700; }
+.updates-card p { font-size: 0.9rem; color: #444; line-height: 1.4; margin-bottom: 4px; }

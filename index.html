@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kronos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+    <div id="screen-loading" class="screen active">
+        <div class="loading-content">
+            <p class="loading-text">Estamos cargando:</p>
+            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-loading">
+        </div>
+    </div>
+
+    <div id="screen-welcome" class="screen">
+        <div class="card info-card">
+            <p>Te recomendamos instalar la aplicación para recibir notificaciones con nuestro ícono, lo que te ayudará a evitar confusiones y a disfrutar de más funciones.</p>
+        </div>
+        
+        <button class="btn btn-download" id="btn-install">
+            <span>Descargar la APP</span>
+            <div class="icon-circle">⬇</div>
+        </button>
+
+        <button class="btn btn-continue" id="btn-skip">
+            <div class="btn-continue-text">
+                <span>Continuar sin la APP</span>
+                <span class="subtext">Obtendrá algunas funciones, con limitaciones</span>
+            </div>
+            <div class="icon-cross">✕</div>
+        </button>
+    </div>
+
+    <div id="screen-home" class="screen">
+        <header class="app-header">
+            <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-header">
+            <div class="header-actions">
+                <button class="icon-btn info-btn">ℹ</button>
+                <button class="icon-btn settings-btn">⚙</button>
+            </div>
+        </header>
+
+        <div class="quick-menu">
+            <button class="menu-item" onclick="openSection('calendar')">
+                <div class="menu-icon calendar-icon">📅</div>
+                <span>Calendario</span>
+            </button>
+            <button class="menu-item" onclick="openSection('tasks')">
+                <div class="menu-icon tasks-icon">📋</div>
+                <span>Tareas</span>
+            </button>
+            <button class="menu-item" onclick="openSection('notes')">
+                <div class="menu-icon notes-icon">✏</div>
+                <span>Notas</span>
+            </button>
+        </div>
+
+        <div class="dashboard-row">
+            <div class="card date-card">
+                <span class="hoy-label">Hoy es:</span>
+                <span class="day-number">23</span>
+                <span class="month-label">de agosto</span>
+            </div>
+            <div class="card pending-card">
+                <h3>Tienes los siguientes pendientes:</h3>
+                <ul id="mini-task-list">
+                    <li>• Ir a la tienda.</li>
+                    <li>• Buscar a Javier.</li>
+                    <li>• Hacer la cena.</li>
+                </ul>
+                <a href="#" class="tomorrow-link">¿Quieres ver los pendientes de mañana?</a>
+            </div>
+        </div>
+
+        <div class="card updates-card">
+            <div class="updates-header">kronos | 0.1.2</div>
+            <div id="updates-content">
+                </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
