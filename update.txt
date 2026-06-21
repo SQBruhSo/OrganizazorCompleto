@@ -1,7 +1,5 @@
 H1>ECO UPD:<
-H2>Versión 0.1.2 Novedades<
-H3>¡Bienvenido a Kronos! Hemos diseñado una interfaz limpia y libre de distracciones para que gestiones tu día a día de forma profesional.<
-H3>*1. Secciones Disponibles:* Calendario automático, Lista de tareas con soporte de horarios y Block de Notas integrado.<
-H3>*2. Modo Aplicación:* Recordá que podés pulsar el botón de descargar para quitar los marcos del navegador y usar Kronos como una APP nativa.<
-H3>_Nota del desarrollador:_ Todo el contenido se almacena de forma local y segura en tu dispositivo.<
-H3>Prueba de formato: Esto es _Negrita_ y esto es *Cursiva* combinado.<
+H2>Novedades Parches Oficiales v0.1.2<
+H3>Se ha completado el desarrollo del ecosistema nativo. Se implementaron los controladores dinámicos para *Tareas Avanzadas* y el *Módulo de Notas Rápidas* de forma cruzada.<
+H3>El calendario ahora permite _navegación mensual infinita_ utilizando los selectores superiores.<
+H3>Para restaurar el estado inicial en limpio de Kronos para pruebas de desarrollo, diríjase al panel de *Configuración*.<
