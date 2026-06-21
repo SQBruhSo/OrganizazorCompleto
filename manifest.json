@@ -5,11 +5,13 @@
   "display": "standalone",
   "background_color": "#FFF7E3",
   "theme_color": "#E17615",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://i.ibb.co/4ZJ4h7jL/Logo-Color.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
