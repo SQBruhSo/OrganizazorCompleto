@@ -37,6 +37,41 @@
         user-select: none;
         -webkit-tap-highlight-color: transparent;
     }
+
+        /* AQUI: Permite editar y seleccionar texto en las notas para evitar bugs */
+    .rich-editor, .task-text, input, textarea {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+        cursor: text;
+    }
+
+    /* Corrección Modo Oscuro: Texto blanco obligatorio */
+    [data-theme="dark"], [data-theme="dark"] * {
+        color: #ECEEDF !important;
+    }
+
+    /* Estabilidad móvil */
+    .rich-editor {
+        touch-action: manipulation;
+        min-height: 200px;
+        padding: 15px;
+        border: 1px solid var(--border-color);
+    }
+
+    /* Estilo del Toast (Notificaciones personalizadas) */
+    .custom-toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 9999;
+        font-family: sans-serif;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
         
         :root {
             --bg-color: #F4F5F6;
