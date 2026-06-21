@@ -31,6 +31,13 @@
     </script>
     
     <style>
+
+        * {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+        
         :root {
             --bg-color: #F4F5F6;
             --card-bg: #FFFFFF;
@@ -1300,26 +1307,29 @@
                 list.appendChild(li);
             });
         }
+        
+        // AQUI: Función personalizada para reemplazar alerts
+        function showCustomToast(message) {
+            const toast = document.createElement('div');
+           toast.className = 'custom-toast';
+            toast.innerText = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
 
-        // NOTIFICACIONES
+        // AQUI: Notificación sin usar las del navegador (siempre que sea posible)
         function toggleNotifications(val) {
             if(val) {
-                if (!("Notification" in window)) {
-                    alert("Este entorno no soporta alertas nativas.");
-                    document.getElementById('notify-toggle').checked = false;
-                    return;
-                }
                 Notification.requestPermission().then(permission => {
                     if (permission === "granted") {
                         data.notify = true;
-                        saveToLocalStorage();
-                        alert(locales[data.lang].alertNotifySuccess);
+                        showCustomToast("Notificaciones activadas");
                     } else {
                         data.notify = false;
-                        saveToLocalStorage();
                         document.getElementById('notify-toggle').checked = false;
-                        alert(locales[data.lang].alertNotifyBlock);
+                        showCustomToast("Permiso denegado");
                     }
+                    saveToLocalStorage();
                 });
             } else {
                 data.notify = false;
