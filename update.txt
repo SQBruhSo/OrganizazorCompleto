@@ -1,4 +1,4 @@
-H1>KRONOS CORE:<
-H2>Actualización del Sistema v0.1.2<
-H3>Hemos rediseñado la interfaz de *Bienvenida* haciéndola más elegante y minimalista. Se aplicó la grilla interactiva en el *Planificador de Fechas* para agendar tareas en cualquier día del mes.<
-H3>Se corrigió el comportamiento de las notas de la _Imagen 7_. Ahora al tocarlas puedes editarlas inmediatamente en la barra de texto inferior.<
+H1>SISTEMA GENERAL:<
+H2>Versión de Estabilidad 1.0.4<
+H3>Corregido el error de refresco en inputs. Hemos implementado un sistema nativo modular sin librerías externas que causen fallas de rendimiento.<
+H3>Las notas ahora entran en modo *edición activa* directamente en el input inferior al hacer click en ellas, permitiendo re-escribir su contenido de forma fluida.<
