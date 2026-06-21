@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kronos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -40,8 +42,8 @@
         <header class="main-header">
             <img src="https://i.ibb.co/RkZsxYLL/Kronos-Logo.png" alt="Kronos" class="logo-small">
             <div class="header-icons">
-                <i class="fa-solid fa-circle-info" onclick="alert('Kronos v0.1.2 - Tu Organizador Personal')"></i>
-                <i class="fa-solid fa-gear"></i>
+                <i class="fa-solid fa-circle-info" onclick="navigateTo('help')"></i>
+                <i class="fa-solid fa-gear" onclick="navigateTo('settings')"></i>
             </div>
         </header>
 
@@ -68,8 +70,7 @@
             </div>
             <div class="pending-card">
                 <p class="title-pending">Pendientes de hoy:</p>
-                <ul id="home-tasks-preview">
-                    </ul>
+                <ul id="home-tasks-preview"></ul>
             </div>
         </section>
 
@@ -85,14 +86,15 @@
             <h1>CALENDARIO</h1>
         </div>
         <div class="calendar-container card-inside">
-            <div class="calendar-header">
-                <h2 id="calendar-month-year">Junio 2026</h2>
+            <div class="calendar-controls">
+                <button onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <h2 id="calendar-month-year">---</h2>
+                <button onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
             <div class="calendar-weekdays">
                 <div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div>
             </div>
-            <div class="calendar-days" id="calendar-days-grid">
-                </div>
+            <div class="calendar-days" id="calendar-days-grid"></div>
         </div>
     </div>
 
@@ -101,19 +103,18 @@
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
             <h1>TAREAS</h1>
         </div>
-        <div class="list-container" id="tasks-list">
-            </div>
+        <div class="list-container" id="tasks-list"></div>
         
         <div class="task-options-bar">
             <label class="toggle-schedule">
                 <input type="checkbox" id="task-has-time" onchange="toggleTimeInput()">
-                <span><i class="fa-solid fa-clock"></i> Con Horario</span>
+                <span><i class="fa-solid fa-clock"></i> Definir Horario</span>
             </label>
-            <input type="time" id="task-time-input" style="display: none;">
+            <input type="time" id="task-time-input">
         </div>
 
         <div class="input-bar">
-            <input type="text" id="task-input" placeholder="Escribe una nueva tarea...">
+            <input type="text" id="task-input" placeholder="Agregar nueva tarea...">
             <i class="fa-solid fa-circle-plus" onclick="addTask()"></i>
         </div>
     </div>
@@ -123,11 +124,69 @@
             <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
             <h1>NOTAS</h1>
         </div>
-        <div class="list-container" id="notes-list">
-            </div>
+        <div class="list-container" id="notes-list"></div>
         <div class="input-bar">
-            <input type="text" id="note-input" placeholder="Escribe una nueva nota...">
+            <input type="text" id="note-input" placeholder="Escribir una nota rápida...">
             <i class="fa-solid fa-circle-plus" onclick="addNote()"></i>
+        </div>
+    </div>
+
+    <div id="screen-settings" class="screen">
+        <div class="back-nav">
+            <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
+            <h1>CONFIGURACIÓN</h1>
+        </div>
+        <div class="settings-container card-inside">
+            <h3>Preferencias Generales</h3>
+            <div class="setting-item">
+                <span class="setting-text">Almacenamiento Local</span>
+                <span class="setting-status active-status">Activo (JSON)</span>
+            </div>
+            <div class="setting-item">
+                <span class="setting-text">Fuente Base</span>
+                <span class="setting-status">Jakarta Sans 500</span>
+            </div>
+            <hr class="separator">
+            <h3>Zona de Peligro</h3>
+            <button class="btn-danger" onclick="resetApp()">
+                <i class="fa-solid fa-trash-arrow-up"></i> Restablecer datos de Kronos
+            </button>
+        </div>
+    </div>
+
+    <div id="screen-help" class="screen">
+        <div class="back-nav">
+            <i class="fa-solid fa-arrow-left" onclick="navigateTo('home')"></i>
+            <h1>AYUDA & MANUAL</h1>
+        </div>
+        <div class="help-container">
+            <div class="help-accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>¿Cómo organizar tareas?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>Entrá a la sección Tareas, escribe lo que tienes que hacer. Si necesitas ponerle hora exacta, activa el interruptor "Definir Horario" antes de presionar el botón (+).</p>
+                </div>
+            </div>
+            <div class="help-accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>¿El calendario se actualiza solo?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>Sí, Kronos calcula automáticamente el año, los meses y marca en color naranja fuerte tu día actual para que nunca te pierdas.</p>
+                </div>
+            </div>
+            <div class="help-accordion" onclick="toggleAccordion(this)">
+                <div class="accordion-header">
+                    <span>¿Cómo funciona el guardado?</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <p>Todo se almacena en memoria JSON encriptada nativa de tu dispositivo, garantizando velocidad inmediata y privacidad total.</p>
+                </div>
+            </div>
         </div>
     </div>
 
